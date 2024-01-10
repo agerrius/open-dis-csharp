@@ -10,6 +10,14 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <Compile Remove="Dis2012\ElectronicEmissionsPdu - 7.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="Dis2012\ElectronicEmissionsPdu - 7.txt" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <CodeAnalysisDictionary Include="FxCopCustomDictionary.xml" />
   </ItemGroup>
   
