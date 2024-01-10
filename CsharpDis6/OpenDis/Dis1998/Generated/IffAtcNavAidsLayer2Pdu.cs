@@ -118,7 +118,7 @@ namespace OpenDis.Dis1998
         /// Gets or sets the Secondary operational data, 5.2.57
         /// </summary>
         [XmlElement(Type = typeof(BeamData), ElementName = "secondaryOperationalData")]
-        public BeamData SecondaryOperationalData { get; set; } = new BeamData();
+        public SecondaryOperational SecondaryOperationalData { get; set; } = new SecondaryOperational();
 
         /// <summary>
         /// Gets the variable length list of fundamental parameters. ^^^This is wrong
