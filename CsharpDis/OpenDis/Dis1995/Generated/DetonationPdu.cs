@@ -46,6 +46,7 @@ using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
 using OpenDis.Core.DataTypes;
+using OpenDis.Core.PduFamily;
 
 namespace OpenDis.Dis1995
 {
@@ -60,12 +61,12 @@ namespace OpenDis.Dis1995
     [XmlInclude(typeof(Vector3Double))]
     [XmlInclude(typeof(BurstDescriptor))]
     [XmlInclude(typeof(ArticulationParameter))]
-    public partial class DetonationPdu : Warfare, IEquatable<DetonationPdu>
+    public partial class DetonationPdu : WarfareFamilyPdu, IEquatable<DetonationPdu>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DetonationPdu"/> class.
         /// </summary>
-        public DetonationPdu()
+        public DetonationPdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_1995)
         {
             PduType = 3;
         }

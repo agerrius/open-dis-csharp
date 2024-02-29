@@ -46,6 +46,7 @@ using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
 using OpenDis.Core.DataTypes;
+using OpenDis.Core.PduFamily;
 
 namespace OpenDis.Dis1998
 {
@@ -65,7 +66,7 @@ namespace OpenDis.Dis1998
         /// <summary>
         /// Initializes a new instance of the <see cref="DetonationPdu"/> class.
         /// </summary>
-        public DetonationPdu()
+        public DetonationPdu() : base(Enumerations.ProtocolVersion.Ieee1278_1A_1998)
         {
             PduType = 3;
         }

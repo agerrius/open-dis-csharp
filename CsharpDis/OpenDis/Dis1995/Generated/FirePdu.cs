@@ -45,6 +45,7 @@ using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
 using OpenDis.Core.DataTypes;
+using OpenDis.Core.PduFamily;
 
 namespace OpenDis.Dis1995
 {
@@ -58,12 +59,12 @@ namespace OpenDis.Dis1995
     [XmlInclude(typeof(Vector3Double))]
     [XmlInclude(typeof(BurstDescriptor))]
     [XmlInclude(typeof(Vector3Float))]
-    public partial class FirePdu : Warfare, IEquatable<FirePdu>
+    public partial class FirePdu : WarfareFamilyPdu, IEquatable<FirePdu>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FirePdu"/> class.
         /// </summary>
-        public FirePdu()
+        public FirePdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_1995)
         {
             PduType = 2;
         }
