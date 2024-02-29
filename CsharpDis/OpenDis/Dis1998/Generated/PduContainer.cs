@@ -45,6 +45,7 @@ using System.Globalization;
 using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
+using OpenDis.Core.Pdu;
 
 namespace OpenDis.Dis1998
 {
@@ -181,7 +182,7 @@ namespace OpenDis.Dis1998
 
                     for (int idx = 0; idx < NumberOfPdus; idx++)
                     {
-                        var anX = new Pdu();
+                        var anX = new Pdu(Enumerations.ProtocolVersion.Ieee1278_1A_1998);
                         anX.Unmarshal(dis);
                         Pdus.Add(anX);
                     }

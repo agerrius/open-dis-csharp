@@ -86,7 +86,7 @@ namespace OpenDis.Core
         /// <param name="rawPdu">Byte array that hold raw 1998 PDU.</param>
         /// <param name="endian">The Endian type used for conversion.</param>
         /// <returns>PDU object</returns>
-        public static Pdu ConvertByteArrayToPdu1998(byte pduType, byte[] rawPdu, Endian endian) => UnmarshalRawPdu(pduType, rawPdu, endian);
+        public static Pdu.Pdu ConvertByteArrayToPdu1998(byte pduType, byte[] rawPdu, Endian endian) => UnmarshalRawPdu(pduType, rawPdu, endian);
 
         /// <summary>
         /// Provided as a means to return a string representation of the underlining PDU data. Note format is not yet optimized.
@@ -175,7 +175,7 @@ namespace OpenDis.Core
         /// <param name="ds">Datastream which contains the raw packet and Endian Type</param>
         /// <remarks>Added by PES to work with Mobile.</remarks>
         /// <returns>The PDU instance.</returns>
-        public static Pdu UnmarshalRawPdu(byte pduType, DataInputStream ds) => UnmarshalRawPdu((PduType)pduType, ds);
+        public static OpenDis.Core.Pdu.Pdu UnmarshalRawPdu(byte pduType, DataInputStream ds) => UnmarshalRawPdu((PduType)pduType, ds);
 
         /// <summary>
         /// Used to unmarshal data back into the correct PDU type.
@@ -184,9 +184,9 @@ namespace OpenDis.Core
         /// <param name="ds">Datastream which contains the raw packet and Endian Type</param>
         /// <remarks>Added by PES to work with Mobile.</remarks>
         /// <returns>The PDU instance.</returns>
-        public static Pdu UnmarshalRawPdu(PduType pduType, DataInputStream ds)
+        public static OpenDis.Core.Pdu.Pdu UnmarshalRawPdu(PduType pduType, DataInputStream ds)
         {
-            var pdu = new Pdu();
+            var pdu = new OpenDis.Core.Pdu.Pdu(Enumerations.ProtocolVersion.Ieee1278_1A_1998);
 
             switch (pduType)
             {
@@ -746,9 +746,9 @@ namespace OpenDis.Core
         /// <param name="ds">Data stream that holds raw pdu data</param>
         /// <returns>Base PDU object that can be cast to specific PDU if needed</returns>
         /// <exception cref="NotSupportedException"></exception>
-        public static Dis1995.Pdu UnmarshalRawPdu1995(PduType pduType, DataInputStream ds)
+        public static Pdu.Pdu UnmarshalRawPdu1995(PduType pduType, DataInputStream ds)
         {
-            var pdu = new Dis1995.Pdu();
+            var pdu = new Pdu.Pdu(Enumerations.ProtocolVersion.Ieee1278_1_1995);
             switch (pduType)
             {
                 case PduType.EntityState:
@@ -860,7 +860,7 @@ namespace OpenDis.Core
         /// <param name="endian">Endian type</param>
         /// <remarks>Added by PES to work with Mobile.</remarks>
         /// <returns>The PDU instance</returns>
-        public static Pdu UnmarshalRawPdu(byte pduType, byte[] rawPdu, Endian endian)
+        public static Pdu.Pdu UnmarshalRawPdu(byte pduType, byte[] rawPdu, Endian endian)
         {
             var ds = new DataInputStream(rawPdu, endian);
             return UnmarshalRawPdu((PduType)pduType, ds);
@@ -874,7 +874,7 @@ namespace OpenDis.Core
         /// <param name="endian">Endian type</param>
         /// <remarks>Added by PES to work with Mobile.</remarks>
         /// <returns>The PDU instance.</returns>
-        public static Pdu UnmarshalRawPdu(PduType pduType, byte[] rawPdu, Endian endian)
+        public static Pdu.Pdu UnmarshalRawPdu(PduType pduType, byte[] rawPdu, Endian endian)
         {
             var ds = new DataInputStream(rawPdu, endian);
             return UnmarshalRawPdu(pduType, ds);

@@ -24,7 +24,7 @@ namespace OpenDis.Dis1998
         {
             return type switch
             {
-                PduType.Other => new Pdu(),
+                PduType.Other => new OpenDis.Core.Pdu.Pdu(Enumerations.ProtocolVersion.Ieee1278_1A_1998),
                 PduType.EntityState => new EntityStatePdu(),
                 PduType.Fire => new FirePdu(),
                 PduType.Detonation => new DetonationPdu(),

@@ -24,7 +24,7 @@ namespace OpenDis.Dis1995
         {
             IPdu pdu = type switch
             {
-                PduType.Other => new Pdu(),
+                PduType.Other => new OpenDis.Core.Pdu.Pdu(Enumerations.ProtocolVersion.Ieee1278_1_1995),
                 PduType.EntityState => new EntityStatePdu(),
                 PduType.Fire => new FirePdu(),
                 PduType.Detonation => new DetonationPdu(),

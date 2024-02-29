@@ -43,6 +43,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
+using OpenDis.Core.Pdu;
 
 namespace OpenDis.Dis1998
 {
@@ -56,7 +57,7 @@ namespace OpenDis.Dis1998
         /// <summary>
         /// Initializes a new instance of the <see cref="MinefieldFamilyPdu"/> class.
         /// </summary>
-        public MinefieldFamilyPdu()
+        public MinefieldFamilyPdu() : base(Enumerations.ProtocolVersion.Ieee1278_1A_1998)
         {
             ProtocolFamily = 8;
         }

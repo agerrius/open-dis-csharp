@@ -45,6 +45,7 @@ using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
 using OpenDis.Core.DataTypes;
+using OpenDis.Core.Pdu;
 
 namespace OpenDis.Dis1998
 {
@@ -59,7 +60,7 @@ namespace OpenDis.Dis1998
         /// <summary>
         /// Initializes a new instance of the <see cref="RadioCommunicationsFamilyPdu"/> class.
         /// </summary>
-        public RadioCommunicationsFamilyPdu()
+        public RadioCommunicationsFamilyPdu() : base(Enumerations.ProtocolVersion.Ieee1278_1A_1998)
         {
             ProtocolFamily = 4;
         }

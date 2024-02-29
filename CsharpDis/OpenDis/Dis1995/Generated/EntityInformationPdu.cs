@@ -43,6 +43,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
+using OpenDis.Core.Pdu;
 
 namespace OpenDis.Dis1995
 {
@@ -56,7 +57,7 @@ namespace OpenDis.Dis1995
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityInformationPdu"/> class.
         /// </summary>
-        public EntityInformationPdu()
+        public EntityInformationPdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_1995)
         {
             ProtocolFamily = 1;
         }
