@@ -39,42 +39,23 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
-using System.Xml.Serialization;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Text;
+using System.Xml.Serialization;
 using OpenDis.Core;
 
 namespace OpenDis.Dis2012
 {
     /// <summary>
-    /// the variable datum type, the datum length, and the value for that variable datum type. NOT COMPLETE. Section 6.2.92
+    /// Section 5.2.32. Variable Datum Record
     /// </summary>
     [Serializable]
     [XmlRoot]
-    public partial class VariableDatum
+    [XmlInclude(typeof(EightByteChunk))]
+    public partial class VariableDatum : IEquatable<VariableDatum>, IReflectable
     {
-        /// <summary>
-        /// Type of variable datum to be transmitted. 32 bit enumeration defined in EBV
-        /// </summary>
-        private uint _variableDatumID;
-
-        /// <summary>
-        /// Length, in bits, of the variable datum.
-        /// </summary>
-        private uint _variableDatumLength;
-
-        /// <summary>
-        /// Variable datum. This can be any number of bits long, depending on the datum.
-        /// </summary>
-        private uint _variableDatumBits;
-
-        /// <summary>
-        /// padding to put the record on a 64 bit boundary
-        /// </summary>
-        private uint _padding;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="VariableDatum"/> class.
         /// </summary>
@@ -88,12 +69,9 @@ namespace OpenDis.Dis2012
         /// <param name="left">The left operand.</param>
         /// <param name="right">The right operand.</param>
         /// <returns>
-        /// 	<c>true</c> if operands are not equal; otherwise, <c>false</c>.
+        ///    <c>true</c> if operands are not equal; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(VariableDatum left, VariableDatum right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(VariableDatum left, VariableDatum right) => !(left == right);
 
         /// <summary>
         /// Implements the operator ==.
@@ -101,121 +79,67 @@ namespace OpenDis.Dis2012
         /// <param name="left">The left operand.</param>
         /// <param name="right">The right operand.</param>
         /// <returns>
-        /// 	<c>true</c> if both operands are equal; otherwise, <c>false</c>.
+        ///    <c>true</c> if both operands are equal; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator ==(VariableDatum left, VariableDatum right)
-        {
-            if (object.ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (((object)left == null) || ((object)right == null))
-            {
-                return false;
-            }
-
-            return left.Equals(right);
-        }
+            => ReferenceEquals(left, right) || (left is not null && right is not null && left.Equals(right));
 
         public virtual int GetMarshalledSize()
         {
-            int marshalSize = 0; 
+            int marshalSize = 0;
 
             marshalSize += 4;  // this._variableDatumID
             marshalSize += 4;  // this._variableDatumLength
-            marshalSize += 4;  // this._variableDatumBits
-            marshalSize += 4;  // this._padding
+            for (int idx = 0; idx < VariableDatums.Count; idx++)
+            {
+                var listElement = VariableDatums[idx];
+                marshalSize += listElement.GetMarshalledSize();
+            }
+
             return marshalSize;
         }
 
         /// <summary>
-        /// Gets or sets the Type of variable datum to be transmitted. 32 bit enumeration defined in EBV
+        /// Gets or sets the ID of the variable datum
         /// </summary>
         [XmlElement(Type = typeof(uint), ElementName = "variableDatumID")]
-        public uint VariableDatumID
-        {
-            get
-            {
-                return this._variableDatumID;
-            }
-
-            set
-            {
-                this._variableDatumID = value;
-            }
-        }
+        public uint VariableDatumID { get; set; }
 
         /// <summary>
-        /// Gets or sets the Length, in bits, of the variable datum.
+        /// Gets or sets the length of the variable datums
         /// </summary>
+        /// <remarks>
+        /// This value must be set for any PDU using it to work!
+        /// This value should be the number of bits used.
+        /// </remarks>
         [XmlElement(Type = typeof(uint), ElementName = "variableDatumLength")]
-        public uint VariableDatumLength
-        {
-            get
-            {
-                return this._variableDatumLength;
-            }
-
-            set
-            {
-                this._variableDatumLength = value;
-            }
-        }
+        public uint VariableDatumLength { get; set; }
 
         /// <summary>
-        /// Gets or sets the Variable datum. This can be any number of bits long, depending on the datum.
+        /// Gets the variable length list of 64-bit datums
         /// </summary>
-        [XmlElement(Type = typeof(uint), ElementName = "variableDatumBits")]
-        public uint VariableDatumBits
-        {
-            get
-            {
-                return this._variableDatumBits;
-            }
-
-            set
-            {
-                this._variableDatumBits = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the padding to put the record on a 64 bit boundary
-        /// </summary>
-        [XmlElement(Type = typeof(uint), ElementName = "padding")]
-        public uint Padding
-        {
-            get
-            {
-                return this._padding;
-            }
-
-            set
-            {
-                this._padding = value;
-            }
-        }
+        [XmlElement(ElementName = "variableDatumsList", Type = typeof(List<EightByteChunk>))]
+        public List<EightByteChunk> VariableDatums { get; } = new();
 
         /// <summary>
         /// Occurs when exception when processing PDU is caught.
         /// </summary>
-        public event Action<Exception> Exception;
+        public event EventHandler<PduExceptionEventArgs> ExceptionOccured;
 
         /// <summary>
         /// Called when exception occurs (raises the <see cref="Exception"/> event).
         /// </summary>
         /// <param name="e">The exception.</param>
-        protected void OnException(Exception e)
+        protected void RaiseExceptionOccured(Exception e)
         {
-            if (this.Exception != null)
+            if (PduBase.FireExceptionEvents && ExceptionOccured != null)
             {
-                this.Exception(e);
+                ExceptionOccured(this, new PduExceptionEventArgs(e));
             }
         }
 
         /// <summary>
-        /// Marshal the data to the DataOutputStream.  Note: Length needs to be set before calling this method
+        /// Marshal the data to the DataOutputStream. Note: Length needs to be set before calling this method
         /// </summary>
         /// <param name="dos">The DataOutputStream instance to which the PDU is marshaled.</param>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Due to ignoring errors.")]
@@ -225,18 +149,29 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    dos.WriteUnsignedInt((uint)this._variableDatumID);
-                    dos.WriteUnsignedInt((uint)this._variableDatumLength);
-                    dos.WriteUnsignedInt((uint)this._variableDatumBits);
-                    dos.WriteUnsignedInt((uint)this._padding);
+                    dos.WriteUnsignedInt(VariableDatumID);
+                    dos.WriteUnsignedInt(VariableDatumLength); //Post processedtums.Count);
+
+                    for (int idx = 0; idx < VariableDatums.Count; idx++)
+                    {
+                        var aEightByteChunk = VariableDatums[idx];
+                        aEightByteChunk.Marshal(dos);
+                    }
                 }
                 catch (Exception e)
                 {
-#if DEBUG
-                    Trace.WriteLine(e);
-                    Trace.Flush();
-#endif
-                    this.OnException(e);
+                    if (PduBase.TraceExceptions)
+                    {
+                        Trace.WriteLine(e);
+                        Trace.Flush();
+                    }
+
+                    RaiseExceptionOccured(e);
+
+                    if (PduBase.ThrowExceptions)
+                    {
+                        throw;
+                    }
                 }
             }
         }
@@ -248,98 +183,108 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    this._variableDatumID = dis.ReadUnsignedInt();
-                    this._variableDatumLength = dis.ReadUnsignedInt();
-                    this._variableDatumBits = dis.ReadUnsignedInt();
-                    this._padding = dis.ReadUnsignedInt();
+                    VariableDatumID = dis.ReadUnsignedInt();
+                    VariableDatumLength = dis.ReadUnsignedInt();
+                    int variableCount = (int)(VariableDatumLength / 64) + (VariableDatumLength % 64 > 0 ? 1 : 0);  //Post processed
+
+                    for (int idx = 0; idx < variableCount; idx++)
+                    {
+                        var anX = new EightByteChunk();
+                        anX.Unmarshal(dis);
+                        VariableDatums.Add(anX);
+                    }
                 }
                 catch (Exception e)
                 {
-#if DEBUG
-                    Trace.WriteLine(e);
-                    Trace.Flush();
-#endif
-                    this.OnException(e);
+                    if (PduBase.TraceExceptions)
+                    {
+                        Trace.WriteLine(e);
+                        Trace.Flush();
+                    }
+
+                    RaiseExceptionOccured(e);
+
+                    if (PduBase.ThrowExceptions)
+                    {
+                        throw;
+                    }
                 }
             }
         }
 
-        /// <summary>
-        /// This allows for a quick display of PDU data.  The current format is unacceptable and only used for debugging.
-        /// This will be modified in the future to provide a better display.  Usage: 
-        /// pdu.GetType().InvokeMember("Reflection", System.Reflection.BindingFlags.InvokeMethod, null, pdu, new object[] { sb });
-        /// where pdu is an object representing a single pdu and sb is a StringBuilder.
-        /// Note: The supplied Utilities folder contains a method called 'DecodePDU' in the PDUProcessor Class that provides this functionality
-        /// </summary>
-        /// <param name="sb">The StringBuilder instance to which the PDU is written to.</param>
+        ///<inheritdoc/>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Due to ignoring errors.")]
         public virtual void Reflection(StringBuilder sb)
         {
             sb.AppendLine("<VariableDatum>");
             try
             {
-                sb.AppendLine("<variableDatumID type=\"uint\">" + this._variableDatumID.ToString(CultureInfo.InvariantCulture) + "</variableDatumID>");
-                sb.AppendLine("<variableDatumLength type=\"uint\">" + this._variableDatumLength.ToString(CultureInfo.InvariantCulture) + "</variableDatumLength>");
-                sb.AppendLine("<variableDatumBits type=\"uint\">" + this._variableDatumBits.ToString(CultureInfo.InvariantCulture) + "</variableDatumBits>");
-                sb.AppendLine("<padding type=\"uint\">" + this._padding.ToString(CultureInfo.InvariantCulture) + "</padding>");
+                sb.AppendLine("<variableDatumID type=\"uint\">" + VariableDatumID.ToString(CultureInfo.InvariantCulture) + "</variableDatumID>");
+                sb.AppendLine("<variableDatums type=\"uint\">" + VariableDatums.Count.ToString(CultureInfo.InvariantCulture) + "</variableDatums>");
+                for (int idx = 0; idx < VariableDatums.Count; idx++)
+                {
+                    sb.AppendLine("<variableDatums" + idx.ToString(CultureInfo.InvariantCulture) + " type=\"EightByteChunk\">");
+                    var aEightByteChunk = VariableDatums[idx];
+                    aEightByteChunk.Reflection(sb);
+                    sb.AppendLine("</variableDatums" + idx.ToString(CultureInfo.InvariantCulture) + ">");
+                }
+
                 sb.AppendLine("</VariableDatum>");
             }
             catch (Exception e)
             {
-#if DEBUG
+                if (PduBase.TraceExceptions)
+                {
                     Trace.WriteLine(e);
                     Trace.Flush();
-#endif
-                    this.OnException(e);
+                }
+
+                RaiseExceptionOccured(e);
+
+                if (PduBase.ThrowExceptions)
+                {
+                    throw;
+                }
             }
         }
 
-        /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
-        /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
-        /// <returns>
-        /// 	<c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
-        /// </returns>
-        public override bool Equals(object obj)
-        {
-            return this == obj as VariableDatum;
-        }
+        /// <inheritdoc/>
+        public override bool Equals(object obj) => this == obj as VariableDatum;
 
-        /// <summary>
-        /// Compares for reference AND value equality.
-        /// </summary>
-        /// <param name="obj">The object to compare with this instance.</param>
-        /// <returns>
-        /// 	<c>true</c> if both operands are equal; otherwise, <c>false</c>.
-        /// </returns>
+        ///<inheritdoc/>
         public bool Equals(VariableDatum obj)
         {
             bool ivarsEqual = true;
 
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }
 
-            if (this._variableDatumID != obj._variableDatumID)
+            if (VariableDatumID != obj.VariableDatumID)
             {
                 ivarsEqual = false;
             }
 
-            if (this._variableDatumLength != obj._variableDatumLength)
+            if (VariableDatumLength != obj.VariableDatumLength)
             {
                 ivarsEqual = false;
             }
 
-            if (this._variableDatumBits != obj._variableDatumBits)
+            if (VariableDatums.Count != obj.VariableDatums.Count)
             {
                 ivarsEqual = false;
             }
 
-            if (this._padding != obj._padding)
+            if (ivarsEqual)
             {
-                ivarsEqual = false;
+                for (int idx = 0; idx < VariableDatums.Count; idx++)
+                {
+                    if (!VariableDatums[idx].Equals(obj.VariableDatums[idx]))
+                    {
+                        ivarsEqual = false;
+                    }
+                }
             }
 
             return ivarsEqual;
@@ -350,24 +295,23 @@ namespace OpenDis.Dis2012
         /// </summary>
         /// <param name="hash">The hash value.</param>
         /// <returns>The new hash value.</returns>
-        private static int GenerateHash(int hash)
-        {
-            hash = hash << (5 + hash);
-            return hash;
-        }
+        private static int GenerateHash(int hash) => hash << (5 + hash);
 
-        /// <summary>
-        /// Gets the hash code.
-        /// </summary>
-        /// <returns>The hash code.</returns>
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             int result = 0;
 
-            result = GenerateHash(result) ^ this._variableDatumID.GetHashCode();
-            result = GenerateHash(result) ^ this._variableDatumLength.GetHashCode();
-            result = GenerateHash(result) ^ this._variableDatumBits.GetHashCode();
-            result = GenerateHash(result) ^ this._padding.GetHashCode();
+            result = GenerateHash(result) ^ VariableDatumID.GetHashCode();
+            result = GenerateHash(result) ^ VariableDatumLength.GetHashCode();
+
+            if (VariableDatums.Count > 0)
+            {
+                for (int idx = 0; idx < VariableDatums.Count; idx++)
+                {
+                    result = GenerateHash(result) ^ VariableDatums[idx].GetHashCode();
+                }
+            }
 
             return result;
         }
