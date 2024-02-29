@@ -53,7 +53,7 @@ namespace OpenDis.Dis2012
     /// </summary>
     [Serializable]
     [XmlRoot]
-    public partial class PduSuperclass
+    public partial class PduSuperclass : IPdu
     {
         /// <summary>
         /// The version of the protocol. 5=DIS-1995, 6=DIS-1998, 7=DIS-2009.
@@ -435,5 +435,10 @@ namespace OpenDis.Dis2012
 
             return result;
         }
+
+        /// <summary>
+        /// Occurs when exception when processing PDU is caught.
+        /// </summary>
+        public event EventHandler<PduExceptionEventArgs> ExceptionOccured;
     }
 }

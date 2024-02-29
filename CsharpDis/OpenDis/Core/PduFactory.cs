@@ -37,6 +37,10 @@ namespace OpenDis.Core
             {
                 return Dis1998.PduFactory.CreatePdu(type);
             }
+            else if(version == ProtocolVersion.Ieee1278_1_2012)
+            {
+                return Dis2012.PduFactory.CreatePdu(type);
+            }
 
             throw new ArgumentException("Unsupported protocol version.");
         }
