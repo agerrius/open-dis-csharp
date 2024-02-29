@@ -45,6 +45,7 @@ using System.Xml.Serialization;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using OpenDis.Core;
+using OpenDis.Core.Pdu;
 
 namespace OpenDis.Dis2012
 {
@@ -53,7 +54,7 @@ namespace OpenDis.Dis2012
     /// </summary>
     [Serializable]
     [XmlRoot]
-    public partial class LiveEntityPdu : PduSuperclass, IEquatable<LiveEntityPdu>
+    public partial class LiveEntityPdu : Pdu, IEquatable<LiveEntityPdu>
     {
         /// <summary>
         /// Subprotocol used to decode the PDU. Section 13 of EBV.
@@ -68,7 +69,7 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// Initializes a new instance of the <see cref="LiveEntityPdu"/> class.
         /// </summary>
-        public LiveEntityPdu()
+        public LiveEntityPdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_2012)
         {
         }
 
@@ -173,7 +174,12 @@ namespace OpenDis.Dis2012
                     Trace.WriteLine(e);
                     Trace.Flush();
 #endif
-                    this.OnException(e);
+                    RaiseExceptionOccured(e);
+
+                    if (ThrowExceptions)
+                    {
+                        throw;
+                    }
                 }
             }
         }
@@ -196,7 +202,12 @@ namespace OpenDis.Dis2012
                     Trace.WriteLine(e);
                     Trace.Flush();
 #endif
-                    this.OnException(e);
+                    RaiseExceptionOccured(e);
+
+                    if (ThrowExceptions)
+                    {
+                        throw;
+                    }
                 }
             }
         }
@@ -226,7 +237,12 @@ namespace OpenDis.Dis2012
                     Trace.WriteLine(e);
                     Trace.Flush();
 #endif
-                    this.OnException(e);
+                RaiseExceptionOccured(e);
+
+                if (ThrowExceptions)
+                {
+                    throw;
+                }
             }
         }
 
