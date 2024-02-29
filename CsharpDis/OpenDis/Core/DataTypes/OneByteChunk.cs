@@ -46,7 +46,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using OpenDis.Core;
 
-namespace OpenDis.Dis2012
+namespace OpenDis.Core.DataTypes
 {
     /// <summary>
     /// 8 bit piece of data

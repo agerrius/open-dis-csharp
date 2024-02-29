@@ -38,26 +38,32 @@
 //  - Zvonko Bostjancic (Blubit d.o.o. - zvonko.bostjancic@blubit.si)
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Diagnostics;
+using System.Xml.Serialization;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Text;
-using System.Xml.Serialization;
 using OpenDis.Core;
 
-namespace OpenDis.Dis1998
+namespace OpenDis.Core.DataTypes
 {
     /// <summary>
-    /// 64 bit piece of data
+    /// 16 bit piece of data
     /// </summary>
     [Serializable]
     [XmlRoot]
-    public partial class EightByteChunk : IEquatable<EightByteChunk>, IReflectable
+    public partial class TwoByteChunk
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EightByteChunk"/> class.
+        /// two bytes of arbitrary data
         /// </summary>
-        public EightByteChunk()
+        private byte[] _otherParameters = new byte[2];
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TwoByteChunk"/> class.
+        /// </summary>
+        public TwoByteChunk()
         {
         }
 
@@ -67,9 +73,12 @@ namespace OpenDis.Dis1998
         /// <param name="left">The left operand.</param>
         /// <param name="right">The right operand.</param>
         /// <returns>
-        ///    <c>true</c> if operands are not equal; otherwise, <c>false</c>.
+        /// 	<c>true</c> if operands are not equal; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(EightByteChunk left, EightByteChunk right) => !(left == right);
+        public static bool operator !=(TwoByteChunk left, TwoByteChunk right)
+        {
+            return !(left == right);
+        }
 
         /// <summary>
         /// Implements the operator ==.
@@ -77,44 +86,67 @@ namespace OpenDis.Dis1998
         /// <param name="left">The left operand.</param>
         /// <param name="right">The right operand.</param>
         /// <returns>
-        ///    <c>true</c> if both operands are equal; otherwise, <c>false</c>.
+        /// 	<c>true</c> if both operands are equal; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator ==(EightByteChunk left, EightByteChunk right)
-            => ReferenceEquals(left, right) || (left is not null && right is not null && left.Equals(right));
+        public static bool operator ==(TwoByteChunk left, TwoByteChunk right)
+        {
+            if (object.ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (((object)left == null) || ((object)right == null))
+            {
+                return false;
+            }
+
+            return left.Equals(right);
+        }
 
         public virtual int GetMarshalledSize()
         {
-            int marshalSize = 0;
+            int marshalSize = 0; 
 
-            marshalSize += 8 * 1;  // _otherParameters
+            marshalSize += 2 * 1;  // _otherParameters
             return marshalSize;
         }
 
         /// <summary>
-        /// Gets or sets the Eight bytes of arbitrary data
+        /// Gets or sets the two bytes of arbitrary data
         /// </summary>
         [XmlArray(ElementName = "otherParameters")]
-        public byte[] OtherParameters { get; set; } = new byte[8];
+        public byte[] OtherParameters
+        {
+            get
+            {
+                return this._otherParameters;
+            }
+
+            set
+            {
+                this._otherParameters = value;
+            }
+}
 
         /// <summary>
         /// Occurs when exception when processing PDU is caught.
         /// </summary>
-        public event EventHandler<PduExceptionEventArgs> ExceptionOccured;
+        public event Action<Exception> Exception;
 
         /// <summary>
         /// Called when exception occurs (raises the <see cref="Exception"/> event).
         /// </summary>
         /// <param name="e">The exception.</param>
-        protected void RaiseExceptionOccured(Exception e)
+        protected void OnException(Exception e)
         {
-            if (PduBase.FireExceptionEvents && ExceptionOccured != null)
+            if (this.Exception != null)
             {
-                ExceptionOccured(this, new PduExceptionEventArgs(e));
+                this.Exception(e);
             }
         }
 
         /// <summary>
-        /// Marshal the data to the DataOutputStream. Note: Length needs to be set before calling this method
+        /// Marshal the data to the DataOutputStream.  Note: Length needs to be set before calling this method
         /// </summary>
         /// <param name="dos">The DataOutputStream instance to which the PDU is marshaled.</param>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Due to ignoring errors.")]
@@ -124,25 +156,19 @@ namespace OpenDis.Dis1998
             {
                 try
                 {
-                    for (int idx = 0; idx < OtherParameters.Length; idx++)
+
+                    for (int idx = 0; idx < this._otherParameters.Length; idx++)
                     {
-                        dos.WriteByte(OtherParameters[idx]);
+                        dos.WriteByte(this._otherParameters[idx]);
                     }
                 }
                 catch (Exception e)
                 {
-                    if (PduBase.TraceExceptions)
-                    {
-                        Trace.WriteLine(e);
-                        Trace.Flush();
-                    }
-
-                    RaiseExceptionOccured(e);
-
-                    if (PduBase.ThrowExceptions)
-                    {
-                        throw;
-                    }
+#if DEBUG
+                    Trace.WriteLine(e);
+                    Trace.Flush();
+#endif
+                    this.OnException(e);
                 }
             }
         }
@@ -154,83 +180,91 @@ namespace OpenDis.Dis1998
             {
                 try
                 {
-                    for (int idx = 0; idx < OtherParameters.Length; idx++)
+                    for (int idx = 0; idx < this._otherParameters.Length; idx++)
                     {
-                        OtherParameters[idx] = dis.ReadByte();
+                        this._otherParameters[idx] = dis.ReadByte();
                     }
                 }
                 catch (Exception e)
                 {
-                    if (PduBase.TraceExceptions)
-                    {
-                        Trace.WriteLine(e);
-                        Trace.Flush();
-                    }
-
-                    RaiseExceptionOccured(e);
-
-                    if (PduBase.ThrowExceptions)
-                    {
-                        throw;
-                    }
+#if DEBUG
+                    Trace.WriteLine(e);
+                    Trace.Flush();
+#endif
+                    this.OnException(e);
                 }
             }
         }
 
-        ///<inheritdoc/>
+        /// <summary>
+        /// This allows for a quick display of PDU data.  The current format is unacceptable and only used for debugging.
+        /// This will be modified in the future to provide a better display.  Usage: 
+        /// pdu.GetType().InvokeMember("Reflection", System.Reflection.BindingFlags.InvokeMethod, null, pdu, new object[] { sb });
+        /// where pdu is an object representing a single pdu and sb is a StringBuilder.
+        /// Note: The supplied Utilities folder contains a method called 'DecodePDU' in the PDUProcessor Class that provides this functionality
+        /// </summary>
+        /// <param name="sb">The StringBuilder instance to which the PDU is written to.</param>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Due to ignoring errors.")]
         public virtual void Reflection(StringBuilder sb)
         {
-            sb.AppendLine("<EightByteChunk>");
+            sb.AppendLine("<TwoByteChunk>");
             try
             {
-                for (int idx = 0; idx < OtherParameters.Length; idx++)
+                for (int idx = 0; idx < this._otherParameters.Length; idx++)
                 {
-                    sb.AppendLine("<otherParameters" + idx.ToString(CultureInfo.InvariantCulture) + " type=\"byte\">" + OtherParameters[idx] + "</otherParameters" + idx.ToString(CultureInfo.InvariantCulture) + ">");
-                }
+                    sb.AppendLine("<otherParameters" + idx.ToString(CultureInfo.InvariantCulture) + " type=\"byte\">" + this._otherParameters[idx] + "</otherParameters" + idx.ToString(CultureInfo.InvariantCulture) + ">");
+            }
 
-                sb.AppendLine("</EightByteChunk>");
+                sb.AppendLine("</TwoByteChunk>");
             }
             catch (Exception e)
             {
-                if (PduBase.TraceExceptions)
-                {
+#if DEBUG
                     Trace.WriteLine(e);
                     Trace.Flush();
-                }
-
-                RaiseExceptionOccured(e);
-
-                if (PduBase.ThrowExceptions)
-                {
-                    throw;
-                }
+#endif
+                    this.OnException(e);
             }
         }
 
-        /// <inheritdoc/>
-        public override bool Equals(object obj) => this == obj as EightByteChunk;
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <returns>
+        /// 	<c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            return this == obj as TwoByteChunk;
+        }
 
-        ///<inheritdoc/>
-        public bool Equals(EightByteChunk obj)
+        /// <summary>
+        /// Compares for reference AND value equality.
+        /// </summary>
+        /// <param name="obj">The object to compare with this instance.</param>
+        /// <returns>
+        /// 	<c>true</c> if both operands are equal; otherwise, <c>false</c>.
+        /// </returns>
+        public bool Equals(TwoByteChunk obj)
         {
             bool ivarsEqual = true;
 
-            if (obj.GetType() != GetType())
+            if (obj.GetType() != this.GetType())
             {
                 return false;
             }
 
-            if (obj.OtherParameters.Length != 8)
+            if (obj._otherParameters.Length != 2) 
             {
                 ivarsEqual = false;
             }
 
             if (ivarsEqual)
             {
-                for (int idx = 0; idx < 8; idx++)
+                for (int idx = 0; idx < 2; idx++)
                 {
-                    if (OtherParameters[idx] != obj.OtherParameters[idx])
+                    if (this._otherParameters[idx] != obj._otherParameters[idx])
                     {
                         ivarsEqual = false;
                     }
@@ -245,16 +279,24 @@ namespace OpenDis.Dis1998
         /// </summary>
         /// <param name="hash">The hash value.</param>
         /// <returns>The new hash value.</returns>
-        private static int GenerateHash(int hash) => hash << (5 + hash);
+        private static int GenerateHash(int hash)
+        {
+            hash = hash << (5 + hash);
+            return hash;
+        }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets the hash code.
+        /// </summary>
+        /// <returns>The hash code.</returns>
         public override int GetHashCode()
         {
             int result = 0;
 
-            for (int idx = 0; idx < 8; idx++)
+
+            for (int idx = 0; idx < 2; idx++)
             {
-                result = GenerateHash(result) ^ OtherParameters[idx].GetHashCode();
+                result = GenerateHash(result) ^ this._otherParameters[idx].GetHashCode();
             }
 
             return result;

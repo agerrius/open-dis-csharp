@@ -38,14 +38,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using OpenDis.Dis1998;
+using OpenDis.Core.DataTypes;
 
 namespace OpenDis.Core
 {
     /// <summary>
     /// Chunk Convertor for DIS 1998 (note: same methods could be reused with 1995).
     /// </summary>
-    public static class DIS1998ChunkConverter
+    public static class ChunkConverter
     {
         #region Methods (9)  
 

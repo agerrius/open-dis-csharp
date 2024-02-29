@@ -45,7 +45,7 @@ using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
 
-namespace OpenDis.Dis1998
+namespace OpenDis.Core.DataTypes
 {
     /// <summary>
     /// 48 bit piece of data
