@@ -46,6 +46,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using OpenDis.Core;
 using OpenDis.Dis1998;
+using OpenDis.Core.DataTypes;
 
 namespace OpenDis.Dis2012
 {

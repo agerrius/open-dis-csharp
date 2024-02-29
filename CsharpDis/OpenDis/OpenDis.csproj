@@ -37,4 +37,9 @@
     <EmbeddedResource Include="Enumerations\Cet2010\EntityTypes.xml" />
   </ItemGroup>
   
+  <ItemGroup>
+    <Folder Include="Core\Pdu\" />
+    <Folder Include="Core\PduFamily\" />
+  </ItemGroup>
+  
 </Project>

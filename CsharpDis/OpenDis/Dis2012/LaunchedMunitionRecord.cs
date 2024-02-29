@@ -45,6 +45,7 @@ using System.Xml.Serialization;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using OpenDis.Core;
+using OpenDis.Core.DataTypes;
 
 namespace OpenDis.Dis2012
 {
