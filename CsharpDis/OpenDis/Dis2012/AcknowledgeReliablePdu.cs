@@ -209,7 +209,12 @@ namespace OpenDis.Dis2012
                     Trace.WriteLine(e);
                     Trace.Flush();
 #endif
-                    this.OnException(e);
+                    RaiseExceptionOccured(e);
+
+                    if (ThrowExceptions)
+                    {
+                        throw;
+                    }
                 }
             }
         }
@@ -233,7 +238,12 @@ namespace OpenDis.Dis2012
                     Trace.WriteLine(e);
                     Trace.Flush();
 #endif
-                    this.OnException(e);
+                    RaiseExceptionOccured(e);
+
+                    if (ThrowExceptions)
+                    {
+                        throw;
+                    }
                 }
             }
         }
@@ -261,10 +271,15 @@ namespace OpenDis.Dis2012
             catch (Exception e)
             {
 #if DEBUG
-                    Trace.WriteLine(e);
-                    Trace.Flush();
+                Trace.WriteLine(e);
+                Trace.Flush();
 #endif
-                    this.OnException(e);
+                RaiseExceptionOccured(e);
+
+                if (ThrowExceptions)
+                {
+                    throw;
+                }
             }
         }
 

@@ -46,6 +46,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using OpenDis.Core;
 using OpenDis.Core.DataTypes;
+using OpenDis.Core.Pdu;
 
 namespace OpenDis.Dis2012
 {
@@ -70,7 +71,7 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// Initializes a new instance of the <see cref="SimulationManagementFamilyPdu"/> class.
         /// </summary>
-        public SimulationManagementFamilyPdu()
+        public SimulationManagementFamilyPdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_2012)
         {
             ProtocolFamily = (byte)5;
         }
@@ -187,7 +188,12 @@ namespace OpenDis.Dis2012
                     Trace.WriteLine(e);
                     Trace.Flush();
 #endif
-                    this.OnException(e);
+                    RaiseExceptionOccured(e);
+
+                    if (ThrowExceptions)
+                    {
+                        throw;
+                    }
                 }
             }
         }
@@ -210,7 +216,12 @@ namespace OpenDis.Dis2012
                     Trace.WriteLine(e);
                     Trace.Flush();
 #endif
-                    this.OnException(e);
+                    RaiseExceptionOccured(e);
+
+                    if (ThrowExceptions)
+                    {
+                        throw;
+                    }
                 }
             }
         }
@@ -244,7 +255,12 @@ namespace OpenDis.Dis2012
                     Trace.WriteLine(e);
                     Trace.Flush();
 #endif
-                    this.OnException(e);
+                RaiseExceptionOccured(e);
+
+                if (ThrowExceptions)
+                {
+                    throw;
+                }
             }
         }
 

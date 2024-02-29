@@ -45,6 +45,7 @@ using System.Xml.Serialization;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using OpenDis.Core;
+using OpenDis.Core.Pdu;
 
 namespace OpenDis.Dis2012
 {
@@ -211,7 +212,7 @@ namespace OpenDis.Dis2012
                     this._numberOfPdus = dis.ReadInt();
                     for (int idx = 0; idx < this.NumberOfPdus; idx++)
                     {
-                        Pdu anX = new Pdu();
+                        Pdu anX = new Pdu(Enumerations.ProtocolVersion.Ieee1278_1_2012);
                         anX.Unmarshal(dis);
                         this._pdus.Add(anX);
                     };

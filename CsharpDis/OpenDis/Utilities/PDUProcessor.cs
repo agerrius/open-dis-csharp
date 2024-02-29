@@ -460,9 +460,9 @@ namespace OpenDis.Core
         /// <param name="ds">Datastream which contains the raw packet and Endian Type</param>
         /// <remarks>Added by PES to work with Mobile.</remarks>
         /// <returns>The PDU instance.</returns>
-        public static Dis2012.Pdu UnmarshalRawPdu2012(PduType pduType, DataInputStream ds)
+        public static Pdu.Pdu UnmarshalRawPdu2012(PduType pduType, DataInputStream ds)
         {
-            var pdu = new Dis2012.Pdu();
+            var pdu = new Pdu.Pdu(Enumerations.ProtocolVersion.Ieee1278_1_2012);
 
             switch (pduType)
             {
