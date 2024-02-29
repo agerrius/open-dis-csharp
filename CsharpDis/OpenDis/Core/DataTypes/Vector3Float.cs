@@ -46,7 +46,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using OpenDis.Core;
 
-namespace OpenDis.Dis2012
+namespace OpenDis.Core.DataTypes
 {
     /// <summary>
     /// Three floating point values, x, y, and z. Section 6.2.95
@@ -100,12 +100,12 @@ namespace OpenDis.Dis2012
         /// </returns>
         public static bool operator ==(Vector3Float left, Vector3Float right)
         {
-            if (object.ReferenceEquals(left, right))
+            if (ReferenceEquals(left, right))
             {
                 return true;
             }
 
-            if (((object)left == null) || ((object)right == null))
+            if ((object)left == null || (object)right == null)
             {
                 return false;
             }
@@ -115,7 +115,7 @@ namespace OpenDis.Dis2012
 
         public virtual int GetMarshalledSize()
         {
-            int marshalSize = 0; 
+            int marshalSize = 0;
 
             marshalSize += 4;  // this._x
             marshalSize += 4;  // this._y
@@ -131,12 +131,12 @@ namespace OpenDis.Dis2012
         {
             get
             {
-                return this._x;
+                return _x;
             }
 
             set
             {
-                this._x = value;
+                _x = value;
             }
         }
 
@@ -148,12 +148,12 @@ namespace OpenDis.Dis2012
         {
             get
             {
-                return this._y;
+                return _y;
             }
 
             set
             {
-                this._y = value;
+                _y = value;
             }
         }
 
@@ -165,12 +165,12 @@ namespace OpenDis.Dis2012
         {
             get
             {
-                return this._z;
+                return _z;
             }
 
             set
             {
-                this._z = value;
+                _z = value;
             }
         }
 
@@ -185,9 +185,9 @@ namespace OpenDis.Dis2012
         /// <param name="e">The exception.</param>
         protected void OnException(Exception e)
         {
-            if (this.Exception != null)
+            if (Exception != null)
             {
-                this.Exception(e);
+                Exception(e);
             }
         }
 
@@ -202,9 +202,9 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    dos.WriteFloat((float)this._x);
-                    dos.WriteFloat((float)this._y);
-                    dos.WriteFloat((float)this._z);
+                    dos.WriteFloat(_x);
+                    dos.WriteFloat(_y);
+                    dos.WriteFloat(_z);
                 }
                 catch (Exception e)
                 {
@@ -212,7 +212,7 @@ namespace OpenDis.Dis2012
                     Trace.WriteLine(e);
                     Trace.Flush();
 #endif
-                    this.OnException(e);
+                    OnException(e);
                 }
             }
         }
@@ -224,9 +224,9 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    this._x = dis.ReadFloat();
-                    this._y = dis.ReadFloat();
-                    this._z = dis.ReadFloat();
+                    _x = dis.ReadFloat();
+                    _y = dis.ReadFloat();
+                    _z = dis.ReadFloat();
                 }
                 catch (Exception e)
                 {
@@ -234,7 +234,7 @@ namespace OpenDis.Dis2012
                     Trace.WriteLine(e);
                     Trace.Flush();
 #endif
-                    this.OnException(e);
+                    OnException(e);
                 }
             }
         }
@@ -253,27 +253,27 @@ namespace OpenDis.Dis2012
             sb.AppendLine("<Vector3Float>");
             try
             {
-                sb.AppendLine("<x type=\"float\">" + this._x.ToString(CultureInfo.InvariantCulture) + "</x>");
-                sb.AppendLine("<y type=\"float\">" + this._y.ToString(CultureInfo.InvariantCulture) + "</y>");
-                sb.AppendLine("<z type=\"float\">" + this._z.ToString(CultureInfo.InvariantCulture) + "</z>");
+                sb.AppendLine("<x type=\"float\">" + _x.ToString(CultureInfo.InvariantCulture) + "</x>");
+                sb.AppendLine("<y type=\"float\">" + _y.ToString(CultureInfo.InvariantCulture) + "</y>");
+                sb.AppendLine("<z type=\"float\">" + _z.ToString(CultureInfo.InvariantCulture) + "</z>");
                 sb.AppendLine("</Vector3Float>");
             }
             catch (Exception e)
             {
 #if DEBUG
-                    Trace.WriteLine(e);
-                    Trace.Flush();
+                Trace.WriteLine(e);
+                Trace.Flush();
 #endif
-                    this.OnException(e);
+                OnException(e);
             }
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        /// 	<c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+        /// 	<c>true</c> if the specified <see cref="object"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
@@ -291,22 +291,22 @@ namespace OpenDis.Dis2012
         {
             bool ivarsEqual = true;
 
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }
 
-            if (this._x != obj._x)
+            if (_x != obj._x)
             {
                 ivarsEqual = false;
             }
 
-            if (this._y != obj._y)
+            if (_y != obj._y)
             {
                 ivarsEqual = false;
             }
 
-            if (this._z != obj._z)
+            if (_z != obj._z)
             {
                 ivarsEqual = false;
             }
@@ -321,7 +321,7 @@ namespace OpenDis.Dis2012
         /// <returns>The new hash value.</returns>
         private static int GenerateHash(int hash)
         {
-            hash = hash << (5 + hash);
+            hash = hash << 5 + hash;
             return hash;
         }
 
@@ -333,9 +333,9 @@ namespace OpenDis.Dis2012
         {
             int result = 0;
 
-            result = GenerateHash(result) ^ this._x.GetHashCode();
-            result = GenerateHash(result) ^ this._y.GetHashCode();
-            result = GenerateHash(result) ^ this._z.GetHashCode();
+            result = GenerateHash(result) ^ _x.GetHashCode();
+            result = GenerateHash(result) ^ _y.GetHashCode();
+            result = GenerateHash(result) ^ _z.GetHashCode();
 
             return result;
         }
