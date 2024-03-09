@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenDis.Test", "OpenDis.Test\OpenDis.Test.csproj", "{B5389501-D492-4198-881E-CD0856F377FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Analysis|AnyCPU = Analysis|AnyCPU
@@ -47,6 +49,12 @@ Global
 		{AEF2FB06-9CCF-491A-9727-FE6E4C4CF664}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
 		{AEF2FB06-9CCF-491A-9727-FE6E4C4CF664}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
 		{AEF2FB06-9CCF-491A-9727-FE6E4C4CF664}.Release|AnyCPU.Build.0 = Release|AnyCPU
+		{B5389501-D492-4198-881E-CD0856F377FA}.Analysis|AnyCPU.ActiveCfg = Debug|Any CPU
+		{B5389501-D492-4198-881E-CD0856F377FA}.Analysis|AnyCPU.Build.0 = Debug|Any CPU
+		{B5389501-D492-4198-881E-CD0856F377FA}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
+		{B5389501-D492-4198-881E-CD0856F377FA}.Debug|AnyCPU.Build.0 = Debug|Any CPU
+		{B5389501-D492-4198-881E-CD0856F377FA}.Release|AnyCPU.ActiveCfg = Release|Any CPU
+		{B5389501-D492-4198-881E-CD0856F377FA}.Release|AnyCPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

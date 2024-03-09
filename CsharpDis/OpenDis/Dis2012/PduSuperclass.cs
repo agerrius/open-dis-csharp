@@ -259,6 +259,13 @@ namespace OpenDis.Dis2012
                 this.Exception(e);
             }
         }
+        
+        public virtual void MarshalAutoLengthSet(DataOutputStream dos)
+        {
+            // Set the length prior to marshalling data
+            Length = (ushort)GetMarshalledSize();
+            Marshal(dos);
+        }
 
         /// <summary>
         /// Marshal the data to the DataOutputStream.  Note: Length needs to be set before calling this method

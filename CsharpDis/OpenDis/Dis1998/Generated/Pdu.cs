@@ -38,6 +38,7 @@
 //  - Zvonko Bostjancic (Blubit d.o.o. - zvonko.bostjancic@blubit.si)
 
 using System;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -153,6 +154,13 @@ namespace OpenDis.Dis1998
             {
                 ExceptionOccured(this, new PduExceptionEventArgs(e));
             }
+        }
+
+        public virtual void MarshalAutoLengthSet(DataOutputStream dos)
+        {
+            // Set the length prior to marshalling data
+            Length = (ushort)GetMarshalledSize();
+            Marshal(dos);
         }
 
         /// <summary>
