@@ -22,7 +22,10 @@
 // COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
 // INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
 // BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVERS
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Copyright (c) 2008, MOVES Institute, Naval Postgraduate School. All 
@@ -36,73 +39,32 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
-using System.Xml.Serialization;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Text;
+using System.Xml.Serialization;
 using OpenDis.Core;
 
 namespace OpenDis.Dis2012
 {
     /// <summary>
-    /// Section 5.3.7.1. Information about active electronic warfare (EW) emissions and active EW countermeasures shall be communicated using an Electromagnetic Emission PDU. NOT COMPLETE
+    /// Section 5.3.7.1. Information about active electronic warfare (EW) emissions and active EW countermeasures shall
+    /// be communicated using an Electromagnetic Emission PDU. COMPLETE (I think)
     /// </summary>
     [Serializable]
     [XmlRoot]
     [XmlInclude(typeof(EntityID))]
     [XmlInclude(typeof(EventIdentifier))]
-    [XmlInclude(typeof(EmitterSystem))]
-    [XmlInclude(typeof(Vector3Float))]
-    [XmlInclude(typeof(Vector3Float))]
+    [XmlInclude(typeof(ElectronicEmissionSystemData))]
     public partial class ElectronicEmissionsPdu : DistributedEmissionsFamilyPdu, IEquatable<ElectronicEmissionsPdu>
     {
-        /// <summary>
-        /// ID of the entity emitting
-        /// </summary>
-        private EntityID _emittingEntityID = new EntityID();
-
-        /// <summary>
-        /// ID of event
-        /// </summary>
-        private EventIdentifier _eventID = new EventIdentifier();
-
-        /// <summary>
-        /// This field shall be used to indicate if the data in the PDU represents a state update or just data that has changed since issuance of the last Electromagnetic Emission PDU [relative to the identified entity and emission system(s)].
-        /// </summary>
-        private byte _stateUpdateIndicator;
-
-        /// <summary>
-        /// This field shall specify the number of emission systems being described in the current PDU.
-        /// </summary>
-        private byte _numberOfSystems;
-
-        /// <summary>
-        /// padding
-        /// </summary>
-        private ushort _paddingForEmissionsPdu;
-
-        /// <summary>
-        ///  information about a particular emitter system and shall be represented by an Emitter System record (see 6.2.23).
-        /// </summary>
-        private EmitterSystem _emitterSystem = new EmitterSystem();
-
-        /// <summary>
-        /// the location of the antenna beam source with respect to the emitting entity's coordinate system. This location shall be the origin of the emitter coordinate system that shall have the same orientation as the entity coordinate system. This field shall be represented by an Entity Coordinate Vector record see 6.2.95 
-        /// </summary>
-        //private Vector3Float _location = new Vector3Float();
-
-        /// <summary>
-        /// Electronic emmissions systems THIS IS WRONG. It has the WRONG class type and will cause problems in any marshalling.
-        /// </summary>
-        //private List<ElectronicEmissionSystemData> _systems = new List<ElectronicEmissionSystemData>();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ElectronicEmissionsPdu"/> class.
         /// </summary>
         public ElectronicEmissionsPdu()
         {
-            PduType = (byte)23;
+            PduType = 23;
         }
 
         /// <summary>
@@ -111,12 +73,9 @@ namespace OpenDis.Dis2012
         /// <param name="left">The left operand.</param>
         /// <param name="right">The right operand.</param>
         /// <returns>
-        /// 	<c>true</c> if operands are not equal; otherwise, <c>false</c>.
+        ///    <c>true</c> if operands are not equal; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(ElectronicEmissionsPdu left, ElectronicEmissionsPdu right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(ElectronicEmissionsPdu left, ElectronicEmissionsPdu right) => !(left == right);
 
         /// <summary>
         /// Implements the operator ==.
@@ -124,38 +83,22 @@ namespace OpenDis.Dis2012
         /// <param name="left">The left operand.</param>
         /// <param name="right">The right operand.</param>
         /// <returns>
-        /// 	<c>true</c> if both operands are equal; otherwise, <c>false</c>.
+        ///    <c>true</c> if both operands are equal; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator ==(ElectronicEmissionsPdu left, ElectronicEmissionsPdu right)
-        {
-            if (object.ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (((object)left == null) || ((object)right == null))
-            {
-                return false;
-            }
-
-            return left.Equals(right);
-        }
+            => ReferenceEquals(left, right) || (left is not null && right is not null && left.Equals(right));
 
         public override int GetMarshalledSize()
         {
             int marshalSize = base.GetMarshalledSize();
-            marshalSize += this._emittingEntityID.GetMarshalledSize();  // this._emittingEntityID
-            marshalSize += this._eventID.GetMarshalledSize();  // this._eventID
+            marshalSize += EmittingEntityID.GetMarshalledSize();  // this._emittingEntityID
+            marshalSize += EventID.GetMarshalledSize();  // this._eventID
             marshalSize += 1;  // this._stateUpdateIndicator
             marshalSize += 1;  // this._numberOfSystems
             marshalSize += 2;  // this._paddingForEmissionsPdu
-            marshalSize += 1;  // this._systemDataLength
-            marshalSize += 1;  // this._numberOfBeams
-            marshalSize += this._emitterSystem.GetMarshalledSize();  // this._emitterSystem
-            //marshalSize += this._location.GetMarshalledSize();  // this._location
-            for (int idx = 0; idx < this.Systems.Count; idx++)
+            for (int idx = 0; idx < Systems.Count; idx++)
             {
-                ElectronicEmissionSystemData listElement = (ElectronicEmissionSystemData)this.Systems[idx];
+                var listElement = Systems[idx];
                 marshalSize += listElement.GetMarshalledSize();
             }
 
@@ -166,106 +109,38 @@ namespace OpenDis.Dis2012
         /// Gets or sets the ID of the entity emitting
         /// </summary>
         [XmlElement(Type = typeof(EntityID), ElementName = "emittingEntityID")]
-        public EntityID EmittingEntityID
-        {
-            get
-            {
-                return this._emittingEntityID;
-            }
-
-            set
-            {
-                this._emittingEntityID = value;
-            }
-        }
+        public EntityID EmittingEntityID { get; set; } = new EntityID();
 
         /// <summary>
         /// Gets or sets the ID of event
         /// </summary>
-        [XmlElement(Type = typeof(EventIdentifier), ElementName = "eventID")]
-        public EventIdentifier EventID
-        {
-            get
-            {
-                return this._eventID;
-            }
-
-            set
-            {
-                this._eventID = value;
-            }
-        }
+        [XmlElement(Type = typeof(EventIdentifier), ElementName = "EventIdentifier")]
+        public EventIdentifier EventID { get; set; } = new EventIdentifier();
 
         /// <summary>
-        /// Gets or sets the This field shall be used to indicate if the data in the PDU represents a state update or just data that has changed since issuance of the last Electromagnetic Emission PDU [relative to the identified entity and emission system(s)].
+        /// Gets or sets the This field shall be used to indicate if the data in the PDU represents a state update or just
+        /// data that has changed since issuance of the last Electromagnetic Emission PDU [relative to the identified entity and emission system(s)].
         /// </summary>
         [XmlElement(Type = typeof(byte), ElementName = "stateUpdateIndicator")]
-        public byte StateUpdateIndicator
-        {
-            get
-            {
-                return this._stateUpdateIndicator;
-            }
-
-            set
-            {
-                this._stateUpdateIndicator = value;
-            }
-        }
+        public byte StateUpdateIndicator { get; set; }
 
         /// <summary>
-        /// Note that setting this value will not change the marshalled value. The list whose length this describes is used for that purpose.
-        /// The getnumberOfSystems method will also be based on the actual list length rather than this value. 
-        /// The method is simply here for completeness and should not be used for any computations.
+        /// Gets or sets the This field shall specify the number of emission systems being described in the current PDU.
         /// </summary>
+        /// <remarks>
+        /// Note that setting this value will not change the marshalled value. The list whose length this describes is used
+        /// for that purpose.
+        /// The getnumberOfSystems method will also be based on the actual list length rather than this value.
+        /// The method is simply here for completeness and should not be used for any computations.
+        /// </remarks>
         [XmlElement(Type = typeof(byte), ElementName = "numberOfSystems")]
-        public byte NumberOfSystems
-        {
-            get
-            {
-                return this._numberOfSystems;
-            }
-
-            set
-            {
-                this._numberOfSystems = value;
-            }
-        }
+        public byte NumberOfSystems { get; set; }
 
         /// <summary>
         /// Gets or sets the padding
         /// </summary>
         [XmlElement(Type = typeof(ushort), ElementName = "paddingForEmissionsPdu")]
-        public ushort PaddingForEmissionsPdu
-        {
-            get
-            {
-                return this._paddingForEmissionsPdu;
-            }
-
-            set
-            {
-                this._paddingForEmissionsPdu = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the  information about a particular emitter system and shall be represented by an Emitter System record (see 6.2.23).
-        /// </summary>
-        [XmlElement(Type = typeof(EmitterSystem), ElementName = "emitterSystem")]
-        public EmitterSystem EmitterSystem
-        {
-            get
-            {
-                return this._emitterSystem;
-            }
-
-            set
-            {
-                this._emitterSystem = value;
-            }
-        }
-
+        public ushort PaddingForEmissionsPdu { get; set; }
 
         /// <summary>
         /// Gets the Electronic emmissions systems
@@ -273,21 +148,15 @@ namespace OpenDis.Dis2012
         [XmlElement(ElementName = "systemsList", Type = typeof(List<ElectronicEmissionSystemData>))]
         public List<ElectronicEmissionSystemData> Systems { get; } = new();
 
-        /// <summary>
-        /// Automatically sets the length of the marshalled data, then calls the marshal method.
-        /// </summary>
-        /// <param name="dos">The DataOutputStream instance to which the PDU is marshaled.</param>
+        ///<inheritdoc/>
         public override void MarshalAutoLengthSet(DataOutputStream dos)
         {
             // Set the length prior to marshalling data
-            this.Length = (ushort)this.GetMarshalledSize();
-            this.Marshal(dos);
+            Length = (ushort)GetMarshalledSize();
+            Marshal(dos);
         }
 
-        /// <summary>
-        /// Marshal the data to the DataOutputStream.  Note: Length needs to be set before calling this method
-        /// </summary>
-        /// <param name="dos">The DataOutputStream instance to which the PDU is marshaled.</param>
+        /// <inheritdoc/>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Due to ignoring errors.")]
         public override void Marshal(DataOutputStream dos)
         {
@@ -296,20 +165,16 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    this._emittingEntityID.Marshal(dos);
-                    this._eventID.Marshal(dos);
-                    dos.WriteUnsignedByte((byte)this._stateUpdateIndicator);
-                    dos.WriteUnsignedByte((byte)this.Systems.Count);
-                    dos.WriteUnsignedShort((ushort)this._paddingForEmissionsPdu);
-                    //dos.WriteUnsignedByte((byte)this._systemDataLength);
-                    //dos.WriteUnsignedByte((byte)this._numberOfBeams);
-                    this._emitterSystem.Marshal(dos);
-                    //this._location.Marshal(dos);
+                    EmittingEntityID.Marshal(dos);
+                    EventID.Marshal(dos);
+                    dos.WriteUnsignedByte(StateUpdateIndicator);
+                    dos.WriteUnsignedByte((byte)Systems.Count);
+                    dos.WriteUnsignedShort(PaddingForEmissionsPdu);
 
-                    for (int idx = 0; idx < this.Systems.Count; idx++)
+                    for (int idx = 0; idx < Systems.Count; idx++)
                     {
-                        ElectronicEmissionSystemData aVector3Float = (ElectronicEmissionSystemData)this.Systems[idx];
-                        aVector3Float.Marshal(dos);
+                        var aElectronicEmissionSystemData = Systems[idx];
+                        aElectronicEmissionSystemData.Marshal(dos);
                     }
                 }
                 catch (Exception e)
@@ -332,19 +197,18 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    this._emittingEntityID.Unmarshal(dis);
-                    this._eventID.Unmarshal(dis);
-                    this._stateUpdateIndicator = dis.ReadUnsignedByte();
-                    this._numberOfSystems = dis.ReadUnsignedByte();
-                    this._paddingForEmissionsPdu = dis.ReadUnsignedShort();
+                    EmittingEntityID.Unmarshal(dis);
+                    EventID.Unmarshal(dis);
+                    StateUpdateIndicator = dis.ReadUnsignedByte();
+                    NumberOfSystems = dis.ReadUnsignedByte();
+                    PaddingForEmissionsPdu = dis.ReadUnsignedShort();
 
-                    for (int idx = 0; idx < this.NumberOfSystems; idx++)
+                    for (int idx = 0; idx < NumberOfSystems; idx++)
                     {
-                        ElectronicEmissionSystemData anX = new ElectronicEmissionSystemData();
+                        var anX = new ElectronicEmissionSystemData();
                         anX.Unmarshal(dis);
-                        this.Systems.Add(anX);
-                    };
-
+                        Systems.Add(anX);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -357,14 +221,7 @@ namespace OpenDis.Dis2012
             }
         }
 
-        /// <summary>
-        /// This allows for a quick display of PDU data.  The current format is unacceptable and only used for debugging.
-        /// This will be modified in the future to provide a better display.  Usage: 
-        /// pdu.GetType().InvokeMember("Reflection", System.Reflection.BindingFlags.InvokeMethod, null, pdu, new object[] { sb });
-        /// where pdu is an object representing a single pdu and sb is a StringBuilder.
-        /// Note: The supplied Utilities folder contains a method called 'DecodePDU' in the PDUProcessor Class that provides this functionality
-        /// </summary>
-        /// <param name="sb">The StringBuilder instance to which the PDU is written to.</param>
+        /// <inheritdoc/>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Due to ignoring errors.")]
         public override void Reflection(StringBuilder sb)
         {
@@ -373,27 +230,19 @@ namespace OpenDis.Dis2012
             try
             {
                 sb.AppendLine("<emittingEntityID>");
-                this._emittingEntityID.Reflection(sb);
+                EmittingEntityID.Reflection(sb);
                 sb.AppendLine("</emittingEntityID>");
                 sb.AppendLine("<eventID>");
-                this._eventID.Reflection(sb);
+                EventID.Reflection(sb);
                 sb.AppendLine("</eventID>");
-                sb.AppendLine("<stateUpdateIndicator type=\"byte\">" + this._stateUpdateIndicator.ToString(CultureInfo.InvariantCulture) + "</stateUpdateIndicator>");
-                sb.AppendLine("<systems type=\"byte\">" + this.Systems.Count.ToString(CultureInfo.InvariantCulture) + "</systems>");
-                sb.AppendLine("<paddingForEmissionsPdu type=\"ushort\">" + this._paddingForEmissionsPdu.ToString(CultureInfo.InvariantCulture) + "</paddingForEmissionsPdu>");
-                //sb.AppendLine("<systemDataLength type=\"byte\">" + this._systemDataLength.ToString(CultureInfo.InvariantCulture) + "</systemDataLength>");
-                //sb.AppendLine("<numberOfBeams type=\"byte\">" + this._numberOfBeams.ToString(CultureInfo.InvariantCulture) + "</numberOfBeams>");
-                sb.AppendLine("<emitterSystem>");
-                this._emitterSystem.Reflection(sb);
-                sb.AppendLine("</emitterSystem>");
-                sb.AppendLine("<location>");
-                //this._location.Reflection(sb);
-                sb.AppendLine("</location>");
-                for (int idx = 0; idx < this.Systems.Count; idx++)
+                sb.AppendLine("<stateUpdateIndicator type=\"byte\">" + StateUpdateIndicator.ToString(CultureInfo.InvariantCulture) + "</stateUpdateIndicator>");
+                sb.AppendLine("<systems type=\"byte\">" + Systems.Count.ToString(CultureInfo.InvariantCulture) + "</systems>");
+                sb.AppendLine("<paddingForEmissionsPdu type=\"ushort\">" + PaddingForEmissionsPdu.ToString(CultureInfo.InvariantCulture) + "</paddingForEmissionsPdu>");
+                for (int idx = 0; idx < Systems.Count; idx++)
                 {
-                    sb.AppendLine("<systems" + idx.ToString(CultureInfo.InvariantCulture) + " type=\"Vector3Float\">");
-                    ElectronicEmissionSystemData aVector3Float = (ElectronicEmissionSystemData)this.Systems[idx];
-                    aVector3Float.Reflection(sb);
+                    sb.AppendLine("<systems" + idx.ToString(CultureInfo.InvariantCulture) + " type=\"ElectronicEmissionSystemData\">");
+                    var aElectronicEmissionSystemData = Systems[idx];
+                    aElectronicEmissionSystemData.Reflection(sb);
                     sb.AppendLine("</systems" + idx.ToString(CultureInfo.InvariantCulture) + ">");
                 }
 
@@ -405,80 +254,57 @@ namespace OpenDis.Dis2012
                     Trace.WriteLine(e);
                     Trace.Flush();
 #endif
-                    this.OnException(e);
+                this.OnException(e);
             }
         }
 
-        /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
-        /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
-        /// <returns>
-        /// 	<c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
-        /// </returns>
-        public override bool Equals(object obj)
-        {
-            return this == obj as ElectronicEmissionsPdu;
-        }
+        /// <inheritdoc/>
+        public override bool Equals(object obj) => this == obj as ElectronicEmissionsPdu;
 
-        /// <summary>
-        /// Compares for reference AND value equality.
-        /// </summary>
-        /// <param name="obj">The object to compare with this instance.</param>
-        /// <returns>
-        /// 	<c>true</c> if both operands are equal; otherwise, <c>false</c>.
-        /// </returns>
+        ///<inheritdoc/>
         public bool Equals(ElectronicEmissionsPdu obj)
         {
-            bool ivarsEqual = true;
-
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }
 
-            ivarsEqual = base.Equals(obj);
-
-            if (!this._emittingEntityID.Equals(obj._emittingEntityID))
+            bool ivarsEqual = base.Equals(obj);
+            if (!EmittingEntityID.Equals(obj.EmittingEntityID))
             {
                 ivarsEqual = false;
             }
 
-            if (!this._eventID.Equals(obj._eventID))
+            if (!EventID.Equals(obj.EventID))
             {
                 ivarsEqual = false;
             }
 
-            if (this._stateUpdateIndicator != obj._stateUpdateIndicator)
+            if (StateUpdateIndicator != obj.StateUpdateIndicator)
             {
                 ivarsEqual = false;
             }
 
-            if (this._numberOfSystems != obj._numberOfSystems)
+            if (NumberOfSystems != obj.NumberOfSystems)
             {
                 ivarsEqual = false;
             }
 
-            if (this._paddingForEmissionsPdu != obj._paddingForEmissionsPdu)
+            if (PaddingForEmissionsPdu != obj.PaddingForEmissionsPdu)
             {
                 ivarsEqual = false;
             }
 
-            if (!this._emitterSystem.Equals(obj._emitterSystem))
-            {
-                ivarsEqual = false;
-            }
-
-            if (this.Systems.Count != obj.Systems.Count)
+            if (Systems.Count != obj.Systems.Count)
             {
                 ivarsEqual = false;
             }
 
             if (ivarsEqual)
             {
-                for (int idx = 0; idx < this.Systems.Count; idx++)
+                for (int idx = 0; idx < Systems.Count; idx++)
                 {
-                    if (!this.Systems[idx].Equals(obj.Systems[idx]))
+                    if (!Systems[idx].Equals(obj.Systems[idx]))
                     {
                         ivarsEqual = false;
                     }
@@ -493,37 +319,26 @@ namespace OpenDis.Dis2012
         /// </summary>
         /// <param name="hash">The hash value.</param>
         /// <returns>The new hash value.</returns>
-        private static int GenerateHash(int hash)
-        {
-            hash = hash << (5 + hash);
-            return hash;
-        }
+        private static int GenerateHash(int hash) => hash << (5 + hash);
 
-        /// <summary>
-        /// Gets the hash code.
-        /// </summary>
-        /// <returns>The hash code.</returns>
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             int result = 0;
 
             result = GenerateHash(result) ^ base.GetHashCode();
 
-            result = GenerateHash(result) ^ this._emittingEntityID.GetHashCode();
-            result = GenerateHash(result) ^ this._eventID.GetHashCode();
-            result = GenerateHash(result) ^ this._stateUpdateIndicator.GetHashCode();
-            result = GenerateHash(result) ^ this._numberOfSystems.GetHashCode();
-            result = GenerateHash(result) ^ this._paddingForEmissionsPdu.GetHashCode();
-            //result = GenerateHash(result) ^ this._systemDataLength.GetHashCode();
-            //result = GenerateHash(result) ^ this._numberOfBeams.GetHashCode();
-            result = GenerateHash(result) ^ this._emitterSystem.GetHashCode();
-            //result = GenerateHash(result) ^ this._location.GetHashCode();
+            result = GenerateHash(result) ^ EmittingEntityID.GetHashCode();
+            result = GenerateHash(result) ^ EventID.GetHashCode();
+            result = GenerateHash(result) ^ StateUpdateIndicator.GetHashCode();
+            result = GenerateHash(result) ^ NumberOfSystems.GetHashCode();
+            result = GenerateHash(result) ^ PaddingForEmissionsPdu.GetHashCode();
 
-            if (this.Systems.Count > 0)
+            if (Systems.Count > 0)
             {
-                for (int idx = 0; idx < this.Systems.Count; idx++)
+                for (int idx = 0; idx < Systems.Count; idx++)
                 {
-                    result = GenerateHash(result) ^ this.Systems[idx].GetHashCode();
+                    result = GenerateHash(result) ^ Systems[idx].GetHashCode();
                 }
             }
 

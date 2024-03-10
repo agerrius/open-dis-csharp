@@ -477,6 +477,11 @@ namespace OpenDis.Test
                                 (property.GetValue(pdu, null) as List<Dis1998.ElectronicEmissionSystemData>).Add(
                                     GetEmitterSystem(disVersion) as Dis1998.ElectronicEmissionSystemData);
                             }
+                            else if (disVersion == 7)
+                            {
+                                (property.GetValue(pdu, null) as List<Dis2012.ElectronicEmissionSystemData>).Add(
+                                    GetEmitterSystem(disVersion) as Dis2012.ElectronicEmissionSystemData);
+                            }
 
                             break;
                         default:
@@ -804,6 +809,15 @@ namespace OpenDis.Test
                         };
                         es6.BeamDataRecords.Add(GetBeam(disVersion) as Dis1998.ElectronicEmissionBeamData);
                         return es6;
+                    case 7:
+                        Dis2012.ElectronicEmissionSystemData es7 = new Dis2012.ElectronicEmissionSystemData
+                        {
+                            NumberOfBeams = 1,
+                            EmitterSystem = new Dis2012.EmitterSystem { EmitterName = 1234, EmitterIdNumber = 1, Function = 4 },
+                            Location = GetVectorFloat(disVersion) as Dis2012.Vector3Float
+                        };
+                        es7.BeamDataRecords.Add(GetBeam(disVersion) as Dis2012.ElectronicEmissionBeamData);
+                        return es7;
                     default:
                         throw new NotSupportedException();
                 }
@@ -829,6 +843,25 @@ namespace OpenDis.Test
                         bd6.TrackJamTargets.Add(new Dis1998.TrackJamTarget
                             { EmitterID = 1, BeamID = 1, TrackJam = GetEntityId(disVersion) as Dis1998.EntityID });
                         return bd6;
+                    case 7:
+                        Dis2012.ElectronicEmissionBeamData bd7 = new Dis2012.ElectronicEmissionBeamData
+                        {
+                            NumberOfTrackJamTargets = 1, BeamIDNumber = 2, BeamFunction = 3, BeamParameterIndex = 1,
+                            HighDensityTrackJam = 0, Category = 1, Specific = 2, Subcategory = 3, Kind = 4,
+                            BeamStatus = 5,
+                            FundamentalParameterData = new Dis2012.FundamentalParameterData
+                            {
+                                BeamAzimuthCenter = 1.0f, BeamAzimuthSweep = 2.0f, BeamElevationCenter = -1.0f,
+                                BeamElevationSweep = 1.0f, BeamSweepSync = 0.25f, Frequency = 123456.78f,
+                                FrequencyRange = 12.34f, PulseRepetitionFrequency = 12.34f, PulseWidth = 12.34f,
+                                EffectiveRadiatedPower = 12345.67f
+                            }
+                        };
+                        bd7.TrackJamTargets.Add(new Dis2012.TrackJamData
+                        {
+                            EmitterNumber = 1, BeamNumber = 1, EntityID = GetEntityId(disVersion) as Dis2012.EntityID
+                        });
+                        return bd7;
                     default:
                         throw new NotSupportedException();
                 }
