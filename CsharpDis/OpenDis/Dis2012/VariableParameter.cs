@@ -175,6 +175,7 @@ namespace OpenDis.Dis2012
                     dos.WriteUnsignedShort(this.PartAttachedTo);
                     dos.WriteInt(this.ParameterType);
                     dos.WriteDouble((double)this.ParameterValue);
+                    dos.WriteDouble(this.Padding);
                 }
                 catch (Exception e)
                 {
@@ -199,6 +200,7 @@ namespace OpenDis.Dis2012
                     this.PartAttachedTo = dis.ReadUnsignedShort();
                     this.ParameterType = dis.ReadInt();
                     this.ParameterValue = dis.ReadDouble();
+                    this.Padding = dis.ReadDouble();
                 }
                 catch (Exception e)
                 {

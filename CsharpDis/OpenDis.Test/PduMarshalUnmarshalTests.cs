@@ -92,16 +92,98 @@ namespace OpenDis.Test
         [TestCase(27, ProtocolVersion.Ieee1278_1A_1998)]
         [TestCase(27, ProtocolVersion.Ieee1278_1_1995)]
         [TestCase(27, ProtocolVersion.Ieee1278_1_2012)]
+        /*
+        [TestCase(28, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(28, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(29, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(29, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(30, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(30, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(31, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(31, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(32, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(32, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(33, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(33, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(34, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(34, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(35, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(35, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(36, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(36, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(37, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(37, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(38, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(38, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(39, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(39, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(40, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(40, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(41, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(41, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(42, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(42, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(43, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(43, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(44, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(44, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(45, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(45, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(46, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(46, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(47, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(47, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(48, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(48, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(49, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(49, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(50, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(50, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(51, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(51, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(52, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(52, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(53, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(53, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(54, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(54, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(55, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(55, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(56, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(56, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(57, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(57, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(58, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(58, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(59, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(59, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(60, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(60, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(61, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(61, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(62, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(62, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(63, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(63, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(64, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(64, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(65, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(65, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(66, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(66, ProtocolVersion.Ieee1278_1_2012)]
+        [TestCase(67, ProtocolVersion.Ieee1278_1A_1998)]
+        [TestCase(67, ProtocolVersion.Ieee1278_1_2012)]
+        */
         public void Marshal_PduProcessor_Unmarshal(byte pduType, ProtocolVersion disVersion)
         {
             DataStream dat = new DataStream();
             DataOutputStream dos = new DataOutputStream(dat, Endian.Big);
-            
+
             IPdu pdu_out = PduFactory.CreatePdu(pduType, disVersion);
             FillPduWithDummyData(pdu_out, (byte)disVersion);
             pdu_out.MarshalAutoLengthSet(dos);
             byte[] data = dos.ConvertToBytes();
-            
+
             PduProcessor pduProcessor = new PduProcessor();
             List<object> pdus = pduProcessor.ProcessPdu(data, Endian.Big);
 
@@ -132,10 +214,19 @@ namespace OpenDis.Test
                         case "EntityLinearAcceleration":
                         case "Velocity":
                         case "Location":
-                        case "RelativeAntennaLocation":
                         case "LocationOfEntityCoordinates":
                         case "LocationInEntityCoordinates":
                             property.SetValue(pdu, GetVectorFloat(disVersion), null);
+                            break;
+                        case "RelativeAntennaLocation":
+                            if (disVersion == 5)
+                            {
+                                property.SetValue(pdu, GetVectorDouble(disVersion), null);
+                            }
+                            else
+                            {
+                                property.SetValue(pdu, GetVectorFloat(disVersion), null);
+                            }
                             break;
                         case "EntityLocation":
                         case "DesignatorSpotLocation":
@@ -247,7 +338,6 @@ namespace OpenDis.Test
                         case "CryptoKeyId":
                             property.SetValue(pdu, (UInt16)1, null);
                             break;
-                        case "DataLength":
                         case "Samples":
                             property.SetValue(pdu, (Int16)1, null);
                             break;
@@ -282,6 +372,9 @@ namespace OpenDis.Test
                             break;
                         case "ModulationType":
                             property.SetValue(pdu, GetModulationType(disVersion), null);
+                            break;
+                        case "DataLength":
+                            property.SetValue(pdu, (Int16)512, null);
                             break;
                         case "Data":
                             property.SetValue(pdu, GetString(64), null);
@@ -389,26 +482,50 @@ namespace OpenDis.Test
                 switch (disVersion)
                 {
                     case 5:
-                        return new Dis1995.EntityType() { EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Specific = 4, Extra = 5 };
+                        return new Dis1995.EntityType()
+                        {
+                            EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Specific = 4,
+                            Extra = 5
+                        };
                     case 6:
-                        return new Dis1998.EntityType() { EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Specific = 4, Extra = 5 };
+                        return new Dis1998.EntityType()
+                        {
+                            EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Specific = 4,
+                            Extra = 5
+                        };
                     case 7:
-                        return new Dis2012.EntityType() { EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Specific = 4, Extra = 5 };
+                        return new Dis2012.EntityType()
+                        {
+                            EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Specific = 4,
+                            Extra = 5
+                        };
                     default:
                         throw new NotSupportedException();
                 }
             }
-            
+
             object GetRadioEntityType(byte disVersion)
             {
                 switch (disVersion)
                 {
                     case 5:
-                        return new Dis1995.RadioEntityType { EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Nomenclature = 1, NomenclatureVersion = 1};
+                        return new Dis1995.RadioEntityType
+                        {
+                            EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Nomenclature = 1,
+                            NomenclatureVersion = 1
+                        };
                     case 6:
-                        return new Dis1998.RadioEntityType() { EntityKind = 1, Domain = 1, Country = 123, Category = 2, Nomenclature  = 1, NomenclatureVersion = 1};
+                        return new Dis1998.RadioEntityType()
+                        {
+                            EntityKind = 1, Domain = 1, Country = 123, Category = 2, Nomenclature = 1,
+                            NomenclatureVersion = 1
+                        };
                     case 7:
-                        return new Dis2012.RadioType() { EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Specific = 4, Extra = 5 };
+                        return new Dis2012.RadioType()
+                        {
+                            EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Specific = 4,
+                            Extra = 5
+                        };
                     default:
                         throw new NotSupportedException();
                 }
@@ -423,7 +540,11 @@ namespace OpenDis.Test
                     case 6:
                         return new Dis1998.EntityID { Site = 12, Application = 34, Entity = 56 };
                     case 7:
-                        return new Dis2012.EntityID { SimulationAddress = new Dis2012.SimulationAddress { Site = 12, Application = 34 }, EntityNumber = 56 };
+                        return new Dis2012.EntityID
+                        {
+                            SimulationAddress = new Dis2012.SimulationAddress { Site = 12, Application = 34 },
+                            EntityNumber = 56
+                        };
                     default:
                         throw new NotSupportedException();
                 }
@@ -443,7 +564,7 @@ namespace OpenDis.Test
                         throw new NotSupportedException();
                 }
             }
-            
+
             object GetVectorDouble(byte disVersion)
             {
                 switch (disVersion)
@@ -538,10 +659,10 @@ namespace OpenDis.Test
                     default:
                         throw new NotSupportedException();
                 }
-                
-                
+
+
             }
-            
+
             object GetClockTime(byte disVersion)
             {
                 switch (disVersion)
@@ -556,22 +677,25 @@ namespace OpenDis.Test
                         throw new NotSupportedException();
                 }
             }
-            
+
             object GetSupplyQuantity(byte disVersion)
             {
                 switch (disVersion)
                 {
                     case 5:
-                        return new Dis1995.SupplyQuantity() { Quantity = 1, SupplyType = GetEntityId(disVersion) as Dis1995.EntityID };
+                        return new Dis1995.SupplyQuantity()
+                            { Quantity = 1, SupplyType = GetEntityId(disVersion) as Dis1995.EntityID };
                     case 6:
-                        return new Dis1998.SupplyQuantity() { Quantity = 1, SupplyType = GetEntityType(disVersion) as Dis1998.EntityType };
+                        return new Dis1998.SupplyQuantity()
+                            { Quantity = 1, SupplyType = GetEntityType(disVersion) as Dis1998.EntityType };
                     case 7:
-                        return new Dis2012.SupplyQuantity() { Quantity = 1, SupplyType = GetEntityType(disVersion) as Dis2012.EntityType };
+                        return new Dis2012.SupplyQuantity()
+                            { Quantity = 1, SupplyType = GetEntityType(disVersion) as Dis2012.EntityType };
                     default:
                         throw new NotSupportedException();
                 }
             }
-            
+
             object GetEventID(byte disVersion)
             {
                 switch (disVersion)
@@ -581,12 +705,16 @@ namespace OpenDis.Test
                     case 6:
                         return new Dis1998.EventID { Application = 12, Site = 34, EventNumber = 56 };
                     case 7:
-                        return new Dis2012.EventIdentifier { SimulationAddress = new Dis2012.SimulationAddress { Application = 12, Site = 34 }, EventNumber = 56 };
+                        return new Dis2012.EventIdentifier
+                        {
+                            SimulationAddress = new Dis2012.SimulationAddress { Application = 12, Site = 34 },
+                            EventNumber = 56
+                        };
                     default:
                         throw new NotSupportedException();
                 }
             }
-            
+
             object GetFixedDatum(byte disVersion)
             {
                 switch (disVersion)
@@ -601,43 +729,46 @@ namespace OpenDis.Test
                         throw new NotSupportedException();
                 }
             }
-            
+
             object GetVariableDatum(byte disVersion)
             {
                 switch (disVersion)
                 {
                     case 5:
-                        Dis1995.VariableDatum vd5 = new Dis1995.VariableDatum { VariableDatumID = 1, VariableDatumLength = 64 };
+                        Dis1995.VariableDatum vd5 = new Dis1995.VariableDatum
+                            { VariableDatumID = 1, VariableDatumLength = 64 };
                         vd5.VariableDatums.Add(GetEightByteChunk(disVersion) as Dis1995.EightByteChunk);
                         return vd5;
                     case 6:
-                        Dis1998.VariableDatum vd6 = new Dis1998.VariableDatum { VariableDatumID = 1, VariableDatumLength = 64 };
+                        Dis1998.VariableDatum vd6 = new Dis1998.VariableDatum
+                            { VariableDatumID = 1, VariableDatumLength = 64 };
                         vd6.VariableDatums.Add(GetEightByteChunk(disVersion) as Dis1998.EightByteChunk);
                         return vd6;
                     case 7:
-                        Dis2012.VariableDatum vd7 = new Dis2012.VariableDatum { VariableDatumID = 1, VariableDatumLength = 64 };
+                        Dis2012.VariableDatum vd7 = new Dis2012.VariableDatum
+                            { VariableDatumID = 1, VariableDatumLength = 64 };
                         vd7.VariableDatums.Add(GetEightByteChunk(disVersion) as Dis2012.EightByteChunk);
                         return vd7;
                     default:
                         throw new NotSupportedException();
                 }
             }
-            
+
             object GetEightByteChunk(byte disVersion)
             {
                 switch (disVersion)
                 {
                     case 5:
-                        return new Dis1995.EightByteChunk { OtherParameters = GetString(7) };
+                        return new Dis1995.EightByteChunk { OtherParameters = GetString(8) };
                     case 6:
-                        return new Dis1998.EightByteChunk { OtherParameters = GetString(7) };
+                        return new Dis1998.EightByteChunk { OtherParameters = GetString(8) };
                     case 7:
-                        return new Dis2012.EightByteChunk { OtherParameters = GetString(7) };
+                        return new Dis2012.EightByteChunk { OtherParameters = GetString(8) };
                     default:
                         throw new NotSupportedException();
                 }
             }
-            
+
             object GetModulationType(byte disVersion)
             {
                 switch (disVersion)
@@ -647,7 +778,8 @@ namespace OpenDis.Test
                     case 6:
                         return new Dis1998.ModulationType { Detail = 1, Major = 2, System_ = 3, SpreadSpectrum = 4 };
                     case 7:
-                        return new Dis2012.ModulationType { Detail = 1, MajorModulation = 2, RadioSystem = 3, SpreadSpectrum = 4 };
+                        return new Dis2012.ModulationType
+                            { Detail = 1, MajorModulation = 2, RadioSystem = 3, SpreadSpectrum = 4 };
                     default:
                         throw new NotSupportedException();
                 }
@@ -685,11 +817,11 @@ namespace OpenDis.Test
                 switch (disVersion)
                 {
                     case 5:
-                        return GetString(11);
+                        return GetString(12);
                     case 6:
-                        return new Dis1998.Marking() { Characters = GetString(11) };
+                        return new Dis1998.Marking() { CharacterSet = 1, Characters = GetString(11) };
                     case 7:
-                        return new Dis2012.EntityMarking() { Characters = GetString(11) };
+                        return new Dis2012.EntityMarking() { CharacterSet = 1, Characters = GetString(11) };
                     default:
                         throw new NotSupportedException();
                 }
@@ -697,7 +829,7 @@ namespace OpenDis.Test
 
             byte[] GetString(int length)
             {
-                byte[] str = new byte[length + 1];
+                byte[] str = new byte[length];
                 for (int i = 0; i < length; i++)
                 {
                     str[i] = (byte)(65 + i);
