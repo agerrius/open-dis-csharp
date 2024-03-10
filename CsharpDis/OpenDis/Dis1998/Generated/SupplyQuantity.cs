@@ -88,7 +88,7 @@ namespace OpenDis.Dis1998
             int marshalSize = 0;
 
             marshalSize += SupplyType.GetMarshalledSize();  // this._supplyType
-            marshalSize += 1;  // this._quantity
+            marshalSize += 4;  // this._quantity
             return marshalSize;
         }
 
@@ -101,8 +101,8 @@ namespace OpenDis.Dis1998
         /// <summary>
         /// Gets or sets the quantity to be supplied
         /// </summary>
-        [XmlElement(Type = typeof(byte), ElementName = "quantity")]
-        public byte Quantity { get; set; }
+        [XmlElement(Type = typeof(float), ElementName = "quantity")]
+        public float Quantity { get; set; }
 
         /// <summary>
         /// Occurs when exception when processing PDU is caught.
@@ -133,7 +133,7 @@ namespace OpenDis.Dis1998
                 try
                 {
                     SupplyType.Marshal(dos);
-                    dos.WriteUnsignedByte(Quantity);
+                    dos.WriteFloat(Quantity);
                 }
                 catch (Exception e)
                 {
@@ -161,7 +161,7 @@ namespace OpenDis.Dis1998
                 try
                 {
                     SupplyType.Unmarshal(dis);
-                    Quantity = dis.ReadUnsignedByte();
+                    Quantity = dis.ReadFloat();
                 }
                 catch (Exception e)
                 {
@@ -191,7 +191,7 @@ namespace OpenDis.Dis1998
                 sb.AppendLine("<supplyType>");
                 SupplyType.Reflection(sb);
                 sb.AppendLine("</supplyType>");
-                sb.AppendLine("<quantity type=\"byte\">" + Quantity.ToString(CultureInfo.InvariantCulture) + "</quantity>");
+                sb.AppendLine("<quantity type=\"float\">" + Quantity.ToString(CultureInfo.InvariantCulture) + "</quantity>");
                 sb.AppendLine("</SupplyQuantity>");
             }
             catch (Exception e)

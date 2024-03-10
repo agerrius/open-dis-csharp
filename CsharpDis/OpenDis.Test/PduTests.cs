@@ -9,7 +9,7 @@ using PduFactory = OpenDis.Core.PduFactory;
 namespace OpenDis.Test
 {
     [TestFixture]
-    public class PduMarshalUnmarshalTests
+    public class PduTests
     {
         [TestCase(1, ProtocolVersion.Ieee1278_1A_1998)]
         [TestCase(1, ProtocolVersion.Ieee1278_1_1995)]
@@ -93,87 +93,87 @@ namespace OpenDis.Test
         [TestCase(27, ProtocolVersion.Ieee1278_1_1995)]
         [TestCase(27, ProtocolVersion.Ieee1278_1_2012)]
         /*
-        [TestCase(28, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(28, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(29, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(29, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(30, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(30, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(31, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(31, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(32, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(32, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(33, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(33, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(34, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(34, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(35, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(35, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(36, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(36, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(37, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(37, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(38, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(38, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(39, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(39, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(40, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(40, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(41, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(41, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(42, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(42, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(43, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(43, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(44, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(44, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(45, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(45, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(46, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(46, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(47, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(47, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(48, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(48, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(49, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(49, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(50, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(50, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(51, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(51, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(52, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(52, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(53, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(53, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(54, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(54, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(55, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(55, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(56, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(56, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(57, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(57, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(58, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(58, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(59, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(59, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(60, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(60, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(61, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(61, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(62, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(62, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(63, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(63, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(64, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(64, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(65, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(65, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(66, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(66, ProtocolVersion.Ieee1278_1_2012)]
-        [TestCase(67, ProtocolVersion.Ieee1278_1A_1998)]
-        [TestCase(67, ProtocolVersion.Ieee1278_1_2012)]
-        */
+[TestCase(28, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(28, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(29, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(29, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(30, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(30, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(31, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(31, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(32, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(32, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(33, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(33, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(34, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(34, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(35, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(35, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(36, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(36, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(37, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(37, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(38, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(38, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(39, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(39, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(40, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(40, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(41, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(41, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(42, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(42, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(43, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(43, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(44, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(44, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(45, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(45, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(46, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(46, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(47, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(47, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(48, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(48, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(49, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(49, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(50, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(50, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(51, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(51, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(52, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(52, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(53, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(53, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(54, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(54, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(55, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(55, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(56, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(56, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(57, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(57, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(58, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(58, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(59, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(59, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(60, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(60, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(61, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(61, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(62, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(62, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(63, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(63, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(64, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(64, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(65, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(65, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(66, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(66, ProtocolVersion.Ieee1278_1_2012)]
+[TestCase(67, ProtocolVersion.Ieee1278_1A_1998)]
+[TestCase(67, ProtocolVersion.Ieee1278_1_2012)]
+*/
         public void Marshal_PduProcessor_Unmarshal(byte pduType, ProtocolVersion disVersion)
         {
             DataStream dat = new DataStream();
@@ -189,6 +189,110 @@ namespace OpenDis.Test
 
             Assert.AreEqual(1, pdus.Count);
             Assert.AreEqual(pdu_out, pdus[0]);
+        }
+
+        [TestCase(1, ProtocolVersion.Ieee1278_1_1995, 160)]
+        [TestCase(1, ProtocolVersion.Ieee1278_1A_1998, 160)]
+        [TestCase(1, ProtocolVersion.Ieee1278_1_2012, 168)]
+        [TestCase(2, ProtocolVersion.Ieee1278_1_1995, 96)]
+        [TestCase(2, ProtocolVersion.Ieee1278_1A_1998, 96)]
+        [TestCase(2, ProtocolVersion.Ieee1278_1_2012, 96)]
+        [TestCase(3, ProtocolVersion.Ieee1278_1_1995, 108)]
+        [TestCase(3, ProtocolVersion.Ieee1278_1A_1998, 120)]
+        [TestCase(3, ProtocolVersion.Ieee1278_1_2012, 128)]
+        [TestCase(4, ProtocolVersion.Ieee1278_1_1995, 60)]
+        [TestCase(4, ProtocolVersion.Ieee1278_1A_1998, 60)]
+        [TestCase(4, ProtocolVersion.Ieee1278_1_2012, 60)]
+#warning TODO check, unexpected number of bytes
+        [TestCase(5, ProtocolVersion.Ieee1278_1_1995, 35)]
+        [TestCase(5, ProtocolVersion.Ieee1278_1A_1998, 40)]
+        [TestCase(5, ProtocolVersion.Ieee1278_1_2012, 40)]
+#warning TODO check, unexpected number of bytes
+        [TestCase(6, ProtocolVersion.Ieee1278_1_1995, 35)]
+        [TestCase(6, ProtocolVersion.Ieee1278_1A_1998, 40)]
+        [TestCase(6, ProtocolVersion.Ieee1278_1_2012, 40)]
+#warning TODO check, unexpected number of bytes
+        [TestCase(7, ProtocolVersion.Ieee1278_1_1995, 35)]
+        [TestCase(7, ProtocolVersion.Ieee1278_1A_1998, 40)]
+        [TestCase(7, ProtocolVersion.Ieee1278_1_2012, 40)]
+        [TestCase(8, ProtocolVersion.Ieee1278_1_1995, 24)]
+        [TestCase(8, ProtocolVersion.Ieee1278_1A_1998, 24)]
+        [TestCase(8, ProtocolVersion.Ieee1278_1_2012, 24, Ignore = "Not implemented for DIS 7")]
+        [TestCase(9, ProtocolVersion.Ieee1278_1_1995, 28)]
+        [TestCase(9, ProtocolVersion.Ieee1278_1A_1998, 28)]
+        [TestCase(9, ProtocolVersion.Ieee1278_1_2012, 28)]
+        [TestCase(10, ProtocolVersion.Ieee1278_1_1995, 28)]
+        [TestCase(10, ProtocolVersion.Ieee1278_1A_1998, 28)]
+        [TestCase(10, ProtocolVersion.Ieee1278_1_2012, 28)]
+        [TestCase(11, ProtocolVersion.Ieee1278_1_1995, 28)]
+        [TestCase(11, ProtocolVersion.Ieee1278_1A_1998, 28)]
+#warning TODO check, unexpected difference with DIS6
+        [TestCase(11, ProtocolVersion.Ieee1278_1_2012, 40)]
+        [TestCase(12, ProtocolVersion.Ieee1278_1_1995, 28)]
+        [TestCase(12, ProtocolVersion.Ieee1278_1A_1998, 28)]
+        [TestCase(12, ProtocolVersion.Ieee1278_1_2012, 40)]
+        [TestCase(13, ProtocolVersion.Ieee1278_1_1995, 44)]
+        [TestCase(13, ProtocolVersion.Ieee1278_1A_1998, 44)]
+#warning TODO check, unexpected difference with DIS6
+        [TestCase(13, ProtocolVersion.Ieee1278_1_2012, 56)]
+        [TestCase(14, ProtocolVersion.Ieee1278_1_1995, 40)]
+        [TestCase(14, ProtocolVersion.Ieee1278_1A_1998, 40)]
+#warning TODO check, unexpected difference with DIS6
+        [TestCase(14, ProtocolVersion.Ieee1278_1_2012, 52)]
+        [TestCase(15, ProtocolVersion.Ieee1278_1_1995, 32)]
+        [TestCase(15, ProtocolVersion.Ieee1278_1A_1998, 32)]
+#warning TODO check, unexpected difference with DIS6
+        [TestCase(15, ProtocolVersion.Ieee1278_1_2012, 44)]
+        [TestCase(16, ProtocolVersion.Ieee1278_1_1995, 64)]
+        [TestCase(16, ProtocolVersion.Ieee1278_1A_1998, 64)]
+#warning TODO check, unexpected difference with DIS6
+        [TestCase(16, ProtocolVersion.Ieee1278_1_2012, 76)]
+        [TestCase(17, ProtocolVersion.Ieee1278_1_1995, 64)]
+        [TestCase(17, ProtocolVersion.Ieee1278_1A_1998, 64)]
+#warning TODO check, unexpected difference with DIS6
+        [TestCase(17, ProtocolVersion.Ieee1278_1_2012, 76)]
+        [TestCase(18, ProtocolVersion.Ieee1278_1_1995, 64)]
+        [TestCase(18, ProtocolVersion.Ieee1278_1A_1998, 64)]
+        [TestCase(18, ProtocolVersion.Ieee1278_1_2012, 64)]
+        [TestCase(19, ProtocolVersion.Ieee1278_1_1995, 64)]
+        [TestCase(19, ProtocolVersion.Ieee1278_1A_1998, 64)]
+        [TestCase(19, ProtocolVersion.Ieee1278_1_2012, 64)]
+        [TestCase(20, ProtocolVersion.Ieee1278_1_1995, 64)]
+        [TestCase(20, ProtocolVersion.Ieee1278_1A_1998, 64)]
+        [TestCase(20, ProtocolVersion.Ieee1278_1_2012, 64)]
+        [TestCase(21, ProtocolVersion.Ieee1278_1_1995, 64)]
+        [TestCase(21, ProtocolVersion.Ieee1278_1A_1998, 64)]
+        [TestCase(21, ProtocolVersion.Ieee1278_1_2012, 64)]
+        [TestCase(22, ProtocolVersion.Ieee1278_1_1995, 56)]
+        [TestCase(22, ProtocolVersion.Ieee1278_1A_1998, 56)]
+        [TestCase(22, ProtocolVersion.Ieee1278_1_2012, 56)]
+        [TestCase(23, ProtocolVersion.Ieee1278_1_1995, 108, Ignore = "Not implemented for DIS 5")]
+        [TestCase(23, ProtocolVersion.Ieee1278_1A_1998, 108)]
+        [TestCase(23, ProtocolVersion.Ieee1278_1_2012, 108)]
+        [TestCase(24, ProtocolVersion.Ieee1278_1_1995, 88)]
+        [TestCase(24, ProtocolVersion.Ieee1278_1A_1998, 88)]
+        [TestCase(24, ProtocolVersion.Ieee1278_1_2012, 88)]
+#warning TODO check, unexpected number of bytes
+        [TestCase(25, ProtocolVersion.Ieee1278_1_1995, 141)]
+        [TestCase(25, ProtocolVersion.Ieee1278_1A_1998, 128)]
+        [TestCase(25, ProtocolVersion.Ieee1278_1_2012, 128)]
+        [TestCase(26, ProtocolVersion.Ieee1278_1_1995, 32)]
+        [TestCase(26, ProtocolVersion.Ieee1278_1A_1998, 96)]
+        [TestCase(26, ProtocolVersion.Ieee1278_1_2012, 96)]
+        [TestCase(27, ProtocolVersion.Ieee1278_1_1995, 36)]
+        [TestCase(27, ProtocolVersion.Ieee1278_1A_1998, 36)]
+        [TestCase(27, ProtocolVersion.Ieee1278_1_2012, 36)]
+        public void PduLength(byte pduType, ProtocolVersion disVersion, int expLength)
+        {
+            DataStream dat = new DataStream();
+            DataOutputStream dos = new DataOutputStream(dat, Endian.Big);
+
+            IPdu pdu_out = PduFactory.CreatePdu(pduType, disVersion);
+            FillPduWithDummyData(pdu_out, (byte)disVersion);
+            pdu_out.MarshalAutoLengthSet(dos);
+            byte[] data = dos.ConvertToBytes();
+
+            Assert.AreEqual(expLength, data.Length);
         }
 
         void FillPduWithDummyData(IPdu pdu, byte disVersion)
@@ -227,6 +331,7 @@ namespace OpenDis.Test
                             {
                                 property.SetValue(pdu, GetVectorFloat(disVersion), null);
                             }
+
                             break;
                         case "EntityLocation":
                         case "DesignatorSpotLocation":
@@ -804,7 +909,8 @@ namespace OpenDis.Test
                         Dis1998.ElectronicEmissionSystemData es6 = new Dis1998.ElectronicEmissionSystemData
                         {
                             NumberOfBeams = 1,
-                            EmitterSystem = new Dis1998.EmitterSystem { EmitterName = 1234, EmitterIdNumber = 1, Function = 4 },
+                            EmitterSystem = new Dis1998.EmitterSystem
+                                { EmitterName = 1234, EmitterIdNumber = 1, Function = 4 },
                             Location = GetVectorFloat(disVersion) as Dis1998.Vector3Float
                         };
                         es6.BeamDataRecords.Add(GetBeam(disVersion) as Dis1998.ElectronicEmissionBeamData);
@@ -813,7 +919,8 @@ namespace OpenDis.Test
                         Dis2012.ElectronicEmissionSystemData es7 = new Dis2012.ElectronicEmissionSystemData
                         {
                             NumberOfBeams = 1,
-                            EmitterSystem = new Dis2012.EmitterSystem { EmitterName = 1234, EmitterIdNumber = 1, Function = 4 },
+                            EmitterSystem = new Dis2012.EmitterSystem
+                                { EmitterName = 1234, EmitterIdNumber = 1, Function = 4 },
                             Location = GetVectorFloat(disVersion) as Dis2012.Vector3Float
                         };
                         es7.BeamDataRecords.Add(GetBeam(disVersion) as Dis2012.ElectronicEmissionBeamData);
