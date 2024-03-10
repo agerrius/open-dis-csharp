@@ -471,6 +471,14 @@ namespace OpenDis.Test
                             }
 
                             break;
+                        case "Systems":
+                            if (disVersion == 6)
+                            {
+                                (property.GetValue(pdu, null) as List<Dis1998.ElectronicEmissionSystemData>).Add(
+                                    GetEmitterSystem(disVersion) as Dis1998.ElectronicEmissionSystemData);
+                            }
+
+                            break;
                         default:
                             throw new NotSupportedException(property.ToString());
                     }
@@ -659,8 +667,6 @@ namespace OpenDis.Test
                     default:
                         throw new NotSupportedException();
                 }
-
-
             }
 
             object GetClockTime(byte disVersion)
@@ -780,6 +786,49 @@ namespace OpenDis.Test
                     case 7:
                         return new Dis2012.ModulationType
                             { Detail = 1, MajorModulation = 2, RadioSystem = 3, SpreadSpectrum = 4 };
+                    default:
+                        throw new NotSupportedException();
+                }
+            }
+
+            object GetEmitterSystem(byte disVersion)
+            {
+                switch (disVersion)
+                {
+                    case 6:
+                        Dis1998.ElectronicEmissionSystemData es6 = new Dis1998.ElectronicEmissionSystemData
+                        {
+                            NumberOfBeams = 1,
+                            EmitterSystem = new Dis1998.EmitterSystem { EmitterName = 1234, EmitterIdNumber = 1, Function = 4 },
+                            Location = GetVectorFloat(disVersion) as Dis1998.Vector3Float
+                        };
+                        es6.BeamDataRecords.Add(GetBeam(disVersion) as Dis1998.ElectronicEmissionBeamData);
+                        return es6;
+                    default:
+                        throw new NotSupportedException();
+                }
+            }
+
+            object GetBeam(byte disVersion)
+            {
+                switch (disVersion)
+                {
+                    case 6:
+                        Dis1998.ElectronicEmissionBeamData bd6 = new Dis1998.ElectronicEmissionBeamData
+                        {
+                            NumberOfTrackJamTargets = 1, BeamIDNumber = 2, BeamFunction = 3, BeamParameterIndex = 1,
+                            HighDensityTrackJam = 0, JammingModeSequence = 5,
+                            FundamentalParameterData = new Dis1998.FundamentalParameterData
+                            {
+                                BeamAzimuthCenter = 1.0f, BeamAzimuthSweep = 2.0f, BeamElevationCenter = -1.0f,
+                                BeamElevationSweep = 1.0f, BeamSweepSync = 0.25f, Frequency = 123456.78f,
+                                FrequencyRange = 12.34f, PulseRepetitionFrequency = 12.34f, PulseWidth = 12.34f,
+                                EffectiveRadiatedPower = 12345.67f
+                            }
+                        };
+                        bd6.TrackJamTargets.Add(new Dis1998.TrackJamTarget
+                            { EmitterID = 1, BeamID = 1, TrackJam = GetEntityId(disVersion) as Dis1998.EntityID });
+                        return bd6;
                     default:
                         throw new NotSupportedException();
                 }
