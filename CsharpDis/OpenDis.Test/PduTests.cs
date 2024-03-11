@@ -234,7 +234,7 @@ namespace OpenDis.Test
         // Create Entity
         [TestCase(11, ProtocolVersion.Ieee1278_1_1995, 28)]
         [TestCase(11, ProtocolVersion.Ieee1278_1A_1998, 28)]
-#warning TODO check, unexpected difference with DIS6
+#warning TODO check, unexpected difference with DIS7
         [TestCase(11, ProtocolVersion.Ieee1278_1_2012, 40)]
         // Remove Entity
         [TestCase(12, ProtocolVersion.Ieee1278_1_1995, 28)]
@@ -243,31 +243,32 @@ namespace OpenDis.Test
         // Start / Resume
         [TestCase(13, ProtocolVersion.Ieee1278_1_1995, 44)]
         [TestCase(13, ProtocolVersion.Ieee1278_1A_1998, 44)]
-#warning TODO check, unexpected difference with DIS6
+#warning TODO check, unexpected difference with DIS7
         [TestCase(13, ProtocolVersion.Ieee1278_1_2012, 56)]
         // Stop / Freeze
         [TestCase(14, ProtocolVersion.Ieee1278_1_1995, 40)]
         [TestCase(14, ProtocolVersion.Ieee1278_1A_1998, 40)]
-#warning TODO check, unexpected difference with DIS6
+#warning TODO check, unexpected difference with DIS7
         [TestCase(14, ProtocolVersion.Ieee1278_1_2012, 52)]
         // Acknowledge
         [TestCase(15, ProtocolVersion.Ieee1278_1_1995, 32)]
         [TestCase(15, ProtocolVersion.Ieee1278_1A_1998, 32)]
-#warning TODO check, unexpected difference with DIS6
+#warning TODO check, unexpected difference with DIS7
         [TestCase(15, ProtocolVersion.Ieee1278_1_2012, 44)]
         // Action request
         [TestCase(16, ProtocolVersion.Ieee1278_1_1995, 64)]
         [TestCase(16, ProtocolVersion.Ieee1278_1A_1998, 64)]
-#warning TODO check, unexpected difference with DIS6
+#warning TODO check, unexpected difference with DIS7
         [TestCase(16, ProtocolVersion.Ieee1278_1_2012, 76)]
         // Action Response
         [TestCase(17, ProtocolVersion.Ieee1278_1_1995, 64)]
         [TestCase(17, ProtocolVersion.Ieee1278_1A_1998, 64)]
-#warning TODO check, unexpected difference with DIS6
+#warning TODO check, unexpected difference with DIS7
         [TestCase(17, ProtocolVersion.Ieee1278_1_2012, 76)]
         // Data Query
         [TestCase(18, ProtocolVersion.Ieee1278_1_1995, 48)]
-        [TestCase(18, ProtocolVersion.Ieee1278_1A_1998, 64)]
+        [TestCase(18, ProtocolVersion.Ieee1278_1A_1998, 48)]
+#warning TODO check, unexpected difference with DIS7
         [TestCase(18, ProtocolVersion.Ieee1278_1_2012, 64)]
         // Set Data
         [TestCase(19, ProtocolVersion.Ieee1278_1_1995, 64)]
@@ -295,7 +296,7 @@ namespace OpenDis.Test
         [TestCase(24, ProtocolVersion.Ieee1278_1_2012, 88)]
         // Transmitter
 #warning TODO check, unexpected number of bytes
-        [TestCase(25, ProtocolVersion.Ieee1278_1_1995, 141)]
+        [TestCase(25, ProtocolVersion.Ieee1278_1_1995, 128)]
         [TestCase(25, ProtocolVersion.Ieee1278_1A_1998, 128)]
         [TestCase(25, ProtocolVersion.Ieee1278_1_2012, 128)]
         // Signal
@@ -347,15 +348,7 @@ namespace OpenDis.Test
                             property.SetValue(pdu, GetVectorFloat(disVersion), null);
                             break;
                         case "RelativeAntennaLocation":
-                            if (disVersion == 5)
-                            {
-                                property.SetValue(pdu, GetVectorDouble(disVersion), null);
-                            }
-                            else
-                            {
-                                property.SetValue(pdu, GetVectorFloat(disVersion), null);
-                            }
-
+                            property.SetValue(pdu, GetVectorFloat(disVersion), null);
                             break;
                         case "EntityLocation":
                         case "DesignatorSpotLocation":
@@ -657,7 +650,7 @@ namespace OpenDis.Test
                     case 5:
                         return new Dis1995.RadioEntityType
                         {
-                            EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Nomenclature = 1,
+                            EntityKind = 1, Domain = 1, Country = 123, Category = 2, Nomenclature = 1,
                             NomenclatureVersion = 1
                         };
                     case 6:

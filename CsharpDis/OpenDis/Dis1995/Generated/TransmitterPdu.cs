@@ -158,8 +158,8 @@ namespace OpenDis.Dis1995
         /// <summary>
         /// Gets or sets the relative location of antenna
         /// </summary>
-        [XmlElement(Type = typeof(Vector3Double), ElementName = "relativeAntennaLocation")]
-        public Vector3Double RelativeAntennaLocation { get; set; } = new Vector3Double();
+        [XmlElement(Type = typeof(Vector3Float), ElementName = "relativeAntennaLocation")]
+        public Vector3Float RelativeAntennaLocation { get; set; } = new Vector3Float();
 
         /// <summary>
         /// Gets or sets the atenna pattern type
