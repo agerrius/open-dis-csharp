@@ -93,18 +93,8 @@ namespace OpenDis.Dis1995
             marshalSize += 4;  // this._timeInterval
             marshalSize += 4;  // this._fixedDatumRecordCount
             marshalSize += 4;  // this._variableDatumRecordCount
-            for (int idx = 0; idx < FixedDatums.Count; idx++)
-            {
-                var listElement = FixedDatums[idx];
-                marshalSize += listElement.GetMarshalledSize();
-            }
-
-            for (int idx = 0; idx < VariableDatums.Count; idx++)
-            {
-                var listElement = VariableDatums[idx];
-                marshalSize += listElement.GetMarshalledSize();
-            }
-
+            marshalSize += 4 * FixedDatumIDs.Count;
+            marshalSize += 4 * VariableDatumIDs.Count;
             return marshalSize;
         }
 
@@ -147,14 +137,14 @@ namespace OpenDis.Dis1995
         /// <summary>
         /// Gets the variable length list of fixed datums
         /// </summary>
-        [XmlElement(ElementName = "fixedDatumsList", Type = typeof(List<FixedDatum>))]
-        public List<FixedDatum> FixedDatums { get; } = new();
+        [XmlElement(ElementName = "fixedDatumsList", Type = typeof(List<uint>))]
+        public List<uint> FixedDatumIDs { get; } = new();
 
         /// <summary>
         /// Gets the variable length list of variable length datums
         /// </summary>
-        [XmlElement(ElementName = "variableDatumsList", Type = typeof(List<VariableDatum>))]
-        public List<VariableDatum> VariableDatums { get; } = new();
+        [XmlElement(ElementName = "variableDatumsList", Type = typeof(List<uint>))]
+        public List<uint> VariableDatumIDs { get; } = new();
 
         ///<inheritdoc/>
         public override void MarshalAutoLengthSet(DataOutputStream dos)
@@ -175,19 +165,17 @@ namespace OpenDis.Dis1995
                 {
                     dos.WriteUnsignedInt(RequestID);
                     dos.WriteUnsignedInt(TimeInterval);
-                    dos.WriteUnsignedInt((uint)FixedDatums.Count);
-                    dos.WriteUnsignedInt((uint)VariableDatums.Count);
+                    dos.WriteUnsignedInt((uint)FixedDatumIDs.Count);
+                    dos.WriteUnsignedInt((uint)VariableDatumIDs.Count);
 
-                    for (int idx = 0; idx < FixedDatums.Count; idx++)
+                    for (int idx = 0; idx < FixedDatumIDs.Count; idx++)
                     {
-                        var aFixedDatum = FixedDatums[idx];
-                        aFixedDatum.Marshal(dos);
+                        dos.WriteUnsignedInt(FixedDatumIDs[idx]);
                     }
 
-                    for (int idx = 0; idx < VariableDatums.Count; idx++)
+                    for (int idx = 0; idx < VariableDatumIDs.Count; idx++)
                     {
-                        var aVariableDatum = VariableDatums[idx];
-                        aVariableDatum.Marshal(dos);
+                        dos.WriteUnsignedInt(VariableDatumIDs[idx]);
                     }
                 }
                 catch (Exception e)
@@ -224,16 +212,12 @@ namespace OpenDis.Dis1995
 
                     for (int idx = 0; idx < FixedDatumRecordCount; idx++)
                     {
-                        var anX = new FixedDatum();
-                        anX.Unmarshal(dis);
-                        FixedDatums.Add(anX);
+                        FixedDatumIDs.Add(dis.ReadUnsignedInt());
                     }
 
                     for (int idx = 0; idx < VariableDatumRecordCount; idx++)
                     {
-                        var anX = new VariableDatum();
-                        anX.Unmarshal(dis);
-                        VariableDatums.Add(anX);
+                        VariableDatumIDs.Add(dis.ReadUnsignedInt());
                     }
                 }
                 catch (Exception e)
@@ -264,24 +248,18 @@ namespace OpenDis.Dis1995
             {
                 sb.AppendLine("<requestID type=\"uint\">" + RequestID.ToString(CultureInfo.InvariantCulture) + "</requestID>");
                 sb.AppendLine("<timeInterval type=\"uint\">" + TimeInterval.ToString(CultureInfo.InvariantCulture) + "</timeInterval>");
-                sb.AppendLine("<fixedDatums type=\"uint\">" + FixedDatums.Count.ToString(CultureInfo.InvariantCulture) + "</fixedDatums>");
-                sb.AppendLine("<variableDatums type=\"uint\">" + VariableDatums.Count.ToString(CultureInfo.InvariantCulture) + "</variableDatums>");
-                for (int idx = 0; idx < FixedDatums.Count; idx++)
+                sb.AppendLine("<numberOfFixedDatums type=\"uint\">" + FixedDatumIDs.Count.ToString(CultureInfo.InvariantCulture) + "</numberOfFixedDatums>");
+                sb.AppendLine("<numberOfVariableDatums type=\"uint\">" + VariableDatumIDs.Count.ToString(CultureInfo.InvariantCulture) + "</numberOfVariableDatums>");
+                for (int idx = 0; idx < FixedDatumIDs.Count; idx++)
                 {
-                    sb.AppendLine("<fixedDatums" + idx.ToString(CultureInfo.InvariantCulture) + " type=\"FixedDatum\">");
-                    var aFixedDatum = FixedDatums[idx];
-                    aFixedDatum.Reflection(sb);
-                    sb.AppendLine("</fixedDatums" + idx.ToString(CultureInfo.InvariantCulture) + ">");
+                    sb.AppendLine("<fixedDatumID" + idx.ToString(CultureInfo.InvariantCulture) + " type=\"uint\">" + FixedDatumIDs[idx].ToString(CultureInfo.InvariantCulture) + "</fixedDatumID" + idx.ToString(CultureInfo.InvariantCulture) + ">");
                 }
-
-                for (int idx = 0; idx < VariableDatums.Count; idx++)
+                
+                for (int idx = 0; idx < VariableDatumIDs.Count; idx++)
                 {
-                    sb.AppendLine("<variableDatums" + idx.ToString(CultureInfo.InvariantCulture) + " type=\"VariableDatum\">");
-                    var aVariableDatum = VariableDatums[idx];
-                    aVariableDatum.Reflection(sb);
-                    sb.AppendLine("</variableDatums" + idx.ToString(CultureInfo.InvariantCulture) + ">");
+                    sb.AppendLine("<variableDatumID" + idx.ToString(CultureInfo.InvariantCulture) + " type=\"uint\">" + VariableDatumIDs[idx].ToString(CultureInfo.InvariantCulture) + "</variableDatumID" + idx.ToString(CultureInfo.InvariantCulture) + ">");
                 }
-
+                
                 sb.AppendLine("</DataQueryPdu>");
             }
             catch (Exception e)
@@ -333,32 +311,32 @@ namespace OpenDis.Dis1995
                 ivarsEqual = false;
             }
 
-            if (FixedDatums.Count != obj.FixedDatums.Count)
+            if (FixedDatumIDs.Count != obj.FixedDatumIDs.Count)
             {
                 ivarsEqual = false;
             }
 
             if (ivarsEqual)
             {
-                for (int idx = 0; idx < FixedDatums.Count; idx++)
+                for (int idx = 0; idx < FixedDatumIDs.Count; idx++)
                 {
-                    if (!FixedDatums[idx].Equals(obj.FixedDatums[idx]))
+                    if (!FixedDatumIDs[idx].Equals(obj.FixedDatumIDs[idx]))
                     {
                         ivarsEqual = false;
                     }
                 }
             }
 
-            if (VariableDatums.Count != obj.VariableDatums.Count)
+            if (VariableDatumIDs.Count != obj.VariableDatumIDs.Count)
             {
                 ivarsEqual = false;
             }
 
             if (ivarsEqual)
             {
-                for (int idx = 0; idx < VariableDatums.Count; idx++)
+                for (int idx = 0; idx < VariableDatumIDs.Count; idx++)
                 {
-                    if (!VariableDatums[idx].Equals(obj.VariableDatums[idx]))
+                    if (!VariableDatumIDs[idx].Equals(obj.VariableDatumIDs[idx]))
                     {
                         ivarsEqual = false;
                     }
@@ -387,19 +365,19 @@ namespace OpenDis.Dis1995
             result = GenerateHash(result) ^ FixedDatumRecordCount.GetHashCode();
             result = GenerateHash(result) ^ VariableDatumRecordCount.GetHashCode();
 
-            if (FixedDatums.Count > 0)
+            if (FixedDatumIDs.Count > 0)
             {
-                for (int idx = 0; idx < FixedDatums.Count; idx++)
+                for (int idx = 0; idx < FixedDatumIDs.Count; idx++)
                 {
-                    result = GenerateHash(result) ^ FixedDatums[idx].GetHashCode();
+                    result = GenerateHash(result) ^ FixedDatumIDs[idx].GetHashCode();
                 }
             }
 
-            if (VariableDatums.Count > 0)
+            if (VariableDatumIDs.Count > 0)
             {
-                for (int idx = 0; idx < VariableDatums.Count; idx++)
+                for (int idx = 0; idx < VariableDatumIDs.Count; idx++)
                 {
-                    result = GenerateHash(result) ^ VariableDatums[idx].GetHashCode();
+                    result = GenerateHash(result) ^ VariableDatumIDs[idx].GetHashCode();
                 }
             }
 

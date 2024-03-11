@@ -191,94 +191,118 @@ namespace OpenDis.Test
             Assert.AreEqual(pdu_out, pdus[0]);
         }
 
+        // Entity State
         [TestCase(1, ProtocolVersion.Ieee1278_1_1995, 160)]
         [TestCase(1, ProtocolVersion.Ieee1278_1A_1998, 160)]
         [TestCase(1, ProtocolVersion.Ieee1278_1_2012, 168)]
+        // Fire
         [TestCase(2, ProtocolVersion.Ieee1278_1_1995, 96)]
         [TestCase(2, ProtocolVersion.Ieee1278_1A_1998, 96)]
         [TestCase(2, ProtocolVersion.Ieee1278_1_2012, 96)]
-        [TestCase(3, ProtocolVersion.Ieee1278_1_1995, 108)]
+        // Detonation
+        [TestCase(3, ProtocolVersion.Ieee1278_1_1995, 120)]
         [TestCase(3, ProtocolVersion.Ieee1278_1A_1998, 120)]
         [TestCase(3, ProtocolVersion.Ieee1278_1_2012, 128)]
+        // Collision
         [TestCase(4, ProtocolVersion.Ieee1278_1_1995, 60)]
         [TestCase(4, ProtocolVersion.Ieee1278_1A_1998, 60)]
         [TestCase(4, ProtocolVersion.Ieee1278_1_2012, 60)]
-#warning TODO check, unexpected number of bytes
-        [TestCase(5, ProtocolVersion.Ieee1278_1_1995, 35)]
+        // Service Request
+        [TestCase(5, ProtocolVersion.Ieee1278_1_1995, 40)]
         [TestCase(5, ProtocolVersion.Ieee1278_1A_1998, 40)]
         [TestCase(5, ProtocolVersion.Ieee1278_1_2012, 40)]
-#warning TODO check, unexpected number of bytes
-        [TestCase(6, ProtocolVersion.Ieee1278_1_1995, 35)]
+        // Resupply Offer
+        [TestCase(6, ProtocolVersion.Ieee1278_1_1995, 40)]
         [TestCase(6, ProtocolVersion.Ieee1278_1A_1998, 40)]
         [TestCase(6, ProtocolVersion.Ieee1278_1_2012, 40)]
-#warning TODO check, unexpected number of bytes
-        [TestCase(7, ProtocolVersion.Ieee1278_1_1995, 35)]
+        // Resupply Received
+        [TestCase(7, ProtocolVersion.Ieee1278_1_1995, 40)]
         [TestCase(7, ProtocolVersion.Ieee1278_1A_1998, 40)]
         [TestCase(7, ProtocolVersion.Ieee1278_1_2012, 40)]
+        // Resupply Cancel
         [TestCase(8, ProtocolVersion.Ieee1278_1_1995, 24)]
         [TestCase(8, ProtocolVersion.Ieee1278_1A_1998, 24)]
         [TestCase(8, ProtocolVersion.Ieee1278_1_2012, 24, Ignore = "Not implemented for DIS 7")]
+        // Repair Complete
         [TestCase(9, ProtocolVersion.Ieee1278_1_1995, 28)]
         [TestCase(9, ProtocolVersion.Ieee1278_1A_1998, 28)]
         [TestCase(9, ProtocolVersion.Ieee1278_1_2012, 28)]
+        // Repair Response
         [TestCase(10, ProtocolVersion.Ieee1278_1_1995, 28)]
         [TestCase(10, ProtocolVersion.Ieee1278_1A_1998, 28)]
         [TestCase(10, ProtocolVersion.Ieee1278_1_2012, 28)]
+        // Create Entity
         [TestCase(11, ProtocolVersion.Ieee1278_1_1995, 28)]
         [TestCase(11, ProtocolVersion.Ieee1278_1A_1998, 28)]
 #warning TODO check, unexpected difference with DIS6
         [TestCase(11, ProtocolVersion.Ieee1278_1_2012, 40)]
+        // Remove Entity
         [TestCase(12, ProtocolVersion.Ieee1278_1_1995, 28)]
         [TestCase(12, ProtocolVersion.Ieee1278_1A_1998, 28)]
         [TestCase(12, ProtocolVersion.Ieee1278_1_2012, 40)]
+        // Start / Resume
         [TestCase(13, ProtocolVersion.Ieee1278_1_1995, 44)]
         [TestCase(13, ProtocolVersion.Ieee1278_1A_1998, 44)]
 #warning TODO check, unexpected difference with DIS6
         [TestCase(13, ProtocolVersion.Ieee1278_1_2012, 56)]
+        // Stop / Freeze
         [TestCase(14, ProtocolVersion.Ieee1278_1_1995, 40)]
         [TestCase(14, ProtocolVersion.Ieee1278_1A_1998, 40)]
 #warning TODO check, unexpected difference with DIS6
         [TestCase(14, ProtocolVersion.Ieee1278_1_2012, 52)]
+        // Acknowledge
         [TestCase(15, ProtocolVersion.Ieee1278_1_1995, 32)]
         [TestCase(15, ProtocolVersion.Ieee1278_1A_1998, 32)]
 #warning TODO check, unexpected difference with DIS6
         [TestCase(15, ProtocolVersion.Ieee1278_1_2012, 44)]
+        // Action request
         [TestCase(16, ProtocolVersion.Ieee1278_1_1995, 64)]
         [TestCase(16, ProtocolVersion.Ieee1278_1A_1998, 64)]
 #warning TODO check, unexpected difference with DIS6
         [TestCase(16, ProtocolVersion.Ieee1278_1_2012, 76)]
+        // Action Response
         [TestCase(17, ProtocolVersion.Ieee1278_1_1995, 64)]
         [TestCase(17, ProtocolVersion.Ieee1278_1A_1998, 64)]
 #warning TODO check, unexpected difference with DIS6
         [TestCase(17, ProtocolVersion.Ieee1278_1_2012, 76)]
-        [TestCase(18, ProtocolVersion.Ieee1278_1_1995, 64)]
+        // Data Query
+        [TestCase(18, ProtocolVersion.Ieee1278_1_1995, 48)]
         [TestCase(18, ProtocolVersion.Ieee1278_1A_1998, 64)]
         [TestCase(18, ProtocolVersion.Ieee1278_1_2012, 64)]
+        // Set Data
         [TestCase(19, ProtocolVersion.Ieee1278_1_1995, 64)]
         [TestCase(19, ProtocolVersion.Ieee1278_1A_1998, 64)]
         [TestCase(19, ProtocolVersion.Ieee1278_1_2012, 64)]
+        // Data
         [TestCase(20, ProtocolVersion.Ieee1278_1_1995, 64)]
         [TestCase(20, ProtocolVersion.Ieee1278_1A_1998, 64)]
         [TestCase(20, ProtocolVersion.Ieee1278_1_2012, 64)]
+        // Event Report
         [TestCase(21, ProtocolVersion.Ieee1278_1_1995, 64)]
         [TestCase(21, ProtocolVersion.Ieee1278_1A_1998, 64)]
         [TestCase(21, ProtocolVersion.Ieee1278_1_2012, 64)]
+        // Comment
         [TestCase(22, ProtocolVersion.Ieee1278_1_1995, 56)]
         [TestCase(22, ProtocolVersion.Ieee1278_1A_1998, 56)]
         [TestCase(22, ProtocolVersion.Ieee1278_1_2012, 56)]
+        // Electromagnetic Emission
         [TestCase(23, ProtocolVersion.Ieee1278_1_1995, 108, Ignore = "Not implemented for DIS 5")]
         [TestCase(23, ProtocolVersion.Ieee1278_1A_1998, 108)]
         [TestCase(23, ProtocolVersion.Ieee1278_1_2012, 108)]
+        // Designator
         [TestCase(24, ProtocolVersion.Ieee1278_1_1995, 88)]
         [TestCase(24, ProtocolVersion.Ieee1278_1A_1998, 88)]
         [TestCase(24, ProtocolVersion.Ieee1278_1_2012, 88)]
+        // Transmitter
 #warning TODO check, unexpected number of bytes
         [TestCase(25, ProtocolVersion.Ieee1278_1_1995, 141)]
         [TestCase(25, ProtocolVersion.Ieee1278_1A_1998, 128)]
         [TestCase(25, ProtocolVersion.Ieee1278_1_2012, 128)]
-        [TestCase(26, ProtocolVersion.Ieee1278_1_1995, 32)]
+        // Signal
+        [TestCase(26, ProtocolVersion.Ieee1278_1_1995, 96)]
         [TestCase(26, ProtocolVersion.Ieee1278_1A_1998, 96)]
         [TestCase(26, ProtocolVersion.Ieee1278_1_2012, 96)]
+        // Receiver
         [TestCase(27, ProtocolVersion.Ieee1278_1_1995, 36)]
         [TestCase(27, ProtocolVersion.Ieee1278_1A_1998, 36)]
         [TestCase(27, ProtocolVersion.Ieee1278_1_2012, 36)]
@@ -538,6 +562,10 @@ namespace OpenDis.Test
                                     GetVariableDatum(disVersion) as Dis2012.VariableDatum);
                             }
 
+                            break;
+                        case "FixedDatumIDs":
+                        case "VariableDatumIDs":
+                            (property.GetValue(pdu, null) as List<uint>).Add(1234);
                             break;
                         case "Supplies":
                             if (disVersion == 5)
@@ -800,13 +828,13 @@ namespace OpenDis.Test
                 {
                     case 5:
                         return new Dis1995.SupplyQuantity()
-                            { Quantity = 1, SupplyType = GetEntityId(disVersion) as Dis1995.EntityID };
+                            { Quantity = 12.34f, SupplyType = GetEntityType(disVersion) as Dis1995.EntityType };
                     case 6:
                         return new Dis1998.SupplyQuantity()
-                            { Quantity = 1, SupplyType = GetEntityType(disVersion) as Dis1998.EntityType };
+                            { Quantity = 12.34f, SupplyType = GetEntityType(disVersion) as Dis1998.EntityType };
                     case 7:
                         return new Dis2012.SupplyQuantity()
-                            { Quantity = 1, SupplyType = GetEntityType(disVersion) as Dis2012.EntityType };
+                            { Quantity = 12.34f, SupplyType = GetEntityType(disVersion) as Dis2012.EntityType };
                     default:
                         throw new NotSupportedException();
                 }
