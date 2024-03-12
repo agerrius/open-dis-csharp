@@ -57,16 +57,6 @@ namespace OpenDis.Dis2012
     public partial class CreateEntityPdu : SimulationManagementFamilyPdu, IEquatable<CreateEntityPdu>
     {
         /// <summary>
-        /// Identifier for the request
-        /// </summary>
-        private EntityID _originatingID = new EntityID();
-
-        /// <summary>
-        /// Identifier for the request
-        /// </summary>
-        private EntityID _receivingID = new EntityID();
-
-        /// <summary>
         /// Identifier for the request.  See 6.2.75
         /// </summary>
         private uint _requestID;
@@ -120,46 +110,10 @@ namespace OpenDis.Dis2012
             int marshalSize = 0; 
 
             marshalSize = base.GetMarshalledSize();
-            marshalSize += this._originatingID.GetMarshalledSize();  // this._originatingID
-            marshalSize += this._receivingID.GetMarshalledSize();  // this._receivingID
             marshalSize += 4;  // this._requestID
             return marshalSize;
         }
-
-        /// <summary>
-        /// Gets or sets the Identifier for the request
-        /// </summary>
-        [XmlElement(Type = typeof(EntityID), ElementName = "originatingID")]
-        public EntityID OriginatingID
-        {
-            get
-            {
-                return this._originatingID;
-            }
-
-            set
-            {
-                this._originatingID = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the Identifier for the request
-        /// </summary>
-        [XmlElement(Type = typeof(EntityID), ElementName = "receivingID")]
-        public EntityID ReceivingID
-        {
-            get
-            {
-                return this._receivingID;
-            }
-
-            set
-            {
-                this._receivingID = value;
-            }
-        }
-
+        
         /// <summary>
         /// Gets or sets the Identifier for the request.  See 6.2.75
         /// </summary>
@@ -200,8 +154,6 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    this._originatingID.Marshal(dos);
-                    this._receivingID.Marshal(dos);
                     dos.WriteUnsignedInt((uint)this._requestID);
                 }
                 catch (Exception e)
@@ -224,8 +176,6 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    this._originatingID.Unmarshal(dis);
-                    this._receivingID.Unmarshal(dis);
                     this._requestID = dis.ReadUnsignedInt();
                 }
                 catch (Exception e)
@@ -254,12 +204,6 @@ namespace OpenDis.Dis2012
             base.Reflection(sb);
             try
             {
-                sb.AppendLine("<originatingID>");
-                this._originatingID.Reflection(sb);
-                sb.AppendLine("</originatingID>");
-                sb.AppendLine("<receivingID>");
-                this._receivingID.Reflection(sb);
-                sb.AppendLine("</receivingID>");
                 sb.AppendLine("<requestID type=\"uint\">" + this._requestID.ToString(CultureInfo.InvariantCulture) + "</requestID>");
                 sb.AppendLine("</CreateEntityPdu>");
             }
@@ -302,17 +246,7 @@ namespace OpenDis.Dis2012
             }
 
             ivarsEqual = base.Equals(obj);
-
-            if (!this._originatingID.Equals(obj._originatingID))
-            {
-                ivarsEqual = false;
-            }
-
-            if (!this._receivingID.Equals(obj._receivingID))
-            {
-                ivarsEqual = false;
-            }
-
+            
             if (this._requestID != obj._requestID)
             {
                 ivarsEqual = false;
@@ -341,9 +275,6 @@ namespace OpenDis.Dis2012
             int result = 0;
 
             result = GenerateHash(result) ^ base.GetHashCode();
-
-            result = GenerateHash(result) ^ this._originatingID.GetHashCode();
-            result = GenerateHash(result) ^ this._receivingID.GetHashCode();
             result = GenerateHash(result) ^ this._requestID.GetHashCode();
 
             return result;

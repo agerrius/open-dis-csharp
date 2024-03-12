@@ -58,16 +58,6 @@ namespace OpenDis.Dis2012
     public partial class StartResumePdu : SimulationManagementFamilyPdu, IEquatable<StartResumePdu>
     {
         /// <summary>
-        /// Identifier for originating entity(or simulation)
-        /// </summary>
-        private EntityID _originatingID = new EntityID();
-
-        /// <summary>
-        /// Identifier for the receiving entity(or simulation)
-        /// </summary>
-        private EntityID _receivingID = new EntityID();
-
-        /// <summary>
         /// This field shall specify the real-world time (UTC) at which the entity is to start/resume in the exercise. This information shall be used by the participating simulation applications to start/resume an exercise synchronously. This field shall be represented by a Clock Time record (see 6.2.16).
         /// </summary>
         private ClockTime _realWorldTime = new ClockTime();
@@ -131,48 +121,12 @@ namespace OpenDis.Dis2012
             int marshalSize = 0; 
 
             marshalSize = base.GetMarshalledSize();
-            marshalSize += this._originatingID.GetMarshalledSize();  // this._originatingID
-            marshalSize += this._receivingID.GetMarshalledSize();  // this._receivingID
             marshalSize += this._realWorldTime.GetMarshalledSize();  // this._realWorldTime
             marshalSize += this._simulationTime.GetMarshalledSize();  // this._simulationTime
             marshalSize += 4;  // this._requestID
             return marshalSize;
         }
-
-        /// <summary>
-        /// Gets or sets the Identifier for originating entity(or simulation)
-        /// </summary>
-        [XmlElement(Type = typeof(EntityID), ElementName = "originatingID")]
-        public EntityID OriginatingID
-        {
-            get
-            {
-                return this._originatingID;
-            }
-
-            set
-            {
-                this._originatingID = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the Identifier for the receiving entity(or simulation)
-        /// </summary>
-        [XmlElement(Type = typeof(EntityID), ElementName = "receivingID")]
-        public EntityID ReceivingID
-        {
-            get
-            {
-                return this._receivingID;
-            }
-
-            set
-            {
-                this._receivingID = value;
-            }
-        }
-
+        
         /// <summary>
         /// Gets or sets the This field shall specify the real-world time (UTC) at which the entity is to start/resume in the exercise. This information shall be used by the participating simulation applications to start/resume an exercise synchronously. This field shall be represented by a Clock Time record (see 6.2.16).
         /// </summary>
@@ -247,8 +201,6 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    this._originatingID.Marshal(dos);
-                    this._receivingID.Marshal(dos);
                     this._realWorldTime.Marshal(dos);
                     this._simulationTime.Marshal(dos);
                     dos.WriteUnsignedInt((uint)this._requestID);
@@ -273,8 +225,6 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    this._originatingID.Unmarshal(dis);
-                    this._receivingID.Unmarshal(dis);
                     this._realWorldTime.Unmarshal(dis);
                     this._simulationTime.Unmarshal(dis);
                     this._requestID = dis.ReadUnsignedInt();
@@ -305,12 +255,6 @@ namespace OpenDis.Dis2012
             base.Reflection(sb);
             try
             {
-                sb.AppendLine("<originatingID>");
-                this._originatingID.Reflection(sb);
-                sb.AppendLine("</originatingID>");
-                sb.AppendLine("<receivingID>");
-                this._receivingID.Reflection(sb);
-                sb.AppendLine("</receivingID>");
                 sb.AppendLine("<realWorldTime>");
                 this._realWorldTime.Reflection(sb);
                 sb.AppendLine("</realWorldTime>");
@@ -359,17 +303,7 @@ namespace OpenDis.Dis2012
             }
 
             ivarsEqual = base.Equals(obj);
-
-            if (!this._originatingID.Equals(obj._originatingID))
-            {
-                ivarsEqual = false;
-            }
-
-            if (!this._receivingID.Equals(obj._receivingID))
-            {
-                ivarsEqual = false;
-            }
-
+            
             if (!this._realWorldTime.Equals(obj._realWorldTime))
             {
                 ivarsEqual = false;
@@ -409,8 +343,6 @@ namespace OpenDis.Dis2012
 
             result = GenerateHash(result) ^ base.GetHashCode();
 
-            result = GenerateHash(result) ^ this._originatingID.GetHashCode();
-            result = GenerateHash(result) ^ this._receivingID.GetHashCode();
             result = GenerateHash(result) ^ this._realWorldTime.GetHashCode();
             result = GenerateHash(result) ^ this._simulationTime.GetHashCode();
             result = GenerateHash(result) ^ this._requestID.GetHashCode();

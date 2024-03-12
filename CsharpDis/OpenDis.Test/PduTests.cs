@@ -194,7 +194,7 @@ namespace OpenDis.Test
         // Entity State
         [TestCase(1, ProtocolVersion.Ieee1278_1_1995, 160)]
         [TestCase(1, ProtocolVersion.Ieee1278_1A_1998, 160)]
-        [TestCase(1, ProtocolVersion.Ieee1278_1_2012, 168)]
+        [TestCase(1, ProtocolVersion.Ieee1278_1_2012, 176)]
         // Fire
         [TestCase(2, ProtocolVersion.Ieee1278_1_1995, 96)]
         [TestCase(2, ProtocolVersion.Ieee1278_1A_1998, 96)]
@@ -202,7 +202,7 @@ namespace OpenDis.Test
         // Detonation
         [TestCase(3, ProtocolVersion.Ieee1278_1_1995, 120)]
         [TestCase(3, ProtocolVersion.Ieee1278_1A_1998, 120)]
-        [TestCase(3, ProtocolVersion.Ieee1278_1_2012, 128)]
+        [TestCase(3, ProtocolVersion.Ieee1278_1_2012, 136)]
         // Collision
         [TestCase(4, ProtocolVersion.Ieee1278_1_1995, 60)]
         [TestCase(4, ProtocolVersion.Ieee1278_1A_1998, 60)]
@@ -234,42 +234,35 @@ namespace OpenDis.Test
         // Create Entity
         [TestCase(11, ProtocolVersion.Ieee1278_1_1995, 28)]
         [TestCase(11, ProtocolVersion.Ieee1278_1A_1998, 28)]
-#warning TODO check, unexpected difference with DIS7
-        [TestCase(11, ProtocolVersion.Ieee1278_1_2012, 40)]
+        [TestCase(11, ProtocolVersion.Ieee1278_1_2012, 28)]
         // Remove Entity
         [TestCase(12, ProtocolVersion.Ieee1278_1_1995, 28)]
         [TestCase(12, ProtocolVersion.Ieee1278_1A_1998, 28)]
-        [TestCase(12, ProtocolVersion.Ieee1278_1_2012, 40)]
+        [TestCase(12, ProtocolVersion.Ieee1278_1_2012, 28)]
         // Start / Resume
         [TestCase(13, ProtocolVersion.Ieee1278_1_1995, 44)]
         [TestCase(13, ProtocolVersion.Ieee1278_1A_1998, 44)]
-#warning TODO check, unexpected difference with DIS7
-        [TestCase(13, ProtocolVersion.Ieee1278_1_2012, 56)]
+        [TestCase(13, ProtocolVersion.Ieee1278_1_2012, 44)]
         // Stop / Freeze
         [TestCase(14, ProtocolVersion.Ieee1278_1_1995, 40)]
         [TestCase(14, ProtocolVersion.Ieee1278_1A_1998, 40)]
-#warning TODO check, unexpected difference with DIS7
-        [TestCase(14, ProtocolVersion.Ieee1278_1_2012, 52)]
+        [TestCase(14, ProtocolVersion.Ieee1278_1_2012, 40)]
         // Acknowledge
         [TestCase(15, ProtocolVersion.Ieee1278_1_1995, 32)]
         [TestCase(15, ProtocolVersion.Ieee1278_1A_1998, 32)]
-#warning TODO check, unexpected difference with DIS7
-        [TestCase(15, ProtocolVersion.Ieee1278_1_2012, 44)]
+        [TestCase(15, ProtocolVersion.Ieee1278_1_2012, 32)]
         // Action request
         [TestCase(16, ProtocolVersion.Ieee1278_1_1995, 64)]
         [TestCase(16, ProtocolVersion.Ieee1278_1A_1998, 64)]
-#warning TODO check, unexpected difference with DIS7
-        [TestCase(16, ProtocolVersion.Ieee1278_1_2012, 76)]
+        [TestCase(16, ProtocolVersion.Ieee1278_1_2012, 64)]
         // Action Response
         [TestCase(17, ProtocolVersion.Ieee1278_1_1995, 64)]
         [TestCase(17, ProtocolVersion.Ieee1278_1A_1998, 64)]
-#warning TODO check, unexpected difference with DIS7
-        [TestCase(17, ProtocolVersion.Ieee1278_1_2012, 76)]
+        [TestCase(17, ProtocolVersion.Ieee1278_1_2012, 64)]
         // Data Query
         [TestCase(18, ProtocolVersion.Ieee1278_1_1995, 48)]
         [TestCase(18, ProtocolVersion.Ieee1278_1A_1998, 48)]
-#warning TODO check, unexpected difference with DIS7
-        [TestCase(18, ProtocolVersion.Ieee1278_1_2012, 64)]
+        [TestCase(18, ProtocolVersion.Ieee1278_1_2012, 48)]
         // Set Data
         [TestCase(19, ProtocolVersion.Ieee1278_1_1995, 64)]
         [TestCase(19, ProtocolVersion.Ieee1278_1A_1998, 64)]
@@ -295,7 +288,7 @@ namespace OpenDis.Test
         [TestCase(24, ProtocolVersion.Ieee1278_1A_1998, 88)]
         [TestCase(24, ProtocolVersion.Ieee1278_1_2012, 88)]
         // Transmitter
-#warning TODO check, unexpected number of bytes
+#warning TODO check if last two fields should be vectors
         [TestCase(25, ProtocolVersion.Ieee1278_1_1995, 128)]
         [TestCase(25, ProtocolVersion.Ieee1278_1A_1998, 128)]
         [TestCase(25, ProtocolVersion.Ieee1278_1_2012, 128)]
@@ -406,7 +399,6 @@ namespace OpenDis.Test
                         case "ExerciseID":
                         case "ArticulationParameterCount":
                         case "NumberOfArticulationParameters":
-                        case "NumberOfVariableParameters":
                         case "RepairResult":
                         case "ServiceTypeRequested":
                         case "NumberOfSupplyTypes":
@@ -421,6 +413,9 @@ namespace OpenDis.Test
                         case "ModulationParameterCount":
                         case "DetonationResult":
                             property.SetValue(pdu, (byte)1, null);
+                            break;
+                        case "NumberOfVariableParameters":
+                            property.SetValue(pdu, (byte)2, null);
                             break;
                         case "Capabilities":
                         case "FireMissionIndex":
@@ -529,7 +524,9 @@ namespace OpenDis.Test
                             else if (disVersion == 7)
                             {
                                 (property.GetValue(pdu, null) as List<Dis2012.VariableParameter>).Add(
-                                    GetArticulationParameter(disVersion) as Dis2012.VariableParameter);
+                                    GetVariableParameterArticulated());
+                                (property.GetValue(pdu, null) as List<Dis2012.VariableParameter>).Add(
+                                    GetVariableParameterAttached());
                             }
 
                             break;
@@ -799,18 +796,32 @@ namespace OpenDis.Test
                             ParameterTypeDesignator = 1,
                             ChangeIndicator = 1,
                         };
-                    case 7:
-                        return new Dis2012.VariableParameter()
-                        {
-                            ParameterType = 1000,
-                            ParameterValue = 12.34,
-                            PartAttachedTo = 0,
-                            RecordType = 1,
-                            ChangeIndicator = 1,
-                        };
                     default:
                         throw new NotSupportedException();
                 }
+            }
+
+            Dis2012.VariableParameterArticulated GetVariableParameterArticulated()
+            {
+                return new Dis2012.VariableParameterArticulated()
+                {
+                    ParameterType = 1000,
+                    ParameterValue = 12.34,
+                    PartAttachedTo = 2,
+                    ChangeIndicator = 1
+                };
+            }
+
+            Dis2012.VariableParameterAttached GetVariableParameterAttached()
+            {
+                return new Dis2012.VariableParameterAttached()
+                {
+                    ParameterType = 1000,
+                    PartAttachedTo = 2,
+                    ChangeIndicator = 1,
+                    DetachedIndicator = 1,
+                    AttachedPartType = GetEntityType(7) as Dis2012.EntityType
+                };
             }
 
             object GetClockTime(byte disVersion)

@@ -59,16 +59,6 @@ namespace OpenDis.Dis2012
     public partial class ActionRequestPdu : SimulationManagementFamilyPdu, IEquatable<ActionRequestPdu>
     {
         /// <summary>
-        /// Identifier for originating entity(or simulation)
-        /// </summary>
-        private EntityID _originatingID = new EntityID();
-
-        /// <summary>
-        /// Identifier for the receiving entity(or simulation)
-        /// </summary>
-        private EntityID _receivingID = new EntityID();
-
-        /// <summary>
         /// identifies the request being made by the simulaton manager
         /// </summary>
         private uint _requestID;
@@ -147,8 +137,6 @@ namespace OpenDis.Dis2012
             int marshalSize = 0; 
 
             marshalSize = base.GetMarshalledSize();
-            marshalSize += this._originatingID.GetMarshalledSize();  // this._originatingID
-            marshalSize += this._receivingID.GetMarshalledSize();  // this._receivingID
             marshalSize += 4;  // this._requestID
             marshalSize += 4;  // this._actionID
             marshalSize += 4;  // this._numberOfFixedDatumRecords
@@ -167,41 +155,7 @@ namespace OpenDis.Dis2012
 
             return marshalSize;
         }
-
-        /// <summary>
-        /// Gets or sets the Identifier for originating entity(or simulation)
-        /// </summary>
-        [XmlElement(Type = typeof(EntityID), ElementName = "originatingID")]
-        public EntityID OriginatingID
-        {
-            get
-            {
-                return this._originatingID;
-            }
-
-            set
-            {
-                this._originatingID = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the Identifier for the receiving entity(or simulation)
-        /// </summary>
-        [XmlElement(Type = typeof(EntityID), ElementName = "receivingID")]
-        public EntityID ReceivingID
-        {
-            get
-            {
-                return this._receivingID;
-            }
-
-            set
-            {
-                this._receivingID = value;
-            }
-        }
-
+        
         /// <summary>
         /// Gets or sets the identifies the request being made by the simulaton manager
         /// </summary>
@@ -321,8 +275,6 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    this._originatingID.Marshal(dos);
-                    this._receivingID.Marshal(dos);
                     dos.WriteUnsignedInt((uint)this._requestID);
                     dos.WriteUnsignedInt((uint)this._actionID);
                     dos.WriteUnsignedInt((uint)this._fixedDatums.Count);
@@ -360,8 +312,6 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    this._originatingID.Unmarshal(dis);
-                    this._receivingID.Unmarshal(dis);
                     this._requestID = dis.ReadUnsignedInt();
                     this._actionID = dis.ReadUnsignedInt();
                     this._numberOfFixedDatumRecords = dis.ReadUnsignedInt();
@@ -407,12 +357,6 @@ namespace OpenDis.Dis2012
             base.Reflection(sb);
             try
             {
-                sb.AppendLine("<originatingID>");
-                this._originatingID.Reflection(sb);
-                sb.AppendLine("</originatingID>");
-                sb.AppendLine("<receivingID>");
-                this._receivingID.Reflection(sb);
-                sb.AppendLine("</receivingID>");
                 sb.AppendLine("<requestID type=\"uint\">" + this._requestID.ToString(CultureInfo.InvariantCulture) + "</requestID>");
                 sb.AppendLine("<actionID type=\"uint\">" + this._actionID.ToString(CultureInfo.InvariantCulture) + "</actionID>");
                 sb.AppendLine("<fixedDatums type=\"uint\">" + this._fixedDatums.Count.ToString(CultureInfo.InvariantCulture) + "</fixedDatums>");
@@ -474,17 +418,7 @@ namespace OpenDis.Dis2012
             }
 
             ivarsEqual = base.Equals(obj);
-
-            if (!this._originatingID.Equals(obj._originatingID))
-            {
-                ivarsEqual = false;
-            }
-
-            if (!this._receivingID.Equals(obj._receivingID))
-            {
-                ivarsEqual = false;
-            }
-
+            
             if (this._requestID != obj._requestID)
             {
                 ivarsEqual = false;
@@ -561,8 +495,6 @@ namespace OpenDis.Dis2012
 
             result = GenerateHash(result) ^ base.GetHashCode();
 
-            result = GenerateHash(result) ^ this._originatingID.GetHashCode();
-            result = GenerateHash(result) ^ this._receivingID.GetHashCode();
             result = GenerateHash(result) ^ this._requestID.GetHashCode();
             result = GenerateHash(result) ^ this._actionID.GetHashCode();
             result = GenerateHash(result) ^ this._numberOfFixedDatumRecords.GetHashCode();

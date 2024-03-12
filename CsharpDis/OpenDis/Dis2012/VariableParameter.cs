@@ -53,17 +53,12 @@ namespace OpenDis.Dis2012
     /// </summary>
     [Serializable]
     [XmlRoot]
-    public partial class VariableParameter
+    public abstract class VariableParameter
     {
         /// <summary>
         /// the identification of the Variable Parameter record. Enumeration from EBV
         /// </summary>
         public byte RecordType { get; set; }
-        public byte ChangeIndicator { get; set; }
-        public ushort PartAttachedTo { get; set; }
-        public int ParameterType { get; set; }
-        public double ParameterValue { get; set; }
-        public double Padding { get; set; }
 
         /// <summary>
         /// Variable parameter data fields. Two doubles minus one byte
@@ -133,11 +128,6 @@ namespace OpenDis.Dis2012
             int marshalSize = 0; 
 
             marshalSize += 1;  // RecordType
-            marshalSize += 1;  // ChangeIndicator
-            marshalSize += 2;  // PartAttachedTo
-            marshalSize += 4;  // ParameterType
-            marshalSize += 8;  // ParameterValue
-            marshalSize += 8;  // Padding
 
             return marshalSize;
         }
@@ -171,11 +161,6 @@ namespace OpenDis.Dis2012
                 try
                 {
                     dos.WriteUnsignedByte((byte)this.RecordType);
-                    dos.WriteUnsignedByte((byte)this.ChangeIndicator);
-                    dos.WriteUnsignedShort(this.PartAttachedTo);
-                    dos.WriteInt(this.ParameterType);
-                    dos.WriteDouble((double)this.ParameterValue);
-                    dos.WriteDouble(this.Padding);
                 }
                 catch (Exception e)
                 {
@@ -196,11 +181,6 @@ namespace OpenDis.Dis2012
                 try
                 {
                     this.RecordType = dis.ReadByte();
-                    this.ChangeIndicator = dis.ReadByte();
-                    this.PartAttachedTo = dis.ReadUnsignedShort();
-                    this.ParameterType = dis.ReadInt();
-                    this.ParameterValue = dis.ReadDouble();
-                    this.Padding = dis.ReadDouble();
                 }
                 catch (Exception e)
                 {
@@ -278,27 +258,7 @@ namespace OpenDis.Dis2012
             {
                 ivarsEqual = false;
             }
-
-            if (this.ChangeIndicator != obj.ChangeIndicator)
-            {
-                ivarsEqual = false;
-            }
-
-            if (this.PartAttachedTo != obj.PartAttachedTo)
-            {
-                ivarsEqual = false;
-            }
-
-            if (this.ParameterType != obj.ParameterType)
-            {
-                ivarsEqual = false;
-            }
-
-            if (this.ParameterValue != obj.ParameterValue)
-            {
-                ivarsEqual = false;
-            }
-
+            
             return ivarsEqual;
         }
 
@@ -322,10 +282,6 @@ namespace OpenDis.Dis2012
             int result = 0;
 
             result = GenerateHash(result) ^ this.RecordType.GetHashCode();
-            result = GenerateHash(result) ^ this.ChangeIndicator.GetHashCode();
-            result = GenerateHash(result) ^ this.PartAttachedTo.GetHashCode();
-            result = GenerateHash(result) ^ this.ParameterType.GetHashCode();
-            result = GenerateHash(result) ^ this.ParameterValue.GetHashCode();
 
             return result;
         }
