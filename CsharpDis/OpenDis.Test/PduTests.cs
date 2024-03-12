@@ -317,6 +317,19 @@ namespace OpenDis.Test
             pdu_out.MarshalAutoLengthSet(dos);
             byte[] data = dos.ConvertToBytes();
 
+            if (disVersion == ProtocolVersion.Ieee1278_1_1995)
+            {
+                Assert.AreEqual(expLength, (pdu_out as Dis1995.Pdu).Length);    
+            }
+            else if (disVersion == ProtocolVersion.Ieee1278_1A_1998)
+            {
+                Assert.AreEqual(expLength, (pdu_out as Dis1998.Pdu).Length);    
+            }
+            else if (disVersion == ProtocolVersion.Ieee1278_1_2012)
+            {
+                Assert.AreEqual(expLength, (pdu_out as Dis2012.Pdu).Length);    
+            }
+            
             Assert.AreEqual(expLength, data.Length);
         }
 
