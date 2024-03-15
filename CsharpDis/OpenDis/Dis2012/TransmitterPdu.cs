@@ -95,7 +95,7 @@ namespace OpenDis.Dis2012
         public override int GetMarshalledSize()
         {
             int marshalSize = base.GetMarshalledSize(); //Entity ID and Radio ID,  48 + 16 bits
-            marshalSize += this.EntityId.GetMarshalledSize();  // Enitty ID / Radio Reference Identifier
+            marshalSize += this.RadioEntityType.GetMarshalledSize();  // Enitty ID / Radio Reference Identifier
             marshalSize += 1;  // this._transmitState
             marshalSize += 1;  // this._inputSource
             marshalSize += 2;  // this._padding1, Number of Variable Transmitter Parameters 

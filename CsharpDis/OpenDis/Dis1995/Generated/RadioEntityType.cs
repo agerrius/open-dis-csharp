@@ -90,7 +90,6 @@ namespace OpenDis.Dis1995
             marshalSize += 1;  // this._domain
             marshalSize += 2;  // this._country
             marshalSize += 1;  // this._category
-            marshalSize += 1;  // this._subcategory
             marshalSize += 1;  // this._nomenclatureVersion
             marshalSize += 2;  // this._nomenclature
             return marshalSize;
@@ -119,13 +118,7 @@ namespace OpenDis.Dis1995
         /// </summary>
         [XmlElement(Type = typeof(byte), ElementName = "category")]
         public byte Category { get; set; }
-
-        /// <summary>
-        /// Gets or sets the subcategory of entity
-        /// </summary>
-        [XmlElement(Type = typeof(byte), ElementName = "subcategory")]
-        public byte Subcategory { get; set; }
-
+        
         /// <summary>
         /// Gets or sets the specific info based on subcategory field
         /// </summary>
@@ -170,7 +163,6 @@ namespace OpenDis.Dis1995
                     dos.WriteUnsignedByte(Domain);
                     dos.WriteUnsignedShort(Country);
                     dos.WriteUnsignedByte(Category);
-                    dos.WriteUnsignedByte(Subcategory);
                     dos.WriteUnsignedByte(NomenclatureVersion);
                     dos.WriteUnsignedShort(Nomenclature);
                 }
@@ -203,7 +195,6 @@ namespace OpenDis.Dis1995
                     Domain = dis.ReadUnsignedByte();
                     Country = dis.ReadUnsignedShort();
                     Category = dis.ReadUnsignedByte();
-                    Subcategory = dis.ReadUnsignedByte();
                     NomenclatureVersion = dis.ReadUnsignedByte();
                     Nomenclature = dis.ReadUnsignedShort();
                 }
@@ -236,7 +227,6 @@ namespace OpenDis.Dis1995
                 sb.AppendLine("<domain type=\"byte\">" + Domain.ToString(CultureInfo.InvariantCulture) + "</domain>");
                 sb.AppendLine("<country type=\"ushort\">" + Country.ToString(CultureInfo.InvariantCulture) + "</country>");
                 sb.AppendLine("<category type=\"byte\">" + Category.ToString(CultureInfo.InvariantCulture) + "</category>");
-                sb.AppendLine("<subcategory type=\"byte\">" + Subcategory.ToString(CultureInfo.InvariantCulture) + "</subcategory>");
                 sb.AppendLine("<nomenclatureVersion type=\"byte\">" + NomenclatureVersion.ToString(CultureInfo.InvariantCulture) + "</nomenclatureVersion>");
                 sb.AppendLine("<nomenclature type=\"ushort\">" + Nomenclature.ToString(CultureInfo.InvariantCulture) + "</nomenclature>");
                 sb.AppendLine("</RadioEntityType>");
@@ -290,12 +280,7 @@ namespace OpenDis.Dis1995
             {
                 ivarsEqual = false;
             }
-
-            if (Subcategory != obj.Subcategory)
-            {
-                ivarsEqual = false;
-            }
-
+            
             if (NomenclatureVersion != obj.NomenclatureVersion)
             {
                 ivarsEqual = false;
@@ -325,7 +310,6 @@ namespace OpenDis.Dis1995
             result = GenerateHash(result) ^ Domain.GetHashCode();
             result = GenerateHash(result) ^ Country.GetHashCode();
             result = GenerateHash(result) ^ Category.GetHashCode();
-            result = GenerateHash(result) ^ Subcategory.GetHashCode();
             result = GenerateHash(result) ^ NomenclatureVersion.GetHashCode();
             result = GenerateHash(result) ^ Nomenclature.GetHashCode();
 

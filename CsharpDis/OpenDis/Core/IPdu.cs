@@ -26,6 +26,8 @@ namespace OpenDis.Core
         /// <param name="dos">The DataOutputStream instance to which the PDU is marshaled.</param>
         void Marshal(DataOutputStream dos);
 
+        void MarshalAutoLengthSet(DataOutputStream dos);
+
         /// <summary>
         /// Unmarshal the data from the DataInputStream.
         /// </summary>

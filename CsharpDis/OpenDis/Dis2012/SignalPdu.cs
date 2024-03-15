@@ -293,7 +293,17 @@ namespace OpenDis.Dis2012
                 ivarsEqual = false;
             }
 
-            if (!Data.Equals(obj.Data))
+            if (Data.Length == obj.Data.Length)
+            {
+                for (int idx = 0; idx < Data.Length; idx++)
+                {
+                    if (Data[idx] != obj.Data[idx])
+                    {
+                        ivarsEqual = false;
+                    }
+                }
+            }
+            else
             {
                 ivarsEqual = false;
             }

@@ -153,7 +153,7 @@ namespace OpenDis.Dis1995
                 try
                 {
                     dos.WriteUnsignedInt(VariableDatumID);
-                    dos.WriteUnsignedInt((uint)VariableDatums.Count);
+                    dos.WriteUnsignedInt(VariableDatumLength);
 
                     for (int idx = 0; idx < VariableDatums.Count; idx++)
                     {
@@ -189,7 +189,7 @@ namespace OpenDis.Dis1995
                     VariableDatumID = dis.ReadUnsignedInt();
                     VariableDatumLength = dis.ReadUnsignedInt();
 
-                    for (int idx = 0; idx < VariableDatumLength; idx++)
+                    for (int idx = 0; idx < VariableDatumLength / 64; idx++)
                     {
                         var anX = new EightByteChunk();
                         anX.Unmarshal(dis);

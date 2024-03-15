@@ -92,6 +92,7 @@ namespace OpenDis.Dis1995
             marshalSize += 4;  // this._sampleRate
             marshalSize += 2;  // this._dataLength
             marshalSize += 2;  // this._samples
+            marshalSize += Data.Length;
             return marshalSize;
         }
 
@@ -125,6 +126,12 @@ namespace OpenDis.Dis1995
         [XmlElement(Type = typeof(short), ElementName = "samples")]
         public short Samples { get; set; }
 
+        /// <summary>
+        /// Gets or sets the list of eight bit values
+        /// </summary>
+        [XmlElement(ElementName = "dataList", DataType = "hexBinary")]
+        public byte[] Data { get; set; }
+        
         ///<inheritdoc/>
         public override void MarshalAutoLengthSet(DataOutputStream dos)
         {
@@ -147,6 +154,7 @@ namespace OpenDis.Dis1995
                     dos.WriteUnsignedInt(SampleRate);
                     dos.WriteShort(DataLength);
                     dos.WriteShort(Samples);
+                    dos.WriteByte(Data);
                 }
                 catch (Exception e)
                 {
@@ -180,6 +188,7 @@ namespace OpenDis.Dis1995
                     SampleRate = dis.ReadUnsignedInt();
                     DataLength = dis.ReadShort();
                     Samples = dis.ReadShort();
+                    Data = dis.ReadByteArray((DataLength / 8) + (DataLength % 8 > 0 ? 1 : 0));
                 }
                 catch (Exception e)
                 {
@@ -212,6 +221,12 @@ namespace OpenDis.Dis1995
                 sb.AppendLine("<sampleRate type=\"uint\">" + SampleRate.ToString(CultureInfo.InvariantCulture) + "</sampleRate>");
                 sb.AppendLine("<dataLength type=\"short\">" + DataLength.ToString(CultureInfo.InvariantCulture) + "</dataLength>");
                 sb.AppendLine("<samples type=\"short\">" + Samples.ToString(CultureInfo.InvariantCulture) + "</samples>");
+                sb.AppendLine("<data type=\"byte[]\">");
+                foreach (byte b in Data)
+                {
+                    sb.Append(b.ToString("X2", CultureInfo.InvariantCulture));
+                }
+                sb.AppendLine("</data>");
                 sb.AppendLine("</SignalPdu>");
             }
             catch (Exception e)
@@ -267,6 +282,21 @@ namespace OpenDis.Dis1995
             {
                 ivarsEqual = false;
             }
+            
+            if (Data.Length == obj.Data.Length)
+            {
+                for (int idx = 0; idx < Data.Length; idx++)
+                {
+                    if (Data[idx] != obj.Data[idx])
+                    {
+                        ivarsEqual = false;
+                    }
+                }
+            }
+            else
+            {
+                ivarsEqual = false;
+            }
 
             return ivarsEqual;
         }
@@ -290,6 +320,14 @@ namespace OpenDis.Dis1995
             result = GenerateHash(result) ^ SampleRate.GetHashCode();
             result = GenerateHash(result) ^ DataLength.GetHashCode();
             result = GenerateHash(result) ^ Samples.GetHashCode();
+            
+            if (Data.Length > 0)
+            {
+                for (int idx = 0; idx < Data.Length; idx++)
+                {
+                    result = GenerateHash(result) ^ Data[idx].GetHashCode();
+                }
+            }
 
             return result;
         }

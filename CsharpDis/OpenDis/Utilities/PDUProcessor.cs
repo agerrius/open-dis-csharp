@@ -847,6 +847,14 @@ namespace OpenDis.Core
                     pdu = new Dis1995.TransmitterPdu();
                     pdu.Unmarshal(ds);
                     break;
+                case PduType.Designator:
+                    pdu = new Dis1995.DesignatorPdu();
+                    pdu.Unmarshal(ds);
+                    break;
+                case PduType.Receiver:
+                    pdu = new Dis1995.ReceiverPdu();
+                    pdu.Unmarshal(ds);
+                    break;
             }
 
             return pdu;

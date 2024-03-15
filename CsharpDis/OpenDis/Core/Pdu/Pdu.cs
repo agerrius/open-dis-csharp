@@ -39,6 +39,7 @@
 
 using OpenDis.Enumerations;
 using System;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -59,7 +60,7 @@ namespace OpenDis.Core.Pdu
         /// </summary>
         public Pdu(ProtocolVersion protocolVersion)
         {
-            ProtocolVersion = ProtocolVersion;
+            ProtocolVersion = (byte)protocolVersion;
         }
 
         /// <summary>
@@ -154,6 +155,13 @@ namespace OpenDis.Core.Pdu
             {
                 ExceptionOccured(this, new PduExceptionEventArgs(e));
             }
+        }
+
+        public virtual void MarshalAutoLengthSet(DataOutputStream dos)
+        {
+            // Set the length prior to marshalling data
+            Length = (ushort)GetMarshalledSize();
+            Marshal(dos);
         }
 
         /// <summary>

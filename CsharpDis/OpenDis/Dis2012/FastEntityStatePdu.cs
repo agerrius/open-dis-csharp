@@ -1149,9 +1149,19 @@ namespace OpenDis.Dis2012
                     this._capabilities = dis.ReadInt();
                     for (int idx = 0; idx < this.NumberOfVariableParameters; idx++)
                     {
-                        VariableParameter anX = new VariableParameter();
-                        anX.Unmarshal(dis);
-                        this._variableParameters.Add(anX);
+                        byte recordType = dis.ReadByte();
+                        if (recordType == 0)
+                        {
+                            VariableParameterArticulated anX = new VariableParameterArticulated();
+                            anX.Unmarshal(dis);
+                            this._variableParameters.Add(anX);
+                        }
+                        else if (recordType == 1)
+                        {
+                            VariableParameterAttached anX = new VariableParameterAttached();
+                            anX.Unmarshal(dis);
+                            this._variableParameters.Add(anX);    
+                        }
                     };
 
                 }

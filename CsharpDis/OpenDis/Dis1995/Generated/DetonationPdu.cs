@@ -100,6 +100,7 @@ namespace OpenDis.Dis1995
             marshalSize += Velocity.GetMarshalledSize();  // this._velocity
             marshalSize += LocationInWorldCoordinates.GetMarshalledSize();  // this._locationInWorldCoordinates
             marshalSize += BurstDescriptor.GetMarshalledSize();  // this._burstDescriptor
+            marshalSize += LocationInEntityCoordinates.GetMarshalledSize(); // this._locationInEntityCoordinates
             marshalSize += 1;  // this._detonationResult
             marshalSize += 1;  // this._numberOfArticulationParameters
             marshalSize += 2;  // this._pad
@@ -142,6 +143,13 @@ namespace OpenDis.Dis1995
         [XmlElement(Type = typeof(BurstDescriptor), ElementName = "burstDescriptor")]
         public BurstDescriptor BurstDescriptor { get; set; } = new BurstDescriptor();
 
+        /// <summary>
+        /// Gets or sets the location of the detonation or impact in the target entity's coordinate system. This information
+        /// should be used for damage assessment.
+        /// </summary>
+        [XmlElement(Type = typeof(Vector3Float), ElementName = "locationInEntityCoordinates")]
+        public Vector3Float LocationInEntityCoordinates { get; set; } = new Vector3Float();
+        
         /// <summary>
         /// Gets or sets the result of the explosion
         /// </summary>
@@ -194,6 +202,7 @@ namespace OpenDis.Dis1995
                     Velocity.Marshal(dos);
                     LocationInWorldCoordinates.Marshal(dos);
                     BurstDescriptor.Marshal(dos);
+                    LocationInEntityCoordinates.Marshal(dos);
                     dos.WriteUnsignedByte(DetonationResult);
                     dos.WriteUnsignedByte((byte)ArticulationParameters.Count);
                     dos.WriteShort(Pad);
@@ -236,6 +245,7 @@ namespace OpenDis.Dis1995
                     Velocity.Unmarshal(dis);
                     LocationInWorldCoordinates.Unmarshal(dis);
                     BurstDescriptor.Unmarshal(dis);
+                    LocationInEntityCoordinates.Unmarshal(dis);
                     DetonationResult = dis.ReadUnsignedByte();
                     NumberOfArticulationParameters = dis.ReadUnsignedByte();
                     Pad = dis.ReadShort();
@@ -288,6 +298,9 @@ namespace OpenDis.Dis1995
                 sb.AppendLine("<burstDescriptor>");
                 BurstDescriptor.Reflection(sb);
                 sb.AppendLine("</burstDescriptor>");
+                sb.AppendLine("<locationInEntityCoordinates>");
+                LocationInEntityCoordinates.Reflection(sb);
+                sb.AppendLine("</locationInEntityCoordinates>");
                 sb.AppendLine("<detonationResult type=\"byte\">" + DetonationResult.ToString(CultureInfo.InvariantCulture) + "</detonationResult>");
                 sb.AppendLine("<articulationParameters type=\"byte\">" + ArticulationParameters.Count.ToString(CultureInfo.InvariantCulture) + "</articulationParameters>");
                 sb.AppendLine("<pad type=\"short\">" + Pad.ToString(CultureInfo.InvariantCulture) + "</pad>");
@@ -355,6 +368,11 @@ namespace OpenDis.Dis1995
                 ivarsEqual = false;
             }
 
+            if (!LocationInEntityCoordinates.Equals(obj.LocationInEntityCoordinates))
+            {
+                ivarsEqual = false;
+            }
+
             if (DetonationResult != obj.DetonationResult)
             {
                 ivarsEqual = false;
@@ -408,6 +426,7 @@ namespace OpenDis.Dis1995
             result = GenerateHash(result) ^ Velocity.GetHashCode();
             result = GenerateHash(result) ^ LocationInWorldCoordinates.GetHashCode();
             result = GenerateHash(result) ^ BurstDescriptor.GetHashCode();
+            result = GenerateHash(result) ^ LocationInEntityCoordinates.GetHashCode();
             result = GenerateHash(result) ^ DetonationResult.GetHashCode();
             result = GenerateHash(result) ^ NumberOfArticulationParameters.GetHashCode();
             result = GenerateHash(result) ^ Pad.GetHashCode();
