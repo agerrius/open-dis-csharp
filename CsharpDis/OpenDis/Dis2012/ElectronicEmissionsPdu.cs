@@ -56,7 +56,7 @@ namespace OpenDis.Dis2012
     [Serializable]
     [XmlRoot]
     [XmlInclude(typeof(EntityID))]
-    [XmlInclude(typeof(EventIdentifier))]
+    [XmlInclude(typeof(EventID))]
     [XmlInclude(typeof(ElectronicEmissionSystemData))]
     public partial class ElectronicEmissionsPdu : DistributedEmissionsFamilyPdu, IEquatable<ElectronicEmissionsPdu>
     {
@@ -115,8 +115,8 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// Gets or sets the ID of event
         /// </summary>
-        [XmlElement(Type = typeof(EventIdentifier), ElementName = "EventIdentifier")]
-        public EventIdentifier EventID { get; set; } = new EventIdentifier();
+        [XmlElement(Type = typeof(EventID), ElementName = "EventIdentifier")]
+        public EventID EventID { get; set; } = new EventID();
 
         /// <summary>
         /// Gets or sets the This field shall be used to indicate if the data in the PDU represents a state update or just

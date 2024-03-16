@@ -66,7 +66,7 @@ namespace OpenDis.Dis2012
     {
 
         public EntityID EmittingEntityId;
-        public EventIdentifier EventID;
+        public EventID EventID;
         public Vector3Float Location;
         public SystemIdentifier SystemID;
         public PduStatus PduStatus;

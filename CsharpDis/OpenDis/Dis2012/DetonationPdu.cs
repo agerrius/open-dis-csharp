@@ -56,7 +56,7 @@ namespace OpenDis.Dis2012
     [Serializable]
     [XmlRoot]
     [XmlInclude(typeof(EntityID))]
-    [XmlInclude(typeof(EventIdentifier))]
+    [XmlInclude(typeof(EventID))]
     [XmlInclude(typeof(Vector3Float))]
     [XmlInclude(typeof(Vector3Double))]
     [XmlInclude(typeof(BurstDescriptor))]
@@ -71,7 +71,7 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// ID of event, Section 7.3.3
         /// </summary>
-        private EventIdentifier _eventID = new EventIdentifier();
+        private EventID _eventID = new EventID();
 
         /// <summary>
         /// velocity of the munition immediately before detonation/impact, Section 7.3.3 
@@ -200,8 +200,8 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// Gets or sets the ID of event, Section 7.3.3
         /// </summary>
-        [XmlElement(Type = typeof(EventIdentifier), ElementName = "eventID")]
-        public EventIdentifier EventID
+        [XmlElement(Type = typeof(EventID), ElementName = "eventID")]
+        public EventID EventID
         {
             get
             {

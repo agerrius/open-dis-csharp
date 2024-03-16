@@ -54,19 +54,19 @@ namespace OpenDis.Dis2012
     /// </summary>
     [Serializable]
     [XmlRoot]
-    [XmlInclude(typeof(EventIdentifier))]
+    [XmlInclude(typeof(EventID))]
     [XmlInclude(typeof(Vector3Double))]
     public partial class LaunchedMunitionRecord
     {
-        private EventIdentifier _fireEventID = new EventIdentifier();
+        private EventID _fireEventID = new EventID();
 
         private ushort _padding;
 
-        private EventIdentifier _firingEntityID = new EventIdentifier();
+        private EventID _firingEntityID = new EventID();
 
         private ushort _padding2;
 
-        private EventIdentifier _targetEntityID = new EventIdentifier();
+        private EventID _targetEntityID = new EventID();
 
         private ushort _padding3;
 
@@ -129,8 +129,8 @@ namespace OpenDis.Dis2012
             return marshalSize;
         }
 
-        [XmlElement(Type = typeof(EventIdentifier), ElementName = "fireEventID")]
-        public EventIdentifier FireEventID
+        [XmlElement(Type = typeof(EventID), ElementName = "fireEventID")]
+        public EventID FireEventID
         {
             get
             {
@@ -157,8 +157,8 @@ namespace OpenDis.Dis2012
             }
         }
 
-        [XmlElement(Type = typeof(EventIdentifier), ElementName = "firingEntityID")]
-        public EventIdentifier FiringEntityID
+        [XmlElement(Type = typeof(EventID), ElementName = "firingEntityID")]
+        public EventID FiringEntityID
         {
             get
             {
@@ -185,8 +185,8 @@ namespace OpenDis.Dis2012
             }
         }
 
-        [XmlElement(Type = typeof(EventIdentifier), ElementName = "targetEntityID")]
-        public EventIdentifier TargetEntityID
+        [XmlElement(Type = typeof(EventID), ElementName = "targetEntityID")]
+        public EventID TargetEntityID
         {
             get
             {

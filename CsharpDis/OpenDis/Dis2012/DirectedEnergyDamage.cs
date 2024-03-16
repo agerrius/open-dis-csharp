@@ -55,7 +55,7 @@ namespace OpenDis.Dis2012
     [Serializable]
     [XmlRoot]
     [XmlInclude(typeof(Vector3Float))]
-    [XmlInclude(typeof(EventIdentifier))]
+    [XmlInclude(typeof(EventID))]
     public partial class DirectedEnergyDamage
     {
         /// <summary>
@@ -111,7 +111,7 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// For any component damage resulting this field shall be set to the fire event ID from that PDU.
         /// </summary>
-        private EventIdentifier _fireEventID = new EventIdentifier();
+        private EventID _fireEventID = new EventID();
 
         /// <summary>
         /// padding
@@ -353,8 +353,8 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// Gets or sets the For any component damage resulting this field shall be set to the fire event ID from that PDU.
         /// </summary>
-        [XmlElement(Type = typeof(EventIdentifier), ElementName = "fireEventID")]
-        public EventIdentifier FireEventID
+        [XmlElement(Type = typeof(EventID), ElementName = "fireEventID")]
+        public EventID FireEventID
         {
             get
             {

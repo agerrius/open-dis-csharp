@@ -55,7 +55,7 @@ namespace OpenDis.Dis2012
     [Serializable]
     [XmlRoot]
     [XmlInclude(typeof(EntityID))]
-    [XmlInclude(typeof(EventIdentifier))]
+    [XmlInclude(typeof(EventID))]
     [XmlInclude(typeof(Vector3Float))]
     [XmlInclude(typeof(Vector3Float))]
     [XmlInclude(typeof(Vector3Float))]
@@ -69,7 +69,7 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// ID of event
         /// </summary>
-        private EventIdentifier _eventID = new EventIdentifier();
+        private EventID _eventID = new EventID();
 
         /// <summary>
         /// This field shall be used to indicate whether the data in the UA PDU represent a state update or data that have changed since issuance of the last UA PDU
@@ -220,8 +220,8 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// Gets or sets the ID of event
         /// </summary>
-        [XmlElement(Type = typeof(EventIdentifier), ElementName = "eventID")]
-        public EventIdentifier EventID
+        [XmlElement(Type = typeof(EventID), ElementName = "eventID")]
+        public EventID EventID
         {
             get
             {

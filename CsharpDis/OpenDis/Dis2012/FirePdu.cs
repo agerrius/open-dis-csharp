@@ -56,7 +56,7 @@ namespace OpenDis.Dis2012
     [Serializable]
     [XmlRoot]
     [XmlInclude(typeof(EntityID))]
-    [XmlInclude(typeof(EventIdentifier))]
+    [XmlInclude(typeof(EventID))]
     [XmlInclude(typeof(Vector3Double))]
     [XmlInclude(typeof(BurstDescriptor))]
     [XmlInclude(typeof(Vector3Float))]
