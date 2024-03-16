@@ -59,7 +59,7 @@ namespace OpenDis.Dis1995
     [XmlInclude(typeof(Vector3Double))]
     [XmlInclude(typeof(BurstDescriptor))]
     [XmlInclude(typeof(Vector3Float))]
-    public partial class FirePdu : WarfareFamilyPdu, IEquatable<FirePdu>
+    public partial class FirePdu : Core.Pdu.FirePdu, IEquatable<FirePdu>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FirePdu"/> class.
@@ -102,49 +102,7 @@ namespace OpenDis.Dis1995
             marshalSize += 4;  // this._range
             return marshalSize;
         }
-
-        /// <summary>
-        /// Gets or sets the ID of the munition that is being shot
-        /// </summary>
-        [XmlElement(Type = typeof(EntityID), ElementName = "munitionID")]
-        public EntityID MunitionID { get; set; } = new EntityID();
-
-        /// <summary>
-        /// Gets or sets the ID of event
-        /// </summary>
-        [XmlElement(Type = typeof(EventID), ElementName = "eventID")]
-        public EventID EventID { get; set; } = new EventID();
-
-        /// <summary>
-        /// Gets or sets the fireMissionIndex
-        /// </summary>
-        [XmlElement(Type = typeof(int), ElementName = "fireMissionIndex")]
-        public int FireMissionIndex { get; set; }
-
-        /// <summary>
-        /// Gets or sets the location of the firing event
-        /// </summary>
-        [XmlElement(Type = typeof(Vector3Double), ElementName = "locationInWorldCoordinates")]
-        public Vector3Double LocationInWorldCoordinates { get; set; } = new Vector3Double();
-
-        /// <summary>
-        /// Gets or sets the Describes munitions used in the firing event
-        /// </summary>
-        [XmlElement(Type = typeof(BurstDescriptor), ElementName = "burstDescriptor")]
-        public BurstDescriptor BurstDescriptor { get; set; } = new BurstDescriptor();
-
-        /// <summary>
-        /// Gets or sets the Velocity of the ammunition
-        /// </summary>
-        [XmlElement(Type = typeof(Vector3Float), ElementName = "velocity")]
-        public Vector3Float Velocity { get; set; } = new Vector3Float();
-
-        /// <summary>
-        /// Gets or sets the range to the target
-        /// </summary>
-        [XmlElement(Type = typeof(float), ElementName = "range")]
-        public float Range { get; set; }
-
+        
         ///<inheritdoc/>
         public override void MarshalAutoLengthSet(DataOutputStream dos)
         {
@@ -164,7 +122,7 @@ namespace OpenDis.Dis1995
                 {
                     MunitionID.Marshal(dos);
                     EventID.Marshal(dos);
-                    dos.WriteInt(FireMissionIndex);
+                    dos.WriteUnsignedInt(FireMissionIndex);
                     LocationInWorldCoordinates.Marshal(dos);
                     BurstDescriptor.Marshal(dos);
                     Velocity.Marshal(dos);
@@ -199,7 +157,7 @@ namespace OpenDis.Dis1995
                 {
                     MunitionID.Unmarshal(dis);
                     EventID.Unmarshal(dis);
-                    FireMissionIndex = dis.ReadInt();
+                    FireMissionIndex = dis.ReadUnsignedInt();
                     LocationInWorldCoordinates.Unmarshal(dis);
                     BurstDescriptor.Unmarshal(dis);
                     Velocity.Unmarshal(dis);

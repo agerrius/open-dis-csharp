@@ -45,21 +45,20 @@ using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
 
-namespace OpenDis.Dis1995
+namespace OpenDis.Core.DataTypes
 {
     /// <summary>
-    /// Section 5.2.7. Specifies the type of muntion fired, the type of warhead, the        type of fuse, the number of
-    /// rounds fired, and the rate at which the roudns are fired in         rounds per minute.
+    /// Section 5.2.16. Identifies the type of entity, including kind of entity, domain (surface, subsurface, air, etc)
+    /// country, category, etc.
     /// </summary>
     [Serializable]
     [XmlRoot]
-    [XmlInclude(typeof(EntityType))]
-    public partial class BurstDescriptor : IEquatable<BurstDescriptor>, IReflectable
+    public partial class EntityType : IEquatable<EntityType>, IReflectable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="BurstDescriptor"/> class.
+        /// Initializes a new instance of the <see cref="EntityType"/> class.
         /// </summary>
-        public BurstDescriptor()
+        public EntityType()
         {
         }
 
@@ -71,7 +70,7 @@ namespace OpenDis.Dis1995
         /// <returns>
         ///    <c>true</c> if operands are not equal; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(BurstDescriptor left, BurstDescriptor right) => !(left == right);
+        public static bool operator !=(EntityType left, EntityType right) => !(left == right);
 
         /// <summary>
         /// Implements the operator ==.
@@ -81,50 +80,64 @@ namespace OpenDis.Dis1995
         /// <returns>
         ///    <c>true</c> if both operands are equal; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator ==(BurstDescriptor left, BurstDescriptor right)
+        public static bool operator ==(EntityType left, EntityType right)
             => ReferenceEquals(left, right) || (left is not null && right is not null && left.Equals(right));
 
         public virtual int GetMarshalledSize()
         {
             int marshalSize = 0;
 
-            marshalSize += Munition.GetMarshalledSize();  // this._munition
-            marshalSize += 2;  // this._warhead
-            marshalSize += 2;  // this._fuse
-            marshalSize += 2;  // this._quantity
-            marshalSize += 2;  // this._rate
+            marshalSize += 1;  // this._entityKind
+            marshalSize += 1;  // this._domain
+            marshalSize += 2;  // this._country
+            marshalSize += 1;  // this._category
+            marshalSize += 1;  // this._subcategory
+            marshalSize += 1;  // this._specific
+            marshalSize += 1;  // this._extra
             return marshalSize;
         }
 
         /// <summary>
-        /// Gets or sets the What munition was used in the burst
+        /// Gets or sets the Kind of entity
         /// </summary>
-        [XmlElement(Type = typeof(EntityType), ElementName = "munition")]
-        public EntityType Munition { get; set; } = new EntityType();
+        [XmlElement(Type = typeof(byte), ElementName = "entityKind")]
+        public byte EntityKind { get; set; }
 
         /// <summary>
-        /// Gets or sets the type of warhead
+        /// Gets or sets the Domain of entity (air, surface, subsurface, space, etc)
         /// </summary>
-        [XmlElement(Type = typeof(ushort), ElementName = "warhead")]
-        public ushort Warhead { get; set; }
+        [XmlElement(Type = typeof(byte), ElementName = "domain")]
+        public byte Domain { get; set; }
 
         /// <summary>
-        /// Gets or sets the type of fuse used
+        /// Gets or sets the country to which the design of the entity is attributed
         /// </summary>
-        [XmlElement(Type = typeof(ushort), ElementName = "fuse")]
-        public ushort Fuse { get; set; }
+        [XmlElement(Type = typeof(ushort), ElementName = "country")]
+        public ushort Country { get; set; }
 
         /// <summary>
-        /// Gets or sets the how many of the munition were fired
+        /// Gets or sets the category of entity
         /// </summary>
-        [XmlElement(Type = typeof(ushort), ElementName = "quantity")]
-        public ushort Quantity { get; set; }
+        [XmlElement(Type = typeof(byte), ElementName = "category")]
+        public byte Category { get; set; }
 
         /// <summary>
-        /// Gets or sets the rate at which the munition was fired
+        /// Gets or sets the subcategory of entity
         /// </summary>
-        [XmlElement(Type = typeof(ushort), ElementName = "rate")]
-        public ushort Rate { get; set; }
+        [XmlElement(Type = typeof(byte), ElementName = "subcategory")]
+        public byte Subcategory { get; set; }
+
+        /// <summary>
+        /// Gets or sets the specific info based on subcategory field
+        /// </summary>
+        [XmlElement(Type = typeof(byte), ElementName = "specific")]
+        public byte Specific { get; set; }
+
+        /// <summary>
+        /// Gets or sets the extra
+        /// </summary>
+        [XmlElement(Type = typeof(byte), ElementName = "extra")]
+        public byte Extra { get; set; }
 
         /// <summary>
         /// Occurs when exception when processing PDU is caught.
@@ -154,11 +167,13 @@ namespace OpenDis.Dis1995
             {
                 try
                 {
-                    Munition.Marshal(dos);
-                    dos.WriteUnsignedShort(Warhead);
-                    dos.WriteUnsignedShort(Fuse);
-                    dos.WriteUnsignedShort(Quantity);
-                    dos.WriteUnsignedShort(Rate);
+                    dos.WriteUnsignedByte(EntityKind);
+                    dos.WriteUnsignedByte(Domain);
+                    dos.WriteUnsignedShort(Country);
+                    dos.WriteUnsignedByte(Category);
+                    dos.WriteUnsignedByte(Subcategory);
+                    dos.WriteUnsignedByte(Specific);
+                    dos.WriteUnsignedByte(Extra);
                 }
                 catch (Exception e)
                 {
@@ -185,11 +200,13 @@ namespace OpenDis.Dis1995
             {
                 try
                 {
-                    Munition.Unmarshal(dis);
-                    Warhead = dis.ReadUnsignedShort();
-                    Fuse = dis.ReadUnsignedShort();
-                    Quantity = dis.ReadUnsignedShort();
-                    Rate = dis.ReadUnsignedShort();
+                    EntityKind = dis.ReadUnsignedByte();
+                    Domain = dis.ReadUnsignedByte();
+                    Country = dis.ReadUnsignedShort();
+                    Category = dis.ReadUnsignedByte();
+                    Subcategory = dis.ReadUnsignedByte();
+                    Specific = dis.ReadUnsignedByte();
+                    Extra = dis.ReadUnsignedByte();
                 }
                 catch (Exception e)
                 {
@@ -213,17 +230,17 @@ namespace OpenDis.Dis1995
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Due to ignoring errors.")]
         public virtual void Reflection(StringBuilder sb)
         {
-            sb.AppendLine("<BurstDescriptor>");
+            sb.AppendLine("<EntityType>");
             try
             {
-                sb.AppendLine("<munition>");
-                Munition.Reflection(sb);
-                sb.AppendLine("</munition>");
-                sb.AppendLine("<warhead type=\"ushort\">" + Warhead.ToString(CultureInfo.InvariantCulture) + "</warhead>");
-                sb.AppendLine("<fuse type=\"ushort\">" + Fuse.ToString(CultureInfo.InvariantCulture) + "</fuse>");
-                sb.AppendLine("<quantity type=\"ushort\">" + Quantity.ToString(CultureInfo.InvariantCulture) + "</quantity>");
-                sb.AppendLine("<rate type=\"ushort\">" + Rate.ToString(CultureInfo.InvariantCulture) + "</rate>");
-                sb.AppendLine("</BurstDescriptor>");
+                sb.AppendLine("<entityKind type=\"byte\">" + EntityKind.ToString(CultureInfo.InvariantCulture) + "</entityKind>");
+                sb.AppendLine("<domain type=\"byte\">" + Domain.ToString(CultureInfo.InvariantCulture) + "</domain>");
+                sb.AppendLine("<country type=\"ushort\">" + Country.ToString(CultureInfo.InvariantCulture) + "</country>");
+                sb.AppendLine("<category type=\"byte\">" + Category.ToString(CultureInfo.InvariantCulture) + "</category>");
+                sb.AppendLine("<subcategory type=\"byte\">" + Subcategory.ToString(CultureInfo.InvariantCulture) + "</subcategory>");
+                sb.AppendLine("<specific type=\"byte\">" + Specific.ToString(CultureInfo.InvariantCulture) + "</specific>");
+                sb.AppendLine("<extra type=\"byte\">" + Extra.ToString(CultureInfo.InvariantCulture) + "</extra>");
+                sb.AppendLine("</EntityType>");
             }
             catch (Exception e)
             {
@@ -243,10 +260,10 @@ namespace OpenDis.Dis1995
         }
 
         /// <inheritdoc/>
-        public override bool Equals(object obj) => this == obj as BurstDescriptor;
+        public override bool Equals(object obj) => this == obj as EntityType;
 
         ///<inheritdoc/>
-        public bool Equals(BurstDescriptor obj)
+        public bool Equals(EntityType obj)
         {
             bool ivarsEqual = true;
 
@@ -255,27 +272,37 @@ namespace OpenDis.Dis1995
                 return false;
             }
 
-            if (!Munition.Equals(obj.Munition))
+            if (EntityKind != obj.EntityKind)
             {
                 ivarsEqual = false;
             }
 
-            if (Warhead != obj.Warhead)
+            if (Domain != obj.Domain)
             {
                 ivarsEqual = false;
             }
 
-            if (Fuse != obj.Fuse)
+            if (Country != obj.Country)
             {
                 ivarsEqual = false;
             }
 
-            if (Quantity != obj.Quantity)
+            if (Category != obj.Category)
             {
                 ivarsEqual = false;
             }
 
-            if (Rate != obj.Rate)
+            if (Subcategory != obj.Subcategory)
+            {
+                ivarsEqual = false;
+            }
+
+            if (Specific != obj.Specific)
+            {
+                ivarsEqual = false;
+            }
+
+            if (Extra != obj.Extra)
             {
                 ivarsEqual = false;
             }
@@ -295,11 +322,13 @@ namespace OpenDis.Dis1995
         {
             int result = 0;
 
-            result = GenerateHash(result) ^ Munition.GetHashCode();
-            result = GenerateHash(result) ^ Warhead.GetHashCode();
-            result = GenerateHash(result) ^ Fuse.GetHashCode();
-            result = GenerateHash(result) ^ Quantity.GetHashCode();
-            result = GenerateHash(result) ^ Rate.GetHashCode();
+            result = GenerateHash(result) ^ EntityKind.GetHashCode();
+            result = GenerateHash(result) ^ Domain.GetHashCode();
+            result = GenerateHash(result) ^ Country.GetHashCode();
+            result = GenerateHash(result) ^ Category.GetHashCode();
+            result = GenerateHash(result) ^ Subcategory.GetHashCode();
+            result = GenerateHash(result) ^ Specific.GetHashCode();
+            result = GenerateHash(result) ^ Extra.GetHashCode();
 
             return result;
         }

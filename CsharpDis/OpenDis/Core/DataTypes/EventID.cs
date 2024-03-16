@@ -45,20 +45,19 @@ using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
 
-namespace OpenDis.Dis1995
+namespace OpenDis.Core.DataTypes
 {
     /// <summary>
-    /// Section 5.2.16. Identifies the type of entity, including kind of entity, domain (surface, subsurface, air, etc)
-    /// country, category, etc.
+    /// Section 5.2.18. Identifies a unique event in a simulation via the combination of three values
     /// </summary>
     [Serializable]
     [XmlRoot]
-    public partial class EntityType : IEquatable<EntityType>, IReflectable
+    public partial class EventID : IEquatable<EventID>, IReflectable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EntityType"/> class.
+        /// Initializes a new instance of the <see cref="EventID"/> class.
         /// </summary>
-        public EntityType()
+        public EventID()
         {
         }
 
@@ -70,7 +69,7 @@ namespace OpenDis.Dis1995
         /// <returns>
         ///    <c>true</c> if operands are not equal; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(EntityType left, EntityType right) => !(left == right);
+        public static bool operator !=(EventID left, EventID right) => !(left == right);
 
         /// <summary>
         /// Implements the operator ==.
@@ -80,64 +79,36 @@ namespace OpenDis.Dis1995
         /// <returns>
         ///    <c>true</c> if both operands are equal; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator ==(EntityType left, EntityType right)
+        public static bool operator ==(EventID left, EventID right)
             => ReferenceEquals(left, right) || (left is not null && right is not null && left.Equals(right));
 
         public virtual int GetMarshalledSize()
         {
             int marshalSize = 0;
 
-            marshalSize += 1;  // this._entityKind
-            marshalSize += 1;  // this._domain
-            marshalSize += 2;  // this._country
-            marshalSize += 1;  // this._category
-            marshalSize += 1;  // this._subcategory
-            marshalSize += 1;  // this._specific
-            marshalSize += 1;  // this._extra
+            marshalSize += 2;  // this._site
+            marshalSize += 2;  // this._application
+            marshalSize += 2;  // this._eventNumber
             return marshalSize;
         }
 
         /// <summary>
-        /// Gets or sets the Kind of entity
+        /// Gets or sets the site ID
         /// </summary>
-        [XmlElement(Type = typeof(byte), ElementName = "entityKind")]
-        public byte EntityKind { get; set; }
+        [XmlElement(Type = typeof(ushort), ElementName = "site")]
+        public ushort Site { get; set; }
 
         /// <summary>
-        /// Gets or sets the Domain of entity (air, surface, subsurface, space, etc)
+        /// Gets or sets the application ID
         /// </summary>
-        [XmlElement(Type = typeof(byte), ElementName = "domain")]
-        public byte Domain { get; set; }
+        [XmlElement(Type = typeof(ushort), ElementName = "application")]
+        public ushort Application { get; set; }
 
         /// <summary>
-        /// Gets or sets the country to which the design of the entity is attributed
+        /// Gets or sets the number of the event
         /// </summary>
-        [XmlElement(Type = typeof(ushort), ElementName = "country")]
-        public ushort Country { get; set; }
-
-        /// <summary>
-        /// Gets or sets the category of entity
-        /// </summary>
-        [XmlElement(Type = typeof(byte), ElementName = "category")]
-        public byte Category { get; set; }
-
-        /// <summary>
-        /// Gets or sets the subcategory of entity
-        /// </summary>
-        [XmlElement(Type = typeof(byte), ElementName = "subcategory")]
-        public byte Subcategory { get; set; }
-
-        /// <summary>
-        /// Gets or sets the specific info based on subcategory field
-        /// </summary>
-        [XmlElement(Type = typeof(byte), ElementName = "specific")]
-        public byte Specific { get; set; }
-
-        /// <summary>
-        /// Gets or sets the extra
-        /// </summary>
-        [XmlElement(Type = typeof(byte), ElementName = "extra")]
-        public byte Extra { get; set; }
+        [XmlElement(Type = typeof(ushort), ElementName = "eventNumber")]
+        public ushort EventNumber { get; set; }
 
         /// <summary>
         /// Occurs when exception when processing PDU is caught.
@@ -167,13 +138,9 @@ namespace OpenDis.Dis1995
             {
                 try
                 {
-                    dos.WriteUnsignedByte(EntityKind);
-                    dos.WriteUnsignedByte(Domain);
-                    dos.WriteUnsignedShort(Country);
-                    dos.WriteUnsignedByte(Category);
-                    dos.WriteUnsignedByte(Subcategory);
-                    dos.WriteUnsignedByte(Specific);
-                    dos.WriteUnsignedByte(Extra);
+                    dos.WriteUnsignedShort(Site);
+                    dos.WriteUnsignedShort(Application);
+                    dos.WriteUnsignedShort(EventNumber);
                 }
                 catch (Exception e)
                 {
@@ -200,13 +167,9 @@ namespace OpenDis.Dis1995
             {
                 try
                 {
-                    EntityKind = dis.ReadUnsignedByte();
-                    Domain = dis.ReadUnsignedByte();
-                    Country = dis.ReadUnsignedShort();
-                    Category = dis.ReadUnsignedByte();
-                    Subcategory = dis.ReadUnsignedByte();
-                    Specific = dis.ReadUnsignedByte();
-                    Extra = dis.ReadUnsignedByte();
+                    Site = dis.ReadUnsignedShort();
+                    Application = dis.ReadUnsignedShort();
+                    EventNumber = dis.ReadUnsignedShort();
                 }
                 catch (Exception e)
                 {
@@ -230,17 +193,13 @@ namespace OpenDis.Dis1995
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Due to ignoring errors.")]
         public virtual void Reflection(StringBuilder sb)
         {
-            sb.AppendLine("<EntityType>");
+            sb.AppendLine("<EventID>");
             try
             {
-                sb.AppendLine("<entityKind type=\"byte\">" + EntityKind.ToString(CultureInfo.InvariantCulture) + "</entityKind>");
-                sb.AppendLine("<domain type=\"byte\">" + Domain.ToString(CultureInfo.InvariantCulture) + "</domain>");
-                sb.AppendLine("<country type=\"ushort\">" + Country.ToString(CultureInfo.InvariantCulture) + "</country>");
-                sb.AppendLine("<category type=\"byte\">" + Category.ToString(CultureInfo.InvariantCulture) + "</category>");
-                sb.AppendLine("<subcategory type=\"byte\">" + Subcategory.ToString(CultureInfo.InvariantCulture) + "</subcategory>");
-                sb.AppendLine("<specific type=\"byte\">" + Specific.ToString(CultureInfo.InvariantCulture) + "</specific>");
-                sb.AppendLine("<extra type=\"byte\">" + Extra.ToString(CultureInfo.InvariantCulture) + "</extra>");
-                sb.AppendLine("</EntityType>");
+                sb.AppendLine("<site type=\"ushort\">" + Site.ToString(CultureInfo.InvariantCulture) + "</site>");
+                sb.AppendLine("<application type=\"ushort\">" + Application.ToString(CultureInfo.InvariantCulture) + "</application>");
+                sb.AppendLine("<eventNumber type=\"ushort\">" + EventNumber.ToString(CultureInfo.InvariantCulture) + "</eventNumber>");
+                sb.AppendLine("</EventID>");
             }
             catch (Exception e)
             {
@@ -260,10 +219,10 @@ namespace OpenDis.Dis1995
         }
 
         /// <inheritdoc/>
-        public override bool Equals(object obj) => this == obj as EntityType;
+        public override bool Equals(object obj) => this == obj as EventID;
 
         ///<inheritdoc/>
-        public bool Equals(EntityType obj)
+        public bool Equals(EventID obj)
         {
             bool ivarsEqual = true;
 
@@ -272,37 +231,17 @@ namespace OpenDis.Dis1995
                 return false;
             }
 
-            if (EntityKind != obj.EntityKind)
+            if (Site != obj.Site)
             {
                 ivarsEqual = false;
             }
 
-            if (Domain != obj.Domain)
+            if (Application != obj.Application)
             {
                 ivarsEqual = false;
             }
 
-            if (Country != obj.Country)
-            {
-                ivarsEqual = false;
-            }
-
-            if (Category != obj.Category)
-            {
-                ivarsEqual = false;
-            }
-
-            if (Subcategory != obj.Subcategory)
-            {
-                ivarsEqual = false;
-            }
-
-            if (Specific != obj.Specific)
-            {
-                ivarsEqual = false;
-            }
-
-            if (Extra != obj.Extra)
+            if (EventNumber != obj.EventNumber)
             {
                 ivarsEqual = false;
             }
@@ -322,13 +261,9 @@ namespace OpenDis.Dis1995
         {
             int result = 0;
 
-            result = GenerateHash(result) ^ EntityKind.GetHashCode();
-            result = GenerateHash(result) ^ Domain.GetHashCode();
-            result = GenerateHash(result) ^ Country.GetHashCode();
-            result = GenerateHash(result) ^ Category.GetHashCode();
-            result = GenerateHash(result) ^ Subcategory.GetHashCode();
-            result = GenerateHash(result) ^ Specific.GetHashCode();
-            result = GenerateHash(result) ^ Extra.GetHashCode();
+            result = GenerateHash(result) ^ Site.GetHashCode();
+            result = GenerateHash(result) ^ Application.GetHashCode();
+            result = GenerateHash(result) ^ EventNumber.GetHashCode();
 
             return result;
         }

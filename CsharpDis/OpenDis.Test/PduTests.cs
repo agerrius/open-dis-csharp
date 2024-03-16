@@ -315,7 +315,7 @@ namespace OpenDis.Test
             Assert.AreEqual(expLength, (pdu_out as Pdu).Length);
             Assert.AreEqual(expLength, data.Length);
         }
-
+        
         void FillPduWithDummyData(IPdu pdu, byte disVersion)
         {
             PropertyInfo[] properties = pdu.GetType().GetProperties();
@@ -380,7 +380,7 @@ namespace OpenDis.Test
                             break;
                         case "EntityType":
                         case "AlternativeEntityType":
-                            property.SetValue(pdu, GetEntityType(disVersion), null);
+                            property.SetValue(pdu, GetEntityType(), null);
                             break;
                         case "RadioEntityType":
                             property.SetValue(pdu, GetRadioEntityType(disVersion), null);
@@ -408,7 +408,6 @@ namespace OpenDis.Test
                             property.SetValue(pdu, (byte)2, null);
                             break;
                         case "Capabilities":
-                        case "FireMissionIndex":
                             if (disVersion == 7)
                             {
                                 property.SetValue(pdu, (uint)1, null);
@@ -418,6 +417,9 @@ namespace OpenDis.Test
                                 property.SetValue(pdu, (int)1, null);
                             }
 
+                            break;
+                        case "FireMissionIndex":
+                            property.SetValue(pdu, (uint)1, null);
                             break;
                         case "EntityAppearance":
                             if (disVersion == 7)
@@ -484,11 +486,11 @@ namespace OpenDis.Test
                             property.SetValue(pdu, GetClockTime(disVersion), null);
                             break;
                         case "EventID":
-                            property.SetValue(pdu, GetEventID(disVersion), null);
+                            property.SetValue(pdu, GetEventID(), null);
                             break;
                         case "BurstDescriptor":
                         case "Descriptor":
-                            property.SetValue(pdu, GetBurstDescriptor(disVersion), null);
+                            property.SetValue(pdu, GetBurstDescriptor(), null);
                             break;
                         case "ModulationType":
                             property.SetValue(pdu, GetModulationType(disVersion), null);
@@ -601,31 +603,13 @@ namespace OpenDis.Test
                 }
             }
 
-            object GetEntityType(byte disVersion)
+            EntityType GetEntityType()
             {
-                switch (disVersion)
+                return new EntityType()
                 {
-                    case 5:
-                        return new Dis1995.EntityType()
-                        {
-                            EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Specific = 4,
-                            Extra = 5
-                        };
-                    case 6:
-                        return new Dis1998.EntityType()
-                        {
-                            EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Specific = 4,
-                            Extra = 5
-                        };
-                    case 7:
-                        return new Dis2012.EntityType()
-                        {
-                            EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Specific = 4,
-                            Extra = 5
-                        };
-                    default:
-                        throw new NotSupportedException();
-                }
+                    EntityKind = 1, Domain = 1, Country = 123, Category = 2, Subcategory = 3, Specific = 4,
+                    Extra = 5
+                };
             }
 
             object GetRadioEntityType(byte disVersion)
@@ -761,7 +745,7 @@ namespace OpenDis.Test
                     PartAttachedTo = 2,
                     ChangeIndicator = 1,
                     DetachedIndicator = 1,
-                    AttachedPartType = GetEntityType(7) as Dis2012.EntityType
+                    AttachedPartType = GetEntityType()
                 };
             }
 
@@ -786,35 +770,21 @@ namespace OpenDis.Test
                 {
                     case 5:
                         return new Dis1995.SupplyQuantity()
-                            { Quantity = 12.34f, SupplyType = GetEntityType(disVersion) as Dis1995.EntityType };
+                            { Quantity = 12.34f, SupplyType = GetEntityType() };
                     case 6:
                         return new Dis1998.SupplyQuantity()
-                            { Quantity = 12.34f, SupplyType = GetEntityType(disVersion) as Dis1998.EntityType };
+                            { Quantity = 12.34f, SupplyType = GetEntityType() };
                     case 7:
                         return new Dis2012.SupplyQuantity()
-                            { Quantity = 12.34f, SupplyType = GetEntityType(disVersion) as Dis2012.EntityType };
+                            { Quantity = 12.34f, SupplyType = GetEntityType() };
                     default:
                         throw new NotSupportedException();
                 }
             }
 
-            object GetEventID(byte disVersion)
+            EventID GetEventID()
             {
-                switch (disVersion)
-                {
-                    case 5:
-                        return new Dis1995.EventID { Application = 12, Site = 34, EventNumber = 56 };
-                    case 6:
-                        return new Dis1998.EventID { Application = 12, Site = 34, EventNumber = 56 };
-                    case 7:
-                        return new Dis2012.EventIdentifier
-                        {
-                            SimulationAddress = new Dis2012.SimulationAddress { Application = 12, Site = 34 },
-                            EventNumber = 56
-                        };
-                    default:
-                        throw new NotSupportedException();
-                }
+                return new EventID { Application = 12, Site = 34, EventNumber = 56 };
             }
 
             object GetFixedDatum(byte disVersion)
@@ -950,31 +920,13 @@ namespace OpenDis.Test
                 }
             }
 
-            object GetBurstDescriptor(byte disVersion)
+            BurstDescriptor GetBurstDescriptor()
             {
-                switch (disVersion)
+                return new BurstDescriptor
                 {
-                    case 5:
-                        return new Dis1995.BurstDescriptor
-                        {
-                            Fuse = 2, Quantity = 1, Rate = 1, Warhead = 3,
-                            Munition = GetEntityType(disVersion) as Dis1995.EntityType
-                        };
-                    case 6:
-                        return new Dis1998.BurstDescriptor
-                        {
-                            Fuse = 2, Quantity = 1, Rate = 1, Warhead = 3,
-                            Munition = GetEntityType(disVersion) as Dis1998.EntityType
-                        };
-                    case 7:
-                        return new Dis2012.MunitionDescriptor
-                        {
-                            Fuse = 2, Quantity = 1, Rate = 1, Warhead = 3,
-                            MunitionType = GetEntityType(disVersion) as Dis2012.EntityType
-                        };
-                    default:
-                        throw new NotSupportedException();
-                }
+                    Fuse = 2, Quantity = 1, Rate = 1, Warhead = 3,
+                    Munition = GetEntityType()
+                };
             }
 
             object GetMarking(byte disVersion)

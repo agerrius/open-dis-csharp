@@ -45,19 +45,21 @@ using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
 
-namespace OpenDis.Dis1995
+namespace OpenDis.Core.DataTypes
 {
     /// <summary>
-    /// Section 5.2.18. Identifies a unique event in a simulation via the combination of three values
+    /// Section 5.2.7. Specifies the type of muntion fired, the type of warhead, the        type of fuse, the number of
+    /// rounds fired, and the rate at which the roudns are fired in         rounds per minute.
     /// </summary>
     [Serializable]
     [XmlRoot]
-    public partial class EventID : IEquatable<EventID>, IReflectable
+    [XmlInclude(typeof(EntityType))]
+    public partial class BurstDescriptor : IEquatable<BurstDescriptor>, IReflectable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventID"/> class.
+        /// Initializes a new instance of the <see cref="BurstDescriptor"/> class.
         /// </summary>
-        public EventID()
+        public BurstDescriptor()
         {
         }
 
@@ -69,7 +71,7 @@ namespace OpenDis.Dis1995
         /// <returns>
         ///    <c>true</c> if operands are not equal; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(EventID left, EventID right) => !(left == right);
+        public static bool operator !=(BurstDescriptor left, BurstDescriptor right) => !(left == right);
 
         /// <summary>
         /// Implements the operator ==.
@@ -79,36 +81,50 @@ namespace OpenDis.Dis1995
         /// <returns>
         ///    <c>true</c> if both operands are equal; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator ==(EventID left, EventID right)
+        public static bool operator ==(BurstDescriptor left, BurstDescriptor right)
             => ReferenceEquals(left, right) || (left is not null && right is not null && left.Equals(right));
 
         public virtual int GetMarshalledSize()
         {
             int marshalSize = 0;
 
-            marshalSize += 2;  // this._application
-            marshalSize += 2;  // this._site
-            marshalSize += 2;  // this._eventNumber
+            marshalSize += Munition.GetMarshalledSize();  // this._munition
+            marshalSize += 2;  // this._warhead
+            marshalSize += 2;  // this._fuse
+            marshalSize += 2;  // this._quantity
+            marshalSize += 2;  // this._rate
             return marshalSize;
         }
 
         /// <summary>
-        /// Gets or sets the application ID
+        /// Gets or sets the What munition was used in the burst
         /// </summary>
-        [XmlElement(Type = typeof(ushort), ElementName = "application")]
-        public ushort Application { get; set; }
+        [XmlElement(Type = typeof(EntityType), ElementName = "munition")]
+        public EntityType Munition { get; set; } = new EntityType();
 
         /// <summary>
-        /// Gets or sets the site ID
+        /// Gets or sets the type of warhead
         /// </summary>
-        [XmlElement(Type = typeof(ushort), ElementName = "site")]
-        public ushort Site { get; set; }
+        [XmlElement(Type = typeof(ushort), ElementName = "warhead")]
+        public ushort Warhead { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of the event
+        /// Gets or sets the type of fuse used
         /// </summary>
-        [XmlElement(Type = typeof(ushort), ElementName = "eventNumber")]
-        public ushort EventNumber { get; set; }
+        [XmlElement(Type = typeof(ushort), ElementName = "fuse")]
+        public ushort Fuse { get; set; }
+
+        /// <summary>
+        /// Gets or sets the how many of the munition were fired
+        /// </summary>
+        [XmlElement(Type = typeof(ushort), ElementName = "quantity")]
+        public ushort Quantity { get; set; }
+
+        /// <summary>
+        /// Gets or sets the rate at which the munition was fired
+        /// </summary>
+        [XmlElement(Type = typeof(ushort), ElementName = "rate")]
+        public ushort Rate { get; set; }
 
         /// <summary>
         /// Occurs when exception when processing PDU is caught.
@@ -138,9 +154,11 @@ namespace OpenDis.Dis1995
             {
                 try
                 {
-                    dos.WriteUnsignedShort(Application);
-                    dos.WriteUnsignedShort(Site);
-                    dos.WriteUnsignedShort(EventNumber);
+                    Munition.Marshal(dos);
+                    dos.WriteUnsignedShort(Warhead);
+                    dos.WriteUnsignedShort(Fuse);
+                    dos.WriteUnsignedShort(Quantity);
+                    dos.WriteUnsignedShort(Rate);
                 }
                 catch (Exception e)
                 {
@@ -167,9 +185,11 @@ namespace OpenDis.Dis1995
             {
                 try
                 {
-                    Application = dis.ReadUnsignedShort();
-                    Site = dis.ReadUnsignedShort();
-                    EventNumber = dis.ReadUnsignedShort();
+                    Munition.Unmarshal(dis);
+                    Warhead = dis.ReadUnsignedShort();
+                    Fuse = dis.ReadUnsignedShort();
+                    Quantity = dis.ReadUnsignedShort();
+                    Rate = dis.ReadUnsignedShort();
                 }
                 catch (Exception e)
                 {
@@ -193,13 +213,17 @@ namespace OpenDis.Dis1995
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Due to ignoring errors.")]
         public virtual void Reflection(StringBuilder sb)
         {
-            sb.AppendLine("<EventID>");
+            sb.AppendLine("<BurstDescriptor>");
             try
             {
-                sb.AppendLine("<application type=\"ushort\">" + Application.ToString(CultureInfo.InvariantCulture) + "</application>");
-                sb.AppendLine("<site type=\"ushort\">" + Site.ToString(CultureInfo.InvariantCulture) + "</site>");
-                sb.AppendLine("<eventNumber type=\"ushort\">" + EventNumber.ToString(CultureInfo.InvariantCulture) + "</eventNumber>");
-                sb.AppendLine("</EventID>");
+                sb.AppendLine("<munition>");
+                Munition.Reflection(sb);
+                sb.AppendLine("</munition>");
+                sb.AppendLine("<warhead type=\"ushort\">" + Warhead.ToString(CultureInfo.InvariantCulture) + "</warhead>");
+                sb.AppendLine("<fuse type=\"ushort\">" + Fuse.ToString(CultureInfo.InvariantCulture) + "</fuse>");
+                sb.AppendLine("<quantity type=\"ushort\">" + Quantity.ToString(CultureInfo.InvariantCulture) + "</quantity>");
+                sb.AppendLine("<rate type=\"ushort\">" + Rate.ToString(CultureInfo.InvariantCulture) + "</rate>");
+                sb.AppendLine("</BurstDescriptor>");
             }
             catch (Exception e)
             {
@@ -219,10 +243,10 @@ namespace OpenDis.Dis1995
         }
 
         /// <inheritdoc/>
-        public override bool Equals(object obj) => this == obj as EventID;
+        public override bool Equals(object obj) => this == obj as BurstDescriptor;
 
         ///<inheritdoc/>
-        public bool Equals(EventID obj)
+        public bool Equals(BurstDescriptor obj)
         {
             bool ivarsEqual = true;
 
@@ -231,17 +255,27 @@ namespace OpenDis.Dis1995
                 return false;
             }
 
-            if (Application != obj.Application)
+            if (!Munition.Equals(obj.Munition))
             {
                 ivarsEqual = false;
             }
 
-            if (Site != obj.Site)
+            if (Warhead != obj.Warhead)
             {
                 ivarsEqual = false;
             }
 
-            if (EventNumber != obj.EventNumber)
+            if (Fuse != obj.Fuse)
+            {
+                ivarsEqual = false;
+            }
+
+            if (Quantity != obj.Quantity)
+            {
+                ivarsEqual = false;
+            }
+
+            if (Rate != obj.Rate)
             {
                 ivarsEqual = false;
             }
@@ -261,9 +295,11 @@ namespace OpenDis.Dis1995
         {
             int result = 0;
 
-            result = GenerateHash(result) ^ Application.GetHashCode();
-            result = GenerateHash(result) ^ Site.GetHashCode();
-            result = GenerateHash(result) ^ EventNumber.GetHashCode();
+            result = GenerateHash(result) ^ Munition.GetHashCode();
+            result = GenerateHash(result) ^ Warhead.GetHashCode();
+            result = GenerateHash(result) ^ Fuse.GetHashCode();
+            result = GenerateHash(result) ^ Quantity.GetHashCode();
+            result = GenerateHash(result) ^ Rate.GetHashCode();
 
             return result;
         }

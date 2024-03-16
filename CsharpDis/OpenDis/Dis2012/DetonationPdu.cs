@@ -59,7 +59,7 @@ namespace OpenDis.Dis2012
     [XmlInclude(typeof(EventIdentifier))]
     [XmlInclude(typeof(Vector3Float))]
     [XmlInclude(typeof(Vector3Double))]
-    [XmlInclude(typeof(MunitionDescriptor))]
+    [XmlInclude(typeof(BurstDescriptor))]
     [XmlInclude(typeof(VariableParameter))]
     public partial class DetonationPdu : WarfareFamilyPdu, IEquatable<DetonationPdu>
     {
@@ -86,7 +86,7 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// Describes the detonation represented, Section 7.3.3 
         /// </summary>
-        private MunitionDescriptor _descriptor = new MunitionDescriptor();
+        private BurstDescriptor _descriptor = new BurstDescriptor();
 
         /// <summary>
         /// Velocity of the ammunition, Section 7.3.3 
@@ -251,8 +251,8 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// Gets or sets the Describes the detonation represented, Section 7.3.3 
         /// </summary>
-        [XmlElement(Type = typeof(MunitionDescriptor), ElementName = "descriptor")]
-        public MunitionDescriptor Descriptor
+        [XmlElement(Type = typeof(BurstDescriptor), ElementName = "descriptor")]
+        public BurstDescriptor Descriptor
         {
             get
             {
