@@ -61,64 +61,40 @@ namespace OpenDis.Dis2012
     [XmlInclude(typeof(Vector3Double))]
     [XmlInclude(typeof(BurstDescriptor))]
     [XmlInclude(typeof(VariableParameter))]
-    public partial class DetonationPdu : WarfareFamilyPdu, IEquatable<DetonationPdu>
+    public partial class DetonationPdu : Core.Pdu.DetonationPdu, IEquatable<DetonationPdu>
     {
-        /// <summary>
-        /// ID of the expendable entity, Section 7.3.3 
-        /// </summary>
-        private EntityID _explodingEntityID = new EntityID();
-
-        /// <summary>
-        /// ID of event, Section 7.3.3
-        /// </summary>
-        private EventID _eventID = new EventID();
-
-        /// <summary>
-        /// velocity of the munition immediately before detonation/impact, Section 7.3.3 
-        /// </summary>
-        private Vector3Float _velocity = new Vector3Float();
-
-        /// <summary>
-        /// location of the munition detonation, the expendable detonation, Section 7.3.3 
-        /// </summary>
-        private Vector3Double _locationInWorldCoordinates = new Vector3Double();
-
-        /// <summary>
-        /// Describes the detonation represented, Section 7.3.3 
-        /// </summary>
-        private BurstDescriptor _descriptor = new BurstDescriptor();
-
-        /// <summary>
-        /// Velocity of the ammunition, Section 7.3.3 
-        /// </summary>
-        private Vector3Float _locationOfEntityCoordinates = new Vector3Float();
-
-        /// <summary>
-        /// result of the detonation, Section 7.3.3 
-        /// </summary>
-        private byte _detonationResult;
-
-        /// <summary>
-        /// How many articulation parameters we have, Section 7.3.3 
-        /// </summary>
-        private byte _numberOfVariableParameters;
-
-        /// <summary>
-        /// padding
-        /// </summary>
-        private ushort _pad;
-
-        /// <summary>
-        /// specify the parameter values for each Variable Parameter record, Section 7.3.3 
-        /// </summary>
-        private List<VariableParameter> _variableParameters = new List<VariableParameter>();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DetonationPdu"/> class.
         /// </summary>
         public DetonationPdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_2012)
         {
             PduType = (byte)3;
+        }
+        
+        public EntityID ExplodingEntityID
+        {
+            get => base.MunitionID;
+            set => base.MunitionID = value;
+        }
+        
+        [Obsolete("Replaced by ExplodingEntityID in DIS7", true)]
+        public new EntityID MunitionID
+        {
+            get => base.MunitionID;
+            set => base.MunitionID = value;
+        }
+        
+        public BurstDescriptor Descriptor
+        {
+            get => base.BurstDescriptor;
+            set => base.BurstDescriptor = value;
+        }
+        
+        [Obsolete("Replaced by Descriptor in DIS7", true)]
+        public new BurstDescriptor BurstDescriptor
+        {
+            get => base.BurstDescriptor;
+            set => base.BurstDescriptor = value;
         }
 
         /// <summary>
@@ -162,191 +138,48 @@ namespace OpenDis.Dis2012
             int marshalSize = 0; 
 
             marshalSize = base.GetMarshalledSize();
-            marshalSize += this._explodingEntityID.GetMarshalledSize();  // this._explodingEntityID
-            marshalSize += this._eventID.GetMarshalledSize();  // this._eventID
-            marshalSize += this._velocity.GetMarshalledSize();  // this._velocity
-            marshalSize += this._locationInWorldCoordinates.GetMarshalledSize();  // this._locationInWorldCoordinates
-            marshalSize += this._descriptor.GetMarshalledSize();  // this._descriptor
-            marshalSize += this._locationOfEntityCoordinates.GetMarshalledSize();  // this._locationOfEntityCoordinates
-            marshalSize += 1;  // this._detonationResult
+            marshalSize += this.ExplodingEntityID.GetMarshalledSize();  // this.ExplodingEntityID
+            marshalSize += this.EventID.GetMarshalledSize();  // this.EventID
+            marshalSize += this.Velocity.GetMarshalledSize();  // this.Velocity
+            marshalSize += this.LocationInWorldCoordinates.GetMarshalledSize();  // this.LocationInWorldCoordinates
+            marshalSize += this.Descriptor.GetMarshalledSize();  // this.Descriptor
+            marshalSize += this.LocationInEntityCoordinates.GetMarshalledSize();  // this.LocationOfEntityCoordinates
+            marshalSize += 1;  // this.DetonationResult
             marshalSize += 1;  // this._numberOfVariableParameters
             marshalSize += 2;  // this._pad
-            for (int idx = 0; idx < this._variableParameters.Count; idx++)
+            for (int idx = 0; idx < this.VariableParameters.Count; idx++)
             {
-                VariableParameter listElement = (VariableParameter)this._variableParameters[idx];
+                VariableParameter listElement = (VariableParameter)this.VariableParameters[idx];
                 marshalSize += listElement.GetMarshalledSize();
             }
 
             return marshalSize;
         }
-
+        
         /// <summary>
-        /// Gets or sets the ID of the expendable entity, Section 7.3.3 
+        /// Gets or sets the How many articulation parameters we have
         /// </summary>
-        [XmlElement(Type = typeof(EntityID), ElementName = "explodingEntityID")]
-        public EntityID ExplodingEntityID
-        {
-            get
-            {
-                return this._explodingEntityID;
-            }
-
-            set
-            {
-                this._explodingEntityID = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the ID of event, Section 7.3.3
-        /// </summary>
-        [XmlElement(Type = typeof(EventID), ElementName = "eventID")]
-        public EventID EventID
-        {
-            get
-            {
-                return this._eventID;
-            }
-
-            set
-            {
-                this._eventID = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the velocity of the munition immediately before detonation/impact, Section 7.3.3 
-        /// </summary>
-        [XmlElement(Type = typeof(Vector3Float), ElementName = "velocity")]
-        public Vector3Float Velocity
-        {
-            get
-            {
-                return this._velocity;
-            }
-
-            set
-            {
-                this._velocity = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the location of the munition detonation, the expendable detonation, Section 7.3.3 
-        /// </summary>
-        [XmlElement(Type = typeof(Vector3Double), ElementName = "locationInWorldCoordinates")]
-        public Vector3Double LocationInWorldCoordinates
-        {
-            get
-            {
-                return this._locationInWorldCoordinates;
-            }
-
-            set
-            {
-                this._locationInWorldCoordinates = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the Describes the detonation represented, Section 7.3.3 
-        /// </summary>
-        [XmlElement(Type = typeof(BurstDescriptor), ElementName = "descriptor")]
-        public BurstDescriptor Descriptor
-        {
-            get
-            {
-                return this._descriptor;
-            }
-
-            set
-            {
-                this._descriptor = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the Velocity of the ammunition, Section 7.3.3 
-        /// </summary>
-        [XmlElement(Type = typeof(Vector3Float), ElementName = "locationOfEntityCoordinates")]
-        public Vector3Float LocationOfEntityCoordinates
-        {
-            get
-            {
-                return this._locationOfEntityCoordinates;
-            }
-
-            set
-            {
-                this._locationOfEntityCoordinates = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the result of the detonation, Section 7.3.3 
-        /// </summary>
-        [XmlElement(Type = typeof(byte), ElementName = "detonationResult")]
-        public byte DetonationResult
-        {
-            get
-            {
-                return this._detonationResult;
-            }
-
-            set
-            {
-                this._detonationResult = value;
-            }
-        }
-
-        /// <summary>
-        /// Note that setting this value will not change the marshalled value. The list whose length this describes is used for that purpose.
-        /// The getnumberOfVariableParameters method will also be based on the actual list length rather than this value. 
+        /// <remarks>
+        /// Note that setting this value will not change the marshalled value. The list whose length this describes is used
+        /// for that purpose.
+        /// The getnumberOfArticulationParameters method will also be based on the actual list length rather than this value.
         /// The method is simply here for completeness and should not be used for any computations.
-        /// </summary>
+        /// </remarks>
         [XmlElement(Type = typeof(byte), ElementName = "numberOfVariableParameters")]
-        public byte NumberOfVariableParameters
-        {
-            get
-            {
-                return this._numberOfVariableParameters;
-            }
-
-            set
-            {
-                this._numberOfVariableParameters = value;
-            }
-        }
+        public byte NumberOfVariableParameters { get; set; }
 
         /// <summary>
         /// Gets or sets the padding
         /// </summary>
-        [XmlElement(Type = typeof(ushort), ElementName = "pad")]
-        public ushort Pad
-        {
-            get
-            {
-                return this._pad;
-            }
-
-            set
-            {
-                this._pad = value;
-            }
-        }
+        [XmlElement(Type = typeof(short), ElementName = "pad")]
+        public ushort Pad { get; set; }
 
         /// <summary>
-        /// Gets or sets the specify the parameter values for each Variable Parameter record, Section 7.3.3 
+        /// Gets the articulationParameters
         /// </summary>
         [XmlElement(ElementName = "variableParametersList", Type = typeof(List<VariableParameter>))]
-        public List<VariableParameter> VariableParameters
-        {
-            get
-            {
-                return this._variableParameters;
-            }
-        }
-
+        public List<VariableParameter> VariableParameters { get; } = new();
+        
         /// <summary>
         /// Automatically sets the length of the marshalled data, then calls the marshal method.
         /// </summary>
@@ -370,19 +203,19 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    this._explodingEntityID.Marshal(dos);
-                    this._eventID.Marshal(dos);
-                    this._velocity.Marshal(dos);
-                    this._locationInWorldCoordinates.Marshal(dos);
-                    this._descriptor.Marshal(dos);
-                    this._locationOfEntityCoordinates.Marshal(dos);
-                    dos.WriteUnsignedByte((byte)this._detonationResult);
-                    dos.WriteUnsignedByte((byte)this._variableParameters.Count);
-                    dos.WriteUnsignedShort((ushort)this._pad);
+                    this.ExplodingEntityID.Marshal(dos);
+                    this.EventID.Marshal(dos);
+                    this.Velocity.Marshal(dos);
+                    this.LocationInWorldCoordinates.Marshal(dos);
+                    this.Descriptor.Marshal(dos);
+                    this.LocationInEntityCoordinates.Marshal(dos);
+                    dos.WriteUnsignedByte((byte)this.DetonationResult);
+                    dos.WriteUnsignedByte((byte)this.VariableParameters.Count);
+                    dos.WriteUnsignedShort((ushort)this.Pad);
 
-                    for (int idx = 0; idx < this._variableParameters.Count; idx++)
+                    for (int idx = 0; idx < this.VariableParameters.Count; idx++)
                     {
-                        VariableParameter aVariableParameter = (VariableParameter)this._variableParameters[idx];
+                        VariableParameter aVariableParameter = (VariableParameter)this.VariableParameters[idx];
                         aVariableParameter.Marshal(dos);
                     }
                 }
@@ -411,15 +244,15 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    this._explodingEntityID.Unmarshal(dis);
-                    this._eventID.Unmarshal(dis);
-                    this._velocity.Unmarshal(dis);
-                    this._locationInWorldCoordinates.Unmarshal(dis);
-                    this._descriptor.Unmarshal(dis);
-                    this._locationOfEntityCoordinates.Unmarshal(dis);
-                    this._detonationResult = dis.ReadUnsignedByte();
-                    this._numberOfVariableParameters = dis.ReadUnsignedByte();
-                    this._pad = dis.ReadUnsignedShort();
+                    this.ExplodingEntityID.Unmarshal(dis);
+                    this.EventID.Unmarshal(dis);
+                    this.Velocity.Unmarshal(dis);
+                    this.LocationInWorldCoordinates.Unmarshal(dis);
+                    this.Descriptor.Unmarshal(dis);
+                    this.LocationInEntityCoordinates.Unmarshal(dis);
+                    this.DetonationResult = dis.ReadUnsignedByte();
+                    this.NumberOfVariableParameters = dis.ReadUnsignedByte();
+                    this.Pad = dis.ReadUnsignedShort();
                     for (int idx = 0; idx < this.NumberOfVariableParameters; idx++)
                     {
                         byte recordType = dis.ReadByte();
@@ -427,13 +260,13 @@ namespace OpenDis.Dis2012
                         {
                             VariableParameterArticulated anX = new VariableParameterArticulated();
                             anX.Unmarshal(dis);
-                            this._variableParameters.Add(anX);
+                            this.VariableParameters.Add(anX);
                         }
                         else if (recordType == 1)
                         {
                             VariableParameterAttached anX = new VariableParameterAttached();
                             anX.Unmarshal(dis);
-                            this._variableParameters.Add(anX);    
+                            this.VariableParameters.Add(anX);    
                         }
                     };
 
@@ -470,30 +303,30 @@ namespace OpenDis.Dis2012
             try
             {
                 sb.AppendLine("<explodingEntityID>");
-                this._explodingEntityID.Reflection(sb);
+                this.ExplodingEntityID.Reflection(sb);
                 sb.AppendLine("</explodingEntityID>");
                 sb.AppendLine("<eventID>");
-                this._eventID.Reflection(sb);
+                this.EventID.Reflection(sb);
                 sb.AppendLine("</eventID>");
                 sb.AppendLine("<velocity>");
-                this._velocity.Reflection(sb);
+                this.Velocity.Reflection(sb);
                 sb.AppendLine("</velocity>");
                 sb.AppendLine("<locationInWorldCoordinates>");
-                this._locationInWorldCoordinates.Reflection(sb);
+                this.LocationInWorldCoordinates.Reflection(sb);
                 sb.AppendLine("</locationInWorldCoordinates>");
                 sb.AppendLine("<descriptor>");
-                this._descriptor.Reflection(sb);
+                this.Descriptor.Reflection(sb);
                 sb.AppendLine("</descriptor>");
                 sb.AppendLine("<locationOfEntityCoordinates>");
-                this._locationOfEntityCoordinates.Reflection(sb);
+                this.LocationInEntityCoordinates.Reflection(sb);
                 sb.AppendLine("</locationOfEntityCoordinates>");
-                sb.AppendLine("<detonationResult type=\"byte\">" + this._detonationResult.ToString(CultureInfo.InvariantCulture) + "</detonationResult>");
-                sb.AppendLine("<variableParameters type=\"byte\">" + this._variableParameters.Count.ToString(CultureInfo.InvariantCulture) + "</variableParameters>");
-                sb.AppendLine("<pad type=\"ushort\">" + this._pad.ToString(CultureInfo.InvariantCulture) + "</pad>");
-                for (int idx = 0; idx < this._variableParameters.Count; idx++)
+                sb.AppendLine("<detonationResult type=\"byte\">" + this.DetonationResult.ToString(CultureInfo.InvariantCulture) + "</detonationResult>");
+                sb.AppendLine("<variableParameters type=\"byte\">" + this.VariableParameters.Count.ToString(CultureInfo.InvariantCulture) + "</variableParameters>");
+                sb.AppendLine("<pad type=\"ushort\">" + this.Pad.ToString(CultureInfo.InvariantCulture) + "</pad>");
+                for (int idx = 0; idx < this.VariableParameters.Count; idx++)
                 {
                     sb.AppendLine("<variableParameters" + idx.ToString(CultureInfo.InvariantCulture) + " type=\"VariableParameter\">");
-                    VariableParameter aVariableParameter = (VariableParameter)this._variableParameters[idx];
+                    VariableParameter aVariableParameter = (VariableParameter)this.VariableParameters[idx];
                     aVariableParameter.Reflection(sb);
                     sb.AppendLine("</variableParameters" + idx.ToString(CultureInfo.InvariantCulture) + ">");
                 }
@@ -545,61 +378,61 @@ namespace OpenDis.Dis2012
 
             ivarsEqual = base.Equals(obj);
 
-            if (!this._explodingEntityID.Equals(obj._explodingEntityID))
+            if (!this.ExplodingEntityID.Equals(obj.ExplodingEntityID))
             {
                 ivarsEqual = false;
             }
 
-            if (!this._eventID.Equals(obj._eventID))
+            if (!this.EventID.Equals(obj.EventID))
             {
                 ivarsEqual = false;
             }
 
-            if (!this._velocity.Equals(obj._velocity))
+            if (!this.Velocity.Equals(obj.Velocity))
             {
                 ivarsEqual = false;
             }
 
-            if (!this._locationInWorldCoordinates.Equals(obj._locationInWorldCoordinates))
+            if (!this.LocationInWorldCoordinates.Equals(obj.LocationInWorldCoordinates))
             {
                 ivarsEqual = false;
             }
 
-            if (!this._descriptor.Equals(obj._descriptor))
+            if (!this.Descriptor.Equals(obj.Descriptor))
             {
                 ivarsEqual = false;
             }
 
-            if (!this._locationOfEntityCoordinates.Equals(obj._locationOfEntityCoordinates))
+            if (!this.LocationInEntityCoordinates.Equals(obj.LocationInEntityCoordinates))
             {
                 ivarsEqual = false;
             }
 
-            if (this._detonationResult != obj._detonationResult)
+            if (this.DetonationResult != obj.DetonationResult)
             {
                 ivarsEqual = false;
             }
 
-            if (this._numberOfVariableParameters != obj._numberOfVariableParameters)
+            if (this.NumberOfVariableParameters != obj.NumberOfVariableParameters)
             {
                 ivarsEqual = false;
             }
 
-            if (this._pad != obj._pad)
+            if (this.Pad != obj.Pad)
             {
                 ivarsEqual = false;
             }
 
-            if (this._variableParameters.Count != obj._variableParameters.Count)
+            if (this.VariableParameters.Count != obj.VariableParameters.Count)
             {
                 ivarsEqual = false;
             }
 
             if (ivarsEqual)
             {
-                for (int idx = 0; idx < this._variableParameters.Count; idx++)
+                for (int idx = 0; idx < this.VariableParameters.Count; idx++)
                 {
-                    if (!this._variableParameters[idx].Equals(obj._variableParameters[idx]))
+                    if (!this.VariableParameters[idx].Equals(obj.VariableParameters[idx]))
                     {
                         ivarsEqual = false;
                     }
@@ -630,21 +463,21 @@ namespace OpenDis.Dis2012
 
             result = GenerateHash(result) ^ base.GetHashCode();
 
-            result = GenerateHash(result) ^ this._explodingEntityID.GetHashCode();
-            result = GenerateHash(result) ^ this._eventID.GetHashCode();
-            result = GenerateHash(result) ^ this._velocity.GetHashCode();
-            result = GenerateHash(result) ^ this._locationInWorldCoordinates.GetHashCode();
-            result = GenerateHash(result) ^ this._descriptor.GetHashCode();
-            result = GenerateHash(result) ^ this._locationOfEntityCoordinates.GetHashCode();
-            result = GenerateHash(result) ^ this._detonationResult.GetHashCode();
-            result = GenerateHash(result) ^ this._numberOfVariableParameters.GetHashCode();
-            result = GenerateHash(result) ^ this._pad.GetHashCode();
+            result = GenerateHash(result) ^ this.ExplodingEntityID.GetHashCode();
+            result = GenerateHash(result) ^ this.EventID.GetHashCode();
+            result = GenerateHash(result) ^ this.Velocity.GetHashCode();
+            result = GenerateHash(result) ^ this.LocationInWorldCoordinates.GetHashCode();
+            result = GenerateHash(result) ^ this.Descriptor.GetHashCode();
+            result = GenerateHash(result) ^ this.LocationInEntityCoordinates.GetHashCode();
+            result = GenerateHash(result) ^ this.DetonationResult.GetHashCode();
+            result = GenerateHash(result) ^ this.NumberOfVariableParameters.GetHashCode();
+            result = GenerateHash(result) ^ this.Pad.GetHashCode();
 
-            if (this._variableParameters.Count > 0)
+            if (this.VariableParameters.Count > 0)
             {
-                for (int idx = 0; idx < this._variableParameters.Count; idx++)
+                for (int idx = 0; idx < this.VariableParameters.Count; idx++)
                 {
-                    result = GenerateHash(result) ^ this._variableParameters[idx].GetHashCode();
+                    result = GenerateHash(result) ^ this.VariableParameters[idx].GetHashCode();
                 }
             }
 

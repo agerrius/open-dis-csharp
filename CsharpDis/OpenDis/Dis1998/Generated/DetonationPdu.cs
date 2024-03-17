@@ -46,7 +46,6 @@ using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
 using OpenDis.Core.DataTypes;
-using OpenDis.Core.PduFamily;
 
 namespace OpenDis.Dis1998
 {
@@ -61,7 +60,7 @@ namespace OpenDis.Dis1998
     [XmlInclude(typeof(Vector3Double))]
     [XmlInclude(typeof(BurstDescriptor))]
     [XmlInclude(typeof(ArticulationParameter))]
-    public partial class DetonationPdu : WarfareFamilyPdu, IEquatable<DetonationPdu>
+    public partial class DetonationPdu : Core.Pdu.DetonationPdu, IEquatable<DetonationPdu>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DetonationPdu"/> class.
@@ -112,49 +111,6 @@ namespace OpenDis.Dis1998
 
             return marshalSize;
         }
-
-        /// <summary>
-        /// Gets or sets the ID of muntion that was fired
-        /// </summary>
-        [XmlElement(Type = typeof(EntityID), ElementName = "munitionID")]
-        public EntityID MunitionID { get; set; } = new EntityID();
-
-        /// <summary>
-        /// Gets or sets the ID firing event
-        /// </summary>
-        [XmlElement(Type = typeof(EventID), ElementName = "eventID")]
-        public EventID EventID { get; set; } = new EventID();
-
-        /// <summary>
-        /// Gets or sets the ID firing event
-        /// </summary>
-        [XmlElement(Type = typeof(Vector3Float), ElementName = "velocity")]
-        public Vector3Float Velocity { get; set; } = new();
-
-        /// <summary>
-        /// Gets or sets the where the detonation is, in world coordinates
-        /// </summary>
-        [XmlElement(Type = typeof(Vector3Double), ElementName = "locationInWorldCoordinates")]
-        public Vector3Double LocationInWorldCoordinates { get; set; } = new Vector3Double();
-
-        /// <summary>
-        /// Gets or sets the Describes munition used
-        /// </summary>
-        [XmlElement(Type = typeof(BurstDescriptor), ElementName = "burstDescriptor")]
-        public BurstDescriptor BurstDescriptor { get; set; } = new BurstDescriptor();
-
-        /// <summary>
-        /// Gets or sets the location of the detonation or impact in the target entity's coordinate system. This information
-        /// should be used for damage assessment.
-        /// </summary>
-        [XmlElement(Type = typeof(Vector3Float), ElementName = "locationInEntityCoordinates")]
-        public Vector3Float LocationInEntityCoordinates { get; set; } = new Vector3Float();
-
-        /// <summary>
-        /// Gets or sets the result of the explosion
-        /// </summary>
-        [XmlElement(Type = typeof(byte), ElementName = "detonationResult")]
-        public byte DetonationResult { get; set; }
 
         /// <summary>
         /// Gets or sets the How many articulation parameters we have
