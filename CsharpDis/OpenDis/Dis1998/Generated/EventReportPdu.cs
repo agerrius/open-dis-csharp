@@ -46,6 +46,7 @@ using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
 using OpenDis.Core.PduFamily;
+using OpenDis.Core.DataTypes;
 
 namespace OpenDis.Dis1998
 {
