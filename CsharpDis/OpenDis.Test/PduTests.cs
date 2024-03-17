@@ -525,8 +525,8 @@ namespace OpenDis.Test
                         case "FixedDatums":
                             if (disVersion == 5)
                             {
-                                (property.GetValue(pdu, null) as List<Dis1995.FixedDatum>).Add(
-                                    GetFixedDatum(disVersion) as Dis1995.FixedDatum);
+                                (property.GetValue(pdu, null) as List<FixedDatum>).Add(
+                                    GetFixedDatum(disVersion) as FixedDatum);
                             }
                             else if (disVersion == 6)
                             {
@@ -543,8 +543,8 @@ namespace OpenDis.Test
                         case "VariableDatums":
                             if (disVersion == 5)
                             {
-                                (property.GetValue(pdu, null) as List<Dis1995.VariableDatum>).Add(
-                                    GetVariableDatum(disVersion) as Dis1995.VariableDatum);
+                                (property.GetValue(pdu, null) as List<VariableDatum>).Add(
+                                    GetVariableDatum(disVersion) as VariableDatum);
                             }
                             else if (disVersion == 6)
                             {
@@ -792,7 +792,7 @@ namespace OpenDis.Test
                 switch (disVersion)
                 {
                     case 5:
-                        return new Dis1995.FixedDatum { FixedDatumID = 1, FixedDatumValue = 2 };
+                        return new FixedDatum { FixedDatumID = 1, FixedDatumValue = 2 };
                     case 6:
                         return new FixedDatum { FixedDatumID = 1, FixedDatumValue = 2 };
                     case 7:
@@ -807,7 +807,7 @@ namespace OpenDis.Test
                 switch (disVersion)
                 {
                     case 5:
-                        Dis1995.VariableDatum vd5 = new Dis1995.VariableDatum
+                        VariableDatum vd5 = new VariableDatum
                             { VariableDatumID = 1, VariableDatumLength = 64 };
                         vd5.VariableDatums.Add(GetEightByteChunk());
                         return vd5;

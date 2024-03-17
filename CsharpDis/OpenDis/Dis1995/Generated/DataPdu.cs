@@ -46,6 +46,7 @@ using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
 using OpenDis.Core.PduFamily;
+using OpenDis.Core.DataTypes;
 
 namespace OpenDis.Dis1995
 {
@@ -57,7 +58,7 @@ namespace OpenDis.Dis1995
     [XmlRoot]
     [XmlInclude(typeof(FixedDatum))]
     [XmlInclude(typeof(VariableDatum))]
-    public partial class DataPdu : SimulationManagementFamilyPdu, IEquatable<DataPdu>
+    public partial class DataPdu : Core.Pdu.DataPdu, IEquatable<DataPdu>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DataPdu"/> class.
@@ -109,55 +110,7 @@ namespace OpenDis.Dis1995
 
             return marshalSize;
         }
-
-        /// <summary>
-        /// Gets or sets the ID of request
-        /// </summary>
-        [XmlElement(Type = typeof(uint), ElementName = "requestID")]
-        public uint RequestID { get; set; }
-
-        /// <summary>
-        /// Gets or sets the padding
-        /// </summary>
-        [XmlElement(Type = typeof(uint), ElementName = "padding1")]
-        public uint Padding1 { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Number of fixed datum records
-        /// </summary>
-        /// <remarks>
-        /// Note that setting this value will not change the marshalled value. The list whose length this describes is used
-        /// for that purpose.
-        /// The getfixedDatumRecordCount method will also be based on the actual list length rather than this value.
-        /// The method is simply here for completeness and should not be used for any computations.
-        /// </remarks>
-        [XmlElement(Type = typeof(uint), ElementName = "fixedDatumRecordCount")]
-        public uint FixedDatumRecordCount { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Number of variable datum records
-        /// </summary>
-        /// <remarks>
-        /// Note that setting this value will not change the marshalled value. The list whose length this describes is used
-        /// for that purpose.
-        /// The getvariableDatumRecordCount method will also be based on the actual list length rather than this value.
-        /// The method is simply here for completeness and should not be used for any computations.
-        /// </remarks>
-        [XmlElement(Type = typeof(uint), ElementName = "variableDatumRecordCount")]
-        public uint VariableDatumRecordCount { get; set; }
-
-        /// <summary>
-        /// Gets the variable length list of fixed datums
-        /// </summary>
-        [XmlElement(ElementName = "fixedDatumsList", Type = typeof(List<FixedDatum>))]
-        public List<FixedDatum> FixedDatums { get; } = new();
-
-        /// <summary>
-        /// Gets the variable length list of variable length datums
-        /// </summary>
-        [XmlElement(ElementName = "variableDatumsList", Type = typeof(List<VariableDatum>))]
-        public List<VariableDatum> VariableDatums { get; } = new();
-
+        
         ///<inheritdoc/>
         public override void MarshalAutoLengthSet(DataOutputStream dos)
         {
@@ -221,17 +174,17 @@ namespace OpenDis.Dis1995
                 {
                     RequestID = dis.ReadUnsignedInt();
                     Padding1 = dis.ReadUnsignedInt();
-                    FixedDatumRecordCount = dis.ReadUnsignedInt();
-                    VariableDatumRecordCount = dis.ReadUnsignedInt();
+                    NumberOfFixedDatumRecords = dis.ReadUnsignedInt();
+                    NumberOfVariableDatumRecords = dis.ReadUnsignedInt();
 
-                    for (int idx = 0; idx < FixedDatumRecordCount; idx++)
+                    for (int idx = 0; idx < NumberOfFixedDatumRecords; idx++)
                     {
                         var anX = new FixedDatum();
                         anX.Unmarshal(dis);
                         FixedDatums.Add(anX);
                     }
 
-                    for (int idx = 0; idx < VariableDatumRecordCount; idx++)
+                    for (int idx = 0; idx < NumberOfVariableDatumRecords; idx++)
                     {
                         var anX = new VariableDatum();
                         anX.Unmarshal(dis);
@@ -325,12 +278,12 @@ namespace OpenDis.Dis1995
                 ivarsEqual = false;
             }
 
-            if (FixedDatumRecordCount != obj.FixedDatumRecordCount)
+            if (NumberOfFixedDatumRecords != obj.NumberOfFixedDatumRecords)
             {
                 ivarsEqual = false;
             }
 
-            if (VariableDatumRecordCount != obj.VariableDatumRecordCount)
+            if (NumberOfVariableDatumRecords != obj.NumberOfVariableDatumRecords)
             {
                 ivarsEqual = false;
             }
@@ -386,8 +339,8 @@ namespace OpenDis.Dis1995
 
             result = GenerateHash(result) ^ RequestID.GetHashCode();
             result = GenerateHash(result) ^ Padding1.GetHashCode();
-            result = GenerateHash(result) ^ FixedDatumRecordCount.GetHashCode();
-            result = GenerateHash(result) ^ VariableDatumRecordCount.GetHashCode();
+            result = GenerateHash(result) ^ NumberOfFixedDatumRecords.GetHashCode();
+            result = GenerateHash(result) ^ NumberOfVariableDatumRecords.GetHashCode();
 
             if (FixedDatums.Count > 0)
             {
