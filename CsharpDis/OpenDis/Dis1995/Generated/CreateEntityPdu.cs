@@ -44,6 +44,7 @@ using System.Globalization;
 using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
+using OpenDis.Core.PduFamily;
 
 namespace OpenDis.Dis1995
 {
@@ -52,12 +53,12 @@ namespace OpenDis.Dis1995
     /// </summary>
     [Serializable]
     [XmlRoot]
-    public partial class CreateEntityPdu : SimulationManagementPdu, IEquatable<CreateEntityPdu>
+    public partial class CreateEntityPdu : SimulationManagementFamilyPdu, IEquatable<CreateEntityPdu>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateEntityPdu"/> class.
         /// </summary>
-        public CreateEntityPdu()
+        public CreateEntityPdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_1995)
         {
             PduType = 11;
         }

@@ -40,27 +40,27 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Text;
 using System.Xml.Serialization;
-using OpenDis.Core;
-using OpenDis.Core.PduFamily;
+using OpenDis.Core.DataTypes;
+using OpenDis.Enumerations;
 
-namespace OpenDis.Dis1995
+namespace OpenDis.Core.PduFamily
 {
     /// <summary>
-    /// Section 5.3.6.2. Remove an entity
+    /// Section 5.3.6. Abstract superclass for PDUs relating to the simulation itself. COMPLETE
     /// </summary>
     [Serializable]
     [XmlRoot]
-    public partial class RemoveEntityPdu : SimulationManagementFamilyPdu, IEquatable<RemoveEntityPdu>
+    [XmlInclude(typeof(EntityID))]
+    public partial class SimulationManagementFamilyPdu : Pdu.Pdu, IEquatable<SimulationManagementFamilyPdu>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RemoveEntityPdu"/> class.
+        /// Initializes a new instance of the <see cref="SimulationManagementFamilyPdu"/> class.
         /// </summary>
-        public RemoveEntityPdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_1995)
+        public SimulationManagementFamilyPdu(ProtocolVersion protocolVersion) : base(protocolVersion)
         {
-            PduType = 12;
+            ProtocolFamily = 5;
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace OpenDis.Dis1995
         /// <returns>
         ///    <c>true</c> if operands are not equal; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(RemoveEntityPdu left, RemoveEntityPdu right) => !(left == right);
+        public static bool operator !=(SimulationManagementFamilyPdu left, SimulationManagementFamilyPdu right) => !(left == right);
 
         /// <summary>
         /// Implements the operator ==.
@@ -81,24 +81,34 @@ namespace OpenDis.Dis1995
         /// <returns>
         ///    <c>true</c> if both operands are equal; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator ==(RemoveEntityPdu left, RemoveEntityPdu right)
+        public static bool operator ==(SimulationManagementFamilyPdu left, SimulationManagementFamilyPdu right)
             => ReferenceEquals(left, right) || (left is not null && right is not null && left.Equals(right));
 
         public override int GetMarshalledSize()
         {
             int marshalSize = base.GetMarshalledSize();
-            marshalSize += 4;  // this._requestID
+            marshalSize += OriginatingEntityID.GetMarshalledSize();  // this._originatingEntityID
+            marshalSize += ReceivingEntityID.GetMarshalledSize();  // this._receivingEntityID
             return marshalSize;
         }
 
         /// <summary>
-        /// Gets or sets the Identifier for the request
+        /// Gets or sets the Entity that is sending message
         /// </summary>
-        [XmlElement(Type = typeof(uint), ElementName = "requestID")]
-        public uint RequestID { get; set; }
+        [XmlElement(Type = typeof(EntityID), ElementName = "originatingEntityID")]
+        public EntityID OriginatingEntityID { get; set; } = new EntityID();
 
-        ///<inheritdoc/>
-        public override void MarshalAutoLengthSet(DataOutputStream dos)
+        /// <summary>
+        /// Gets or sets the Entity that is intended to receive message
+        /// </summary>
+        [XmlElement(Type = typeof(EntityID), ElementName = "receivingEntityID")]
+        public EntityID ReceivingEntityID { get; set; } = new EntityID();
+
+        /// <summary>
+        /// Automatically sets the length of the marshalled data, then calls the marshal method.
+        /// </summary>
+        /// <param name="dos">The DataOutputStream instance to which the PDU is marshaled.</param>
+        public virtual void MarshalAutoLengthSet(DataOutputStream dos)
         {
             // Set the length prior to marshalling data
             Length = (ushort)GetMarshalledSize();
@@ -114,7 +124,8 @@ namespace OpenDis.Dis1995
             {
                 try
                 {
-                    dos.WriteUnsignedInt(RequestID);
+                    OriginatingEntityID.Marshal(dos);
+                    ReceivingEntityID.Marshal(dos);
                 }
                 catch (Exception e)
                 {
@@ -143,7 +154,8 @@ namespace OpenDis.Dis1995
             {
                 try
                 {
-                    RequestID = dis.ReadUnsignedInt();
+                    OriginatingEntityID.Unmarshal(dis);
+                    ReceivingEntityID.Unmarshal(dis);
                 }
                 catch (Exception e)
                 {
@@ -167,12 +179,17 @@ namespace OpenDis.Dis1995
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Due to ignoring errors.")]
         public override void Reflection(StringBuilder sb)
         {
-            sb.AppendLine("<RemoveEntityPdu>");
+            sb.AppendLine("<SimulationManagementFamilyPdu>");
             base.Reflection(sb);
             try
             {
-                sb.AppendLine("<requestID type=\"uint\">" + RequestID.ToString(CultureInfo.InvariantCulture) + "</requestID>");
-                sb.AppendLine("</RemoveEntityPdu>");
+                sb.AppendLine("<originatingEntityID>");
+                OriginatingEntityID.Reflection(sb);
+                sb.AppendLine("</originatingEntityID>");
+                sb.AppendLine("<receivingEntityID>");
+                ReceivingEntityID.Reflection(sb);
+                sb.AppendLine("</receivingEntityID>");
+                sb.AppendLine("</SimulationManagementFamilyPdu>");
             }
             catch (Exception e)
             {
@@ -192,10 +209,10 @@ namespace OpenDis.Dis1995
         }
 
         /// <inheritdoc/>
-        public override bool Equals(object obj) => this == obj as RemoveEntityPdu;
+        public override bool Equals(object obj) => this == obj as SimulationManagementFamilyPdu;
 
         ///<inheritdoc/>
-        public bool Equals(RemoveEntityPdu obj)
+        public bool Equals(SimulationManagementFamilyPdu obj)
         {
             if (obj.GetType() != GetType())
             {
@@ -203,7 +220,12 @@ namespace OpenDis.Dis1995
             }
 
             bool ivarsEqual = base.Equals(obj);
-            if (RequestID != obj.RequestID)
+            if (!OriginatingEntityID.Equals(obj.OriginatingEntityID))
+            {
+                ivarsEqual = false;
+            }
+
+            if (!ReceivingEntityID.Equals(obj.ReceivingEntityID))
             {
                 ivarsEqual = false;
             }
@@ -225,7 +247,8 @@ namespace OpenDis.Dis1995
 
             result = GenerateHash(result) ^ base.GetHashCode();
 
-            result = GenerateHash(result) ^ RequestID.GetHashCode();
+            result = GenerateHash(result) ^ OriginatingEntityID.GetHashCode();
+            result = GenerateHash(result) ^ ReceivingEntityID.GetHashCode();
 
             return result;
         }

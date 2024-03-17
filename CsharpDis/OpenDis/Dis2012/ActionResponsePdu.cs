@@ -46,6 +46,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using OpenDis.Core;
 using OpenDis.Core.DataTypes;
+using OpenDis.Core.PduFamily;
 
 namespace OpenDis.Dis2012
 {
@@ -92,7 +93,7 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// Initializes a new instance of the <see cref="ActionResponsePdu"/> class.
         /// </summary>
-        public ActionResponsePdu()
+        public ActionResponsePdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_2012)
         {
             PduType = (byte)17;
         }

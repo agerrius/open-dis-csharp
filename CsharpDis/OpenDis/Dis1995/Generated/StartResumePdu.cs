@@ -44,6 +44,7 @@ using System.Globalization;
 using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
+using OpenDis.Core.PduFamily;
 
 namespace OpenDis.Dis1995
 {
@@ -53,12 +54,12 @@ namespace OpenDis.Dis1995
     [Serializable]
     [XmlRoot]
     [XmlInclude(typeof(ClockTime))]
-    public partial class StartResumePdu : SimulationManagementPdu, IEquatable<StartResumePdu>
+    public partial class StartResumePdu : SimulationManagementFamilyPdu, IEquatable<StartResumePdu>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="StartResumePdu"/> class.
         /// </summary>
-        public StartResumePdu()
+        public StartResumePdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_1995)
         {
             PduType = 13;
         }

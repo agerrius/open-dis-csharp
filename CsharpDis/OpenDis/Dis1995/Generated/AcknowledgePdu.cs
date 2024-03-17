@@ -44,6 +44,8 @@ using System.Globalization;
 using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
+using OpenDis.Core.PduFamily;
+using OpenDis.Enumerations;
 
 namespace OpenDis.Dis1995
 {
@@ -52,12 +54,12 @@ namespace OpenDis.Dis1995
     /// </summary>
     [Serializable]
     [XmlRoot]
-    public partial class AcknowledgePdu : SimulationManagementPdu, IEquatable<AcknowledgePdu>
+    public partial class AcknowledgePdu : SimulationManagementFamilyPdu, IEquatable<AcknowledgePdu>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AcknowledgePdu"/> class.
         /// </summary>
-        public AcknowledgePdu()
+        public AcknowledgePdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_1995)
         {
             PduType = 15;
         }

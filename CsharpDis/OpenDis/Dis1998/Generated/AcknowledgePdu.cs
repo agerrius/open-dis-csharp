@@ -44,6 +44,8 @@ using System.Globalization;
 using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
+using OpenDis.Core.PduFamily;
+using OpenDis.Enumerations;
 
 namespace OpenDis.Dis1998
 {
@@ -57,7 +59,7 @@ namespace OpenDis.Dis1998
         /// <summary>
         /// Initializes a new instance of the <see cref="AcknowledgePdu"/> class.
         /// </summary>
-        public AcknowledgePdu()
+        public AcknowledgePdu() : base(Enumerations.ProtocolVersion.Ieee1278_1A_1998)
         {
             PduType = 15;
         }

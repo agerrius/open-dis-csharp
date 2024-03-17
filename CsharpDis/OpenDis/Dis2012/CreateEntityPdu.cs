@@ -46,6 +46,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using OpenDis.Core;
 using OpenDis.Core.DataTypes;
+using OpenDis.Core.PduFamily;
 
 namespace OpenDis.Dis2012
 {
@@ -65,7 +66,7 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateEntityPdu"/> class.
         /// </summary>
-        public CreateEntityPdu()
+        public CreateEntityPdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_2012)
         {
             PduType = (byte)11;
         }

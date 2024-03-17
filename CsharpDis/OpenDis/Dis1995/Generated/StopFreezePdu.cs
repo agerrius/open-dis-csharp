@@ -44,6 +44,7 @@ using System.Globalization;
 using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
+using OpenDis.Core.PduFamily;
 
 namespace OpenDis.Dis1995
 {
@@ -53,12 +54,12 @@ namespace OpenDis.Dis1995
     [Serializable]
     [XmlRoot]
     [XmlInclude(typeof(ClockTime))]
-    public partial class StopFreezePdu : SimulationManagementPdu, IEquatable<StopFreezePdu>
+    public partial class StopFreezePdu : SimulationManagementFamilyPdu, IEquatable<StopFreezePdu>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="StopFreezePdu"/> class.
         /// </summary>
-        public StopFreezePdu()
+        public StopFreezePdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_1995)
         {
             PduType = 14;
         }

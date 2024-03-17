@@ -45,6 +45,7 @@ using System.Xml.Serialization;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using OpenDis.Core;
+using OpenDis.Core.PduFamily;
 
 namespace OpenDis.Dis2012
 {
@@ -90,7 +91,7 @@ namespace OpenDis.Dis2012
         /// <summary>
         /// Initializes a new instance of the <see cref="DataQueryPdu"/> class.
         /// </summary>
-        public DataQueryPdu()
+        public DataQueryPdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_2012)
         {
             PduType = (byte)18;
         }

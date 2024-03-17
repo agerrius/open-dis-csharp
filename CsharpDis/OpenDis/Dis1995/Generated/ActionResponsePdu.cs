@@ -45,6 +45,7 @@ using System.Globalization;
 using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
+using OpenDis.Core.PduFamily;
 
 namespace OpenDis.Dis1995
 {
@@ -55,12 +56,12 @@ namespace OpenDis.Dis1995
     [XmlRoot]
     [XmlInclude(typeof(FixedDatum))]
     [XmlInclude(typeof(VariableDatum))]
-    public partial class ActionResponsePdu : SimulationManagementPdu, IEquatable<ActionResponsePdu>
+    public partial class ActionResponsePdu : SimulationManagementFamilyPdu, IEquatable<ActionResponsePdu>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ActionResponsePdu"/> class.
         /// </summary>
-        public ActionResponsePdu()
+        public ActionResponsePdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_1995)
         {
             PduType = 17;
         }
