@@ -40,12 +40,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Diagnostics;
 using System.Xml.Serialization;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using OpenDis.Core;
 using OpenDis.Core.PduFamily;
+using OpenDis.Core.DataTypes;
 
 namespace OpenDis.Dis2012
 {
