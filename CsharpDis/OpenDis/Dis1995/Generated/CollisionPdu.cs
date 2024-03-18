@@ -45,6 +45,7 @@ using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
 using OpenDis.Core.DataTypes;
+using OpenDis.Core.PduFamily;
 
 namespace OpenDis.Dis1995
 {
@@ -56,12 +57,12 @@ namespace OpenDis.Dis1995
     [XmlInclude(typeof(EntityID))]
     [XmlInclude(typeof(EventID))]
     [XmlInclude(typeof(Vector3Float))]
-    public partial class CollisionPdu : EntityInformationPdu, IEquatable<CollisionPdu>
+    public partial class CollisionPdu : EntityInformationFamilyPdu, IEquatable<CollisionPdu>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CollisionPdu"/> class.
         /// </summary>
-        public CollisionPdu()
+        public CollisionPdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_1995)
         {
             PduType = 4;
             ProtocolFamily = 1;

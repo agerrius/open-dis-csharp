@@ -46,6 +46,7 @@ using System.Text;
 using System.Xml.Serialization;
 using OpenDis.Core;
 using OpenDis.Core.DataTypes;
+using OpenDis.Core.PduFamily;
 
 namespace OpenDis.Dis1995
 {
@@ -61,12 +62,12 @@ namespace OpenDis.Dis1995
     [XmlInclude(typeof(Orientation))]
     [XmlInclude(typeof(DeadReckoningParameter))]
     [XmlInclude(typeof(ArticulationParameter))]
-    public partial class EntityStatePdu : EntityInformationPdu, IEquatable<EntityStatePdu>
+    public partial class EntityStatePdu : EntityInformationFamilyPdu, IEquatable<EntityStatePdu>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityStatePdu"/> class.
         /// </summary>
-        public EntityStatePdu()
+        public EntityStatePdu() : base(Enumerations.ProtocolVersion.Ieee1278_1_1995)
         {
             PduType = 1;
         }
