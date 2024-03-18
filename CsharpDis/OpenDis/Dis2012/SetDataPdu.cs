@@ -44,7 +44,6 @@ using System.Xml.Serialization;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using OpenDis.Core;
-using OpenDis.Core.PduFamily;
 using OpenDis.Core.DataTypes;
 
 namespace OpenDis.Dis2012
@@ -56,38 +55,8 @@ namespace OpenDis.Dis2012
     [XmlRoot]
     [XmlInclude(typeof(FixedDatum))]
     [XmlInclude(typeof(VariableDatum))]
-    public partial class SetDataPdu : SimulationManagementFamilyPdu, IEquatable<SetDataPdu>
+    public partial class SetDataPdu : Core.Pdu.SetDataPdu, IEquatable<SetDataPdu>
     {
-        /// <summary>
-        /// ID of request
-        /// </summary>
-        private uint _requestID;
-
-        /// <summary>
-        /// padding
-        /// </summary>
-        private uint _padding1;
-
-        /// <summary>
-        /// Number of fixed datum records
-        /// </summary>
-        private uint _numberOfFixedDatumRecords;
-
-        /// <summary>
-        /// Number of variable datum records
-        /// </summary>
-        private uint _numberOfVariableDatumRecords;
-
-        /// <summary>
-        /// variable length list of fixed datums
-        /// </summary>
-        private List<FixedDatum> _fixedDatums = new List<FixedDatum>();
-
-        /// <summary>
-        /// variable length list of variable length datums
-        /// </summary>
-        private List<VariableDatum> _variableDatums = new List<VariableDatum>();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SetDataPdu"/> class.
         /// </summary>
@@ -141,117 +110,21 @@ namespace OpenDis.Dis2012
             marshalSize += 4;  // this._padding1
             marshalSize += 4;  // this._numberOfFixedDatumRecords
             marshalSize += 4;  // this._numberOfVariableDatumRecords
-            for (int idx = 0; idx < this._fixedDatums.Count; idx++)
+            for (int idx = 0; idx < this.FixedDatums.Count; idx++)
             {
-                FixedDatum listElement = (FixedDatum)this._fixedDatums[idx];
+                FixedDatum listElement = (FixedDatum)this.FixedDatums[idx];
                 marshalSize += listElement.GetMarshalledSize();
             }
 
-            for (int idx = 0; idx < this._variableDatums.Count; idx++)
+            for (int idx = 0; idx < this.VariableDatums.Count; idx++)
             {
-                VariableDatum listElement = (VariableDatum)this._variableDatums[idx];
+                VariableDatum listElement = (VariableDatum)this.VariableDatums[idx];
                 marshalSize += listElement.GetMarshalledSize();
             }
 
             return marshalSize;
         }
-
-        /// <summary>
-        /// Gets or sets the ID of request
-        /// </summary>
-        [XmlElement(Type = typeof(uint), ElementName = "requestID")]
-        public uint RequestID
-        {
-            get
-            {
-                return this._requestID;
-            }
-
-            set
-            {
-                this._requestID = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the padding
-        /// </summary>
-        [XmlElement(Type = typeof(uint), ElementName = "padding1")]
-        public uint Padding1
-        {
-            get
-            {
-                return this._padding1;
-            }
-
-            set
-            {
-                this._padding1 = value;
-            }
-        }
-
-        /// <summary>
-        /// Note that setting this value will not change the marshalled value. The list whose length this describes is used for that purpose.
-        /// The getnumberOfFixedDatumRecords method will also be based on the actual list length rather than this value. 
-        /// The method is simply here for completeness and should not be used for any computations.
-        /// </summary>
-        [XmlElement(Type = typeof(uint), ElementName = "numberOfFixedDatumRecords")]
-        public uint NumberOfFixedDatumRecords
-        {
-            get
-            {
-                return this._numberOfFixedDatumRecords;
-            }
-
-            set
-            {
-                this._numberOfFixedDatumRecords = value;
-            }
-        }
-
-        /// <summary>
-        /// Note that setting this value will not change the marshalled value. The list whose length this describes is used for that purpose.
-        /// The getnumberOfVariableDatumRecords method will also be based on the actual list length rather than this value. 
-        /// The method is simply here for completeness and should not be used for any computations.
-        /// </summary>
-        [XmlElement(Type = typeof(uint), ElementName = "numberOfVariableDatumRecords")]
-        public uint NumberOfVariableDatumRecords
-        {
-            get
-            {
-                return this._numberOfVariableDatumRecords;
-            }
-
-            set
-            {
-                this._numberOfVariableDatumRecords = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the variable length list of fixed datums
-        /// </summary>
-        [XmlElement(ElementName = "fixedDatumsList", Type = typeof(List<FixedDatum>))]
-        public List<FixedDatum> FixedDatums
-        {
-            get
-            {
-                return this._fixedDatums;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the variable length list of variable length datums
-        /// </summary>
-        [XmlElement(ElementName = "variableDatumsList", Type = typeof(List<VariableDatum>))]
-        public List<VariableDatum> VariableDatums
-        {
-            get
-            {
-                return this._variableDatums;
-            }
-        }
-
+        
         /// <summary>
         /// Automatically sets the length of the marshalled data, then calls the marshal method.
         /// </summary>
@@ -275,20 +148,20 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    dos.WriteUnsignedInt((uint)this._requestID);
-                    dos.WriteUnsignedInt((uint)this._padding1);
-                    dos.WriteUnsignedInt((uint)this._fixedDatums.Count);
-                    dos.WriteUnsignedInt((uint)this._variableDatums.Count);
+                    dos.WriteUnsignedInt((uint)this.RequestID);
+                    dos.WriteUnsignedInt((uint)this.Padding1);
+                    dos.WriteUnsignedInt((uint)this.FixedDatums.Count);
+                    dos.WriteUnsignedInt((uint)this.VariableDatums.Count);
 
-                    for (int idx = 0; idx < this._fixedDatums.Count; idx++)
+                    for (int idx = 0; idx < this.FixedDatums.Count; idx++)
                     {
-                        FixedDatum aFixedDatum = (FixedDatum)this._fixedDatums[idx];
+                        FixedDatum aFixedDatum = (FixedDatum)this.FixedDatums[idx];
                         aFixedDatum.Marshal(dos);
                     }
 
-                    for (int idx = 0; idx < this._variableDatums.Count; idx++)
+                    for (int idx = 0; idx < this.VariableDatums.Count; idx++)
                     {
-                        VariableDatum aVariableDatum = (VariableDatum)this._variableDatums[idx];
+                        VariableDatum aVariableDatum = (VariableDatum)this.VariableDatums[idx];
                         aVariableDatum.Marshal(dos);
                     }
                 }
@@ -317,22 +190,22 @@ namespace OpenDis.Dis2012
             {
                 try
                 {
-                    this._requestID = dis.ReadUnsignedInt();
-                    this._padding1 = dis.ReadUnsignedInt();
-                    this._numberOfFixedDatumRecords = dis.ReadUnsignedInt();
-                    this._numberOfVariableDatumRecords = dis.ReadUnsignedInt();
+                    this.RequestID = dis.ReadUnsignedInt();
+                    this.Padding1 = dis.ReadUnsignedInt();
+                    this.NumberOfFixedDatumRecords = dis.ReadUnsignedInt();
+                    this.NumberOfVariableDatumRecords = dis.ReadUnsignedInt();
                     for (int idx = 0; idx < this.NumberOfFixedDatumRecords; idx++)
                     {
                         FixedDatum anX = new FixedDatum();
                         anX.Unmarshal(dis);
-                        this._fixedDatums.Add(anX);
+                        this.FixedDatums.Add(anX);
                     };
 
                     for (int idx = 0; idx < this.NumberOfVariableDatumRecords; idx++)
                     {
                         VariableDatum anX = new VariableDatum();
                         anX.Unmarshal(dis);
-                        this._variableDatums.Add(anX);
+                        this.VariableDatums.Add(anX);
                     };
 
                 }
@@ -367,22 +240,22 @@ namespace OpenDis.Dis2012
             base.Reflection(sb);
             try
             {
-                sb.AppendLine("<requestID type=\"uint\">" + this._requestID.ToString(CultureInfo.InvariantCulture) + "</requestID>");
-                sb.AppendLine("<padding1 type=\"uint\">" + this._padding1.ToString(CultureInfo.InvariantCulture) + "</padding1>");
-                sb.AppendLine("<fixedDatums type=\"uint\">" + this._fixedDatums.Count.ToString(CultureInfo.InvariantCulture) + "</fixedDatums>");
-                sb.AppendLine("<variableDatums type=\"uint\">" + this._variableDatums.Count.ToString(CultureInfo.InvariantCulture) + "</variableDatums>");
-                for (int idx = 0; idx < this._fixedDatums.Count; idx++)
+                sb.AppendLine("<requestID type=\"uint\">" + this.RequestID.ToString(CultureInfo.InvariantCulture) + "</requestID>");
+                sb.AppendLine("<padding1 type=\"uint\">" + this.Padding1.ToString(CultureInfo.InvariantCulture) + "</padding1>");
+                sb.AppendLine("<fixedDatums type=\"uint\">" + this.FixedDatums.Count.ToString(CultureInfo.InvariantCulture) + "</fixedDatums>");
+                sb.AppendLine("<variableDatums type=\"uint\">" + this.VariableDatums.Count.ToString(CultureInfo.InvariantCulture) + "</variableDatums>");
+                for (int idx = 0; idx < this.FixedDatums.Count; idx++)
                 {
                     sb.AppendLine("<fixedDatums" + idx.ToString(CultureInfo.InvariantCulture) + " type=\"FixedDatum\">");
-                    FixedDatum aFixedDatum = (FixedDatum)this._fixedDatums[idx];
+                    FixedDatum aFixedDatum = (FixedDatum)this.FixedDatums[idx];
                     aFixedDatum.Reflection(sb);
                     sb.AppendLine("</fixedDatums" + idx.ToString(CultureInfo.InvariantCulture) + ">");
                 }
 
-                for (int idx = 0; idx < this._variableDatums.Count; idx++)
+                for (int idx = 0; idx < this.VariableDatums.Count; idx++)
                 {
                     sb.AppendLine("<variableDatums" + idx.ToString(CultureInfo.InvariantCulture) + " type=\"VariableDatum\">");
-                    VariableDatum aVariableDatum = (VariableDatum)this._variableDatums[idx];
+                    VariableDatum aVariableDatum = (VariableDatum)this.VariableDatums[idx];
                     aVariableDatum.Reflection(sb);
                     sb.AppendLine("</variableDatums" + idx.ToString(CultureInfo.InvariantCulture) + ">");
                 }
@@ -434,52 +307,52 @@ namespace OpenDis.Dis2012
 
             ivarsEqual = base.Equals(obj);
 
-            if (this._requestID != obj._requestID)
+            if (this.RequestID != obj.RequestID)
             {
                 ivarsEqual = false;
             }
 
-            if (this._padding1 != obj._padding1)
+            if (this.Padding1 != obj.Padding1)
             {
                 ivarsEqual = false;
             }
 
-            if (this._numberOfFixedDatumRecords != obj._numberOfFixedDatumRecords)
+            if (this.NumberOfFixedDatumRecords != obj.NumberOfFixedDatumRecords)
             {
                 ivarsEqual = false;
             }
 
-            if (this._numberOfVariableDatumRecords != obj._numberOfVariableDatumRecords)
+            if (this.NumberOfVariableDatumRecords != obj.NumberOfVariableDatumRecords)
             {
                 ivarsEqual = false;
             }
 
-            if (this._fixedDatums.Count != obj._fixedDatums.Count)
+            if (this.FixedDatums.Count != obj.FixedDatums.Count)
             {
                 ivarsEqual = false;
             }
 
             if (ivarsEqual)
             {
-                for (int idx = 0; idx < this._fixedDatums.Count; idx++)
+                for (int idx = 0; idx < this.FixedDatums.Count; idx++)
                 {
-                    if (!this._fixedDatums[idx].Equals(obj._fixedDatums[idx]))
+                    if (!this.FixedDatums[idx].Equals(obj.FixedDatums[idx]))
                     {
                         ivarsEqual = false;
                     }
                 }
             }
 
-            if (this._variableDatums.Count != obj._variableDatums.Count)
+            if (this.VariableDatums.Count != obj.VariableDatums.Count)
             {
                 ivarsEqual = false;
             }
 
             if (ivarsEqual)
             {
-                for (int idx = 0; idx < this._variableDatums.Count; idx++)
+                for (int idx = 0; idx < this.VariableDatums.Count; idx++)
                 {
-                    if (!this._variableDatums[idx].Equals(obj._variableDatums[idx]))
+                    if (!this.VariableDatums[idx].Equals(obj.VariableDatums[idx]))
                     {
                         ivarsEqual = false;
                     }
@@ -510,24 +383,24 @@ namespace OpenDis.Dis2012
 
             result = GenerateHash(result) ^ base.GetHashCode();
 
-            result = GenerateHash(result) ^ this._requestID.GetHashCode();
-            result = GenerateHash(result) ^ this._padding1.GetHashCode();
-            result = GenerateHash(result) ^ this._numberOfFixedDatumRecords.GetHashCode();
-            result = GenerateHash(result) ^ this._numberOfVariableDatumRecords.GetHashCode();
+            result = GenerateHash(result) ^ this.RequestID.GetHashCode();
+            result = GenerateHash(result) ^ this.Padding1.GetHashCode();
+            result = GenerateHash(result) ^ this.NumberOfFixedDatumRecords.GetHashCode();
+            result = GenerateHash(result) ^ this.NumberOfVariableDatumRecords.GetHashCode();
 
-            if (this._fixedDatums.Count > 0)
+            if (this.FixedDatums.Count > 0)
             {
-                for (int idx = 0; idx < this._fixedDatums.Count; idx++)
+                for (int idx = 0; idx < this.FixedDatums.Count; idx++)
                 {
-                    result = GenerateHash(result) ^ this._fixedDatums[idx].GetHashCode();
+                    result = GenerateHash(result) ^ this.FixedDatums[idx].GetHashCode();
                 }
             }
 
-            if (this._variableDatums.Count > 0)
+            if (this.VariableDatums.Count > 0)
             {
-                for (int idx = 0; idx < this._variableDatums.Count; idx++)
+                for (int idx = 0; idx < this.VariableDatums.Count; idx++)
                 {
-                    result = GenerateHash(result) ^ this._variableDatums[idx].GetHashCode();
+                    result = GenerateHash(result) ^ this.VariableDatums[idx].GetHashCode();
                 }
             }
 
